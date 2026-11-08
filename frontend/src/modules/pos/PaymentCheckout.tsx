@@ -97,8 +97,9 @@ export default function PaymentCheckout({ items, invoice, subtotal, discount, ta
             <TextField id="checkout-amount" fullWidth type="number" value={amount} placeholder="0.00"
               onChange={e => { setAmount(e.target.value); setWarning(""); }}
               slotProps={{ htmlInput: { min: 0, step: "0.01", inputMode: "decimal" } }} />
-            <div className="checkout-quick">{[100,500,1000,5000].map(n => <button type="button" key={n} onClick={() => { setAmount(String(Math.round((received + n) * 100) / 100)); setWarning(""); }}>+{n.toLocaleString()}</button>)}</div>
+            <div className="checkout-quick">{[1,2,5,10,20,50,100,500,1000,2000,5000].map(n => <button type="button" key={n} onClick={() => { setAmount(String(Math.round(((validAmount ? received : 0) + n) * 100) / 100)); setWarning(""); }}>+{n.toLocaleString()}</button>)}</div>
             <Button variant="outlined" color="success" onClick={() => { setAmount(String(total)); setWarning(""); }}>Exact Amount</Button>
+            <Button className="checkout-reset" variant="outlined" color="error" onClick={() => { setAmount(""); setWarning(""); }}>Reset</Button>
           </div>
         </section>
         <section className="checkout-card checkout-summary">
