@@ -1,1 +1,49 @@
 .checkout-page{width:100%;height:100%;min-width:0;min-height:0;overflow:auto;padding:clamp(12px,1.5vw,24px);background:linear-gradient(160deg,#f9fbfd,#f3f6fa);font-family:Arial,Roboto,sans-serif;color:#132034}.checkout-page *{box-sizing:border-box}.checkout-header{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:22px;flex-wrap:wrap}.checkout-heading{display:flex;align-items:center;gap:14px}.checkout-title-icon{font-size:52px!important;color:#ff8200}.checkout-heading h1{font-size:clamp(25px,2.1vw,36px);margin:0;font-weight:800}.checkout-heading p{margin:4px 0 0;font-size:14px}.checkout-header-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.checkout-invoice,.checkout-back{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid #d0dbea;border-radius:12px;padding:12px 16px;box-shadow:0 3px 10px #182b4710;font-weight:700;font-size:14px}.checkout-back{cursor:pointer}.checkout-columns{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:stretch}.checkout-card{min-width:0;border:1px solid #d8e1ec;background:#fff;border-radius:17px;padding:15px;box-shadow:0 3px 12px #1320340a;display:flex;flex-direction:column;gap:16px}.checkout-card h2{font-size:clamp(17px,1.3vw,23px);display:flex;align-items:center;gap:10px;margin:0;font-weight:800}.checkout-card h2 svg{font-size:29px}.checkout-items-wrap{overflow:auto;flex:1;min-height:170px}.checkout-items{width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap}.checkout-items th{text-align:left;background:#edf1f5;padding:12px 7px}.checkout-items td{padding:13px 7px;border-bottom:1px solid #e6ebf0}.checkout-items td:last-child{text-align:right}.checkout-item-name{display:flex;align-items:center;gap:7px;font-weight:650}.checkout-item-name>span{font-size:23px}.checkout-totals{border-top:1px solid #d8e1ec;padding-top:12px;display:grid;gap:14px}.checkout-totals>div{display:flex;justify-content:space-between;gap:8px;font-size:15px}.checkout-totals .checkout-total{background:#ddfbe0;border-radius:10px;padding:14px 10px;font-size:clamp(16px,1.45vw,23px);color:#006819}.checkout-methods{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.checkout-method{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:118px;border-radius:14px;border:1px solid #ccd5e4;background:#f8fafc;color:#17213b;font-size:15px;font-weight:700;padding:10px 4px}.checkout-method svg{font-size:33px}.checkout-method small{font-size:10px;color:#697588}.checkout-method:disabled{cursor:not-allowed;opacity:.72}.checkout-method.checkout-green{background:#e6fce9;border-color:#3ebc5b;color:#006e1b}.checkout-method.checkout-purple{background:#f5edff;border-color:#cfb5f5}.checkout-method.checkout-blue{background:#eff7ff;border-color:#b6d5ff}.checkout-method.checkout-orange{background:#fff5ed;border-color:#ffd1ad}.checkout-method.checkout-selected{outline:2px solid #008021;outline-offset:-2px}.checkout-method-check{position:absolute;right:6px;top:6px;font-size:22px!important}.checkout-cash{border-top:1px solid #dfe6ee;padding-top:12px;display:grid;gap:12px}.checkout-cash h3{display:flex;align-items:center;gap:9px;margin:0 0 4px;font-size:19px}.checkout-cash label,.checkout-summary label{font-weight:700;font-size:13px}.checkout-quick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.checkout-quick button{border:0;border-radius:10px;background:#dffbe6;color:#006b1d;font-size:14px;font-weight:800;padding:12px 4px;cursor:pointer}.checkout-summary-title{background:#e2fbe9;padding:13px;border-radius:12px;color:#006f1c}.checkout-summary-row{display:flex;justify-content:space-between;gap:10px;padding:10px 3px;border-bottom:1px solid #e2e8f0;font-size:15px}.checkout-change{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:15px 12px;border-radius:11px;background:#ddfbdf;color:#006c17;font-size:clamp(16px,1.4vw,23px)}.checkout-receipt-options{border:1px solid #dce3ed;border-radius:12px;display:grid;padding:4px 10px}.checkout-receipt-options .MuiFormControlLabel-root{margin:0}.checkout-receipt-options .MuiFormControlLabel-label span{display:flex;align-items:center;gap:8px;font-size:13px}.checkout-complete,.checkout-cancel{display:flex;align-items:center;justify-content:center;gap:10px;border-radius:12px;min-height:55px;font-size:17px;font-weight:800;cursor:pointer}.checkout-complete{border:0;background:linear-gradient(120deg,#ff9900,#ff6800);color:white}.checkout-complete:disabled{opacity:.5;cursor:not-allowed}.checkout-cancel{background:#f8fafc;border:1px solid #cdd7e6}.checkout-page button:focus-visible{outline:2px solid #008b30;outline-offset:2px}@media(max-width:1200px){.checkout-columns{grid-template-columns:repeat(2,minmax(0,1fr))}.checkout-summary{grid-column:1/-1}}@media(max-width:760px){.checkout-columns{grid-template-columns:1fr}.checkout-summary{grid-column:auto}.checkout-header{align-items:flex-start}.checkout-methods{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+/* Checkout matches the compact POS/Billing heading and action sizing. */
+.checkout-page{display:flex;flex-direction:column;overflow:hidden;padding:12px 14px}
+.checkout-header{flex:0 0 auto;margin-bottom:12px;gap:10px}
+.checkout-heading{gap:9px}
+.checkout-title-icon{font-size:38px!important}
+.checkout-heading h1{font-size:clamp(18px,1.75vw,27px);line-height:1.15;letter-spacing:-.4px}
+.checkout-heading p{font-size:12px;margin-top:3px}
+.checkout-header-actions{gap:8px}
+.checkout-invoice,.checkout-back{min-height:36px;padding:7px 12px;border-radius:10px;font-size:12px}
+.checkout-header-actions svg{font-size:19px}
+.checkout-columns{flex:1 1 0;min-height:0;gap:12px}
+.checkout-card{min-height:0;gap:10px;padding:12px;border-radius:13px;overflow:hidden}
+.checkout-card h2{font-size:clamp(16px,1.2vw,20px);gap:7px}
+.checkout-card h2 svg{font-size:24px}
+.checkout-items-wrap{min-height:0;overflow:auto}
+.checkout-items th{padding:9px 6px}
+.checkout-items td{padding:10px 6px}
+.checkout-totals{flex:0 0 auto;gap:8px;padding-top:9px}
+.checkout-totals>div{font-size:13px}
+.checkout-totals .checkout-total{padding:10px;font-size:18px}
+.checkout-methods{gap:7px}
+.checkout-method{min-height:84px;padding:6px 3px;gap:3px;border-radius:10px;font-size:13px}
+.checkout-method svg{font-size:26px}
+.checkout-method-check{font-size:18px!important}
+.checkout-method small{font-size:9px}
+.checkout-cash{gap:7px;padding-top:9px}
+.checkout-cash h3{font-size:16px;margin-bottom:1px}
+.checkout-cash .MuiInputBase-input{padding:10px 12px;font-size:16px}
+.checkout-quick{gap:5px}
+.checkout-quick button{padding:8px 3px;font-size:13px}
+.checkout-cash>.MuiButton-root{min-height:31px;padding:4px 9px;font-size:12px}
+.checkout-summary-title{padding:9px}
+.checkout-summary-row{padding:7px 3px;font-size:13px}
+.checkout-change{padding:10px;font-size:19px}
+.checkout-receipt-options{padding:2px 8px}
+.checkout-receipt-options .MuiFormControlLabel-label span{font-size:12px}
+.checkout-receipt-options .MuiCheckbox-root{padding:6px}
+.checkout-summary .MuiInputBase-inputMultiline{font-size:13px}
+.checkout-summary .MuiInputBase-multiline{padding:8px 10px}
+.checkout-complete,.checkout-cancel{min-height:39px;font-size:14px;border-radius:9px}
+.checkout-complete svg,.checkout-cancel svg{font-size:20px}
+@media(max-width:1200px),(max-height:620px){
+  .checkout-page{overflow:auto}
+  .checkout-columns{flex:none;min-height:auto}
+  .checkout-card{overflow:visible}
+  .checkout-items-wrap{min-height:150px}
+}
