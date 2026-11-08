@@ -47,3 +47,17 @@
   .checkout-card{overflow:visible}
   .checkout-items-wrap{min-height:150px}
 }
+
+/* Keep bill columns within the card; only long bills scroll vertically. */
+.checkout-items-wrap{min-width:0;overflow-x:hidden;overflow-y:auto}
+.checkout-items{table-layout:fixed;width:100%;min-width:0;white-space:normal}
+.checkout-items th,.checkout-items td{min-width:0;overflow-wrap:anywhere;vertical-align:middle}
+.checkout-items th:nth-child(1),.checkout-items td:nth-child(1){width:6%;text-align:left}
+.checkout-items th:nth-child(2),.checkout-items td:nth-child(2){width:39%}
+.checkout-items th:nth-child(3),.checkout-items td:nth-child(3){width:9%;text-align:center}
+.checkout-items th:nth-child(4),.checkout-items td:nth-child(4){width:22%;text-align:right}
+.checkout-items th:nth-child(5),.checkout-items td:nth-child(5){width:24%;text-align:right}
+.checkout-item-name{min-width:0;white-space:normal;overflow-wrap:anywhere;gap:5px}
+.checkout-item-name>span{flex:0 0 auto}
+.checkout-items td:nth-child(4),.checkout-items td:nth-child(5){font-size:11px;font-variant-numeric:tabular-nums}
+.checkout-items thead th{position:sticky;top:0;z-index:1;background:#edf1f5}
