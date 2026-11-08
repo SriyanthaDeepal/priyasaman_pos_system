@@ -37,6 +37,7 @@ import {
 } from "@mui/icons-material";
 
 import "./pos.css";
+import SinhalaTouchKeyboard from "./SinhalaTouchKeyboard";
 
 type Category =
   | "Groceries"
@@ -422,6 +423,7 @@ export default function POSPage() {
     useState<CategoryFilter>("All Products");
 
   const [search, setSearch] = useState("");
+  const [touchTarget, setTouchTarget] = useState<"search" | "customer" | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
 
   const [cart, setCart] = useState<CartItem[]>([
@@ -928,6 +930,8 @@ export default function POSPage() {
                   />
                 </label>
 
+                <button type="button" className="pos-scan-button" onClick={() => setTouchTarget("search")} aria-label="Open touch keyboard">⌨ සිංහල</button>
+
                 <button
                   className="pos-scan-button"
                   onClick={() => setModal("scan")}
@@ -1229,6 +1233,14 @@ export default function POSPage() {
         </section>
       </div>
 
+      <SinhalaTouchKeyboard
+        open={touchTarget !== null}
+        title={touchTarget === "customer" ? "Customer Name / පාරිභෝගික නම" : "Product Search / භාණ්ඩ සෙවීම"}
+        value={touchTarget === "customer" ? customerInput : search}
+        onChange={(next) => touchTarget === "customer" ? setCustomerInput(next) : changeSearch(next)}
+        onClose={() => setTouchTarget(null)}
+      />
+
       {/* DIALOGS */}
       <Dialog
         open={modal !== null}
@@ -1390,6 +1402,8 @@ export default function POSPage() {
                   setCustomerInput(event.target.value)
                 }
               />
+
+              <Button variant="outlined" onClick={() => setTouchTarget("customer")}>⌨ Sinhala Touch Keyboard</Button>
 
               <Button
                 variant="contained"
