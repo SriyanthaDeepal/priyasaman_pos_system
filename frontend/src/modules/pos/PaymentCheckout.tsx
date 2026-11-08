@@ -36,13 +36,13 @@ export default function PaymentCheckout({ items, invoice, subtotal, discount, ta
   const [warning, setWarning] = useState("");
   const received = amount.trim() === "" ? 0 : Number(amount);
   const validAmount = Number.isFinite(received) && received >= 0;
-  const cardReady = cardConfirmed && cardReference.trim().length > 0;
+  const cardReady = cardConfirmed;
   const canComplete = items.length > 0 && (method === "card" ? cardReady : validAmount && received >= total);
   const change = method === "cash" && validAmount ? Math.max(0, Math.round((received - total) * 100) / 100) : 0;
 
   const complete = () => {
     if (!canComplete) {
-      setWarning(method === "card" ? "Confirm the terminal approval and enter its transaction reference." : "Enter a valid cash amount that covers the total.");
+      setWarning(method === "card" ? "Confirm that the external card terminal approved the payment." : "Enter a valid cash amount that covers the total.");
       return;
     }
     onComplete(method === "card" ? total : received, method === "card" ? `${notes}${notes ? " | " : ""}Card ${cardNetwork}, terminal reference: ${cardReference.trim()}` : notes, printReceipt, method);
@@ -112,8 +112,8 @@ export default function PaymentCheckout({ items, invoice, subtotal, discount, ta
             <select id="checkout-card-network" value={cardNetwork} onChange={e => setCardNetwork(e.target.value)}>
               <option>Visa</option><option>Mastercard</option><option>Other card</option>
             </select>
-            <label htmlFor="checkout-card-ref">Terminal Transaction Reference</label>
-            <TextField id="checkout-card-ref" fullWidth size="small" value={cardReference} placeholder="Enter terminal receipt reference" onChange={e => { setCardReference(e.target.value); setCardConfirmed(false); setWarning(""); }} slotProps={{ htmlInput: { maxLength: 80 } }} />
+            <label htmlFor="checkout-card-ref">Terminal Transaction Reference (Optional)</label>
+            <TextField id="checkout-card-ref" fullWidth size="small" value={cardReference} placeholder="Enter reference if available" onChange={e => { setCardReference(e.target.value); setCardConfirmed(false); setWarning(""); }} slotProps={{ htmlInput: { maxLength: 80 } }} />
             <FormControlLabel className="checkout-card-confirm" control={<Checkbox checked={cardConfirmed} onChange={e => { setCardConfirmed(e.target.checked); setWarning(""); }} />} label="I confirm the terminal shows an approved payment for this amount." />
             
             <Button className="checkout-reset" variant="outlined" color="error" startIcon={<RestartAlt />} onClick={() => { setCardReference(""); setCardConfirmed(false); setWarning(""); }}>Reset Card Details</Button>
