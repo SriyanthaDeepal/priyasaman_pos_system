@@ -88,11 +88,11 @@ export default function PaymentCheckout({ items, invoice, subtotal, discount, ta
         </section>
         <section className="checkout-card checkout-payment">
           <h2><LocalAtm color="success" /> Payment Method</h2>
-          <div className="checkout-methods">{methods.map(method => (
-            <button type="button" key={method.id} className={`checkout-method checkout-${method.tone} ${method.id === method ? "checkout-selected" : ""}`}
-              disabled={method.id !== "cash" && method.id !== "card"} onClick={() => { if (method.id === "cash" || method.id === "card") { setMethod(method.id); setWarning(""); } }} title={method.id === "card" ? "Record a card payment approved on an external terminal (demo only)" : method.id !== "cash" ? "Coming soon" : "Cash payment"}>
-              {method.id === method && <CheckCircle className="checkout-method-check" />}
-              {method.icon}<span>{method.label}</span>{method.id === "card" ? <small>Manual terminal</small> : method.id !== "cash" && <small>Coming soon</small>}
+          <div className="checkout-methods">{methods.map(option => (
+            <button type="button" key={option.id} className={`checkout-method checkout-${option.tone} ${option.id === method ? "checkout-selected" : ""}`}
+              disabled={option.id !== "cash" && option.id !== "card"} onClick={() => { if (option.id === "cash" || option.id === "card") { setMethod(option.id); setWarning(""); } }} title={option.id === "card" ? "Record a card payment approved on an external terminal (demo only)" : option.id !== "cash" ? "Coming soon" : "Cash payment"}>
+              {option.id === method && <CheckCircle className="checkout-method-check" />}
+              {option.icon}<span>{option.label}</span>{option.id === "card" ? <small>Manual terminal</small> : option.id !== "cash" && <small>Coming soon</small>}
             </button>
           ))}</div>
           {method === "cash" ? <div className="checkout-cash">
