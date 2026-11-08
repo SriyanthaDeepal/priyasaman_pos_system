@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ArrowBack, CheckCircle, CreditCard, LocalAtm, Payments, PhoneAndroid, Print, ReceiptLong, Redeem, AccountBalanceWallet, Close, ShoppingCart, SwapHoriz } from "@mui/icons-material";
-import { Alert, Button, Checkbox, FormControlLabel, TextField, Typography } from "@mui/material";
+import { Alert, Button, Checkbox, FormControlLabel, TextField } from "@mui/material";
 import "./PaymentCheckout.css";
 
 export type CheckoutItem = { id: number; name: string; emoji: string; quantity: number; price: number; unit: string };
@@ -25,7 +25,7 @@ const methods = [
   { id: "voucher", label: "Gift Voucher", icon: <Redeem />, tone: "orange" },
 ] as const;
 
-export default function PaymentCheckout({ items, invoice, subtotal, discount, tax, total, customer, onBack, onComplete }: Props) {
+export default function PaymentCheckout({ items, invoice, subtotal, discount, tax, total, onBack, onComplete }: Props) {
   const [amount, setAmount] = useState("");
   const [notes, setNotes] = useState("");
   const [printReceipt, setPrintReceipt] = useState(true);
@@ -99,7 +99,6 @@ export default function PaymentCheckout({ items, invoice, subtotal, discount, ta
               slotProps={{ htmlInput: { min: 0, step: "0.01", inputMode: "decimal" } }} />
             <div className="checkout-quick">{[100,500,1000,5000].map(n => <button type="button" key={n} onClick={() => { setAmount(String(Math.round((received + n) * 100) / 100)); setWarning(""); }}>+{n.toLocaleString()}</button>)}</div>
             <Button variant="outlined" color="success" onClick={() => { setAmount(String(total)); setWarning(""); }}>Exact Amount</Button>
-            <Typography variant="caption" color="text.secondary">Customer: {customer} · Cash payments are frontend demo only.</Typography>
           </div>
         </section>
         <section className="checkout-card checkout-summary">
@@ -117,7 +116,6 @@ export default function PaymentCheckout({ items, invoice, subtotal, discount, ta
           {warning && <Alert severity="warning">{warning}</Alert>}
           <button type="button" className="checkout-complete" disabled={!canComplete} onClick={complete}><CheckCircle /> Complete Demo Sale (F10)</button>
           <button type="button" className="checkout-cancel" onClick={onBack}><Close /> Cancel (Esc)</button>
-          <Typography variant="caption" color="text.secondary">Demo checkout only: no real transaction, inventory update, receipt printing, or backend record.</Typography>
         </section>
       </div>
     </div>
