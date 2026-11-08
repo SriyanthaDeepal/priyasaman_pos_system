@@ -38,6 +38,7 @@ import {
 
 import "./pos.css";
 import SinhalaTouchKeyboard from "./SinhalaTouchKeyboard";
+import PaymentCheckout from "./PaymentCheckout";
 
 type Category =
   | "Groceries"
@@ -77,7 +78,6 @@ type ModalType =
   | "discount"
   | "clear"
   | "customer"
-  | "payment"
   | null;
 
 type HeldSale = {
@@ -473,7 +473,7 @@ export default function POSPage() {
   const [invoiceNumber, setInvoiceNumber] =
     useState(9842);
 
-  const [amountReceived, setAmountReceived] = useState("");
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
 
   const searchRef = useRef<HTMLInputElement>(null);
   const customerRef = useRef<HTMLInputElement>(null);
@@ -638,10 +638,6 @@ export default function POSPage() {
   const tax = roundMoney(taxableAmount * TAX_RATE);
   const grandTotal = roundMoney(taxableAmount + tax);
 
-  const received = Number(amountReceived) || 0;
-  const changeDue = roundMoney(
-    Math.max(0, received - grandTotal)
-  );
 
   const applyCoupon = () => {
     if (!coupon.trim()) {
@@ -754,28 +750,13 @@ export default function POSPage() {
     setNotice(`${product.name} added to bill.`);
   };
 
-  const completePayment = () => {
-    if (cart.length === 0) {
-      setNotice("Add products before payment.");
-      return;
-    }
-
-    if (received < grandTotal) {
-      setNotice(
-        "Received amount is less than the total."
-      );
-      return;
-    }
-
-    // Frontend demo only. No real payment is processed.
+  const completePayment = (_received: number, _notes: string, _printReceipt: boolean) => {
+    if (cart.length === 0) return;
+    // Frontend-only demo. No payment or sale is recorded in the backend.
     setInvoiceNumber((previous) => previous + 1);
     resetBill();
-    setAmountReceived("");
-    setModal(null);
-
-    setNotice(
-      "Demo payment completed. No backend sale was recorded."
-    );
+    setCheckoutOpen(false);
+    setNotice("Demo cash checkout completed. No real payment, receipt, or backend sale was recorded.");
   };
 
   const focusSearch = useCallback(() => {
@@ -800,7 +781,7 @@ export default function POSPage() {
         F6: () => setModal("discount"),
         F7: () => setModal("clear"),
         F8: () => setModal("customer"),
-        F9: () => setModal("payment"),
+        F9: () => { if (cart.length > 0) { setTouchTarget(null); setCheckoutOpen(true); } },
       };
 
       const action = actions[event.key];
@@ -820,6 +801,29 @@ export default function POSPage() {
       );
     };
   }, [focusSearch]);
+
+  if (checkoutOpen) {
+    return (
+      <PaymentCheckout
+        items={cart.map(({ product, quantity }) => ({
+          id: product.id,
+          name: product.name,
+          emoji: product.emoji,
+          quantity,
+          price: product.price,
+          unit: product.unit,
+        }))}
+        invoice={`INV-${String(invoiceNumber).padStart(6, "0")}`}
+        subtotal={subtotal}
+        discount={discount}
+        tax={tax}
+        total={grandTotal}
+        customer={customer}
+        onBack={() => setCheckoutOpen(false)}
+        onComplete={completePayment}
+      />
+    );
+  }
 
   return (
     <div className="pos-page">
@@ -1247,8 +1251,8 @@ export default function POSPage() {
             className="pos-pay-button"
             disabled={cart.length === 0}
             onClick={() => {
-              setAmountReceived("");
-              setModal("payment");
+              setTouchTarget(null);
+              setCheckoutOpen(true);
             }}
           >
             <CreditCard />
@@ -1455,49 +1459,7 @@ export default function POSPage() {
             </Box>
           )}
 
-          {modal === "payment" && (
-            <Box sx={{ display: "grid", gap: 2 }}>
-              <Typography variant="body2">
-                Customer: {customer}
-              </Typography>
 
-              <Typography
-                variant="h5"
-                sx={{
-                  fontWeight: 800,
-                  color: "success.main",
-                }}
-              >
-                {money(grandTotal)}
-              </Typography>
-
-              <TextField
-                fullWidth
-                type="number"
-                label="Amount Received"
-                value={amountReceived}
-                onChange={(event) =>
-                  setAmountReceived(event.target.value)
-                }
-              />
-
-              <Typography>
-                Change: <strong>{money(changeDue)}</strong>
-              </Typography>
-
-              <Button
-                variant="contained"
-                color="success"
-                disabled={
-                  cart.length === 0 ||
-                  received < grandTotal
-                }
-                onClick={completePayment}
-              >
-                Complete Demo Payment
-              </Button>
-            </Box>
-          )}
         </DialogContent>
 
         <DialogActions>
