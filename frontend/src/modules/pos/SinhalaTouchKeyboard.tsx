@@ -25,8 +25,7 @@ const numberKeys = ["1","2","3","4","5","6","7","8","9","0",".","-","/","(",")",
 
 export default function SinhalaTouchKeyboard({ title, value, onChange, onClose, inputRef }: Props) {
   const [mode, setMode] = useState<"si" | "en" | "num">("si");
-  const [selected, setSelected] = useState<string | null>(null);
-  const [showVowels, setShowVowels] = useState(false);
+  const [selected, setSelected] = useState<string>("ක");
 
   const getSelection = () => {
     const input = inputRef.current;
@@ -90,31 +89,29 @@ export default function SinhalaTouchKeyboard({ title, value, onChange, onClose, 
         <Button size="small" variant={mode === "num" ? "contained" : "outlined"} onClick={() => setMode("num")}>123</Button>
       </Box>
       {mode === "si" && (
-        <>
-          <Box className="stk-modes">
-            <Button size="small" variant={!showVowels ? "contained" : "outlined"} onClick={() => setShowVowels(false)}>ව්‍යංජන</Button>
-            <Button size="small" variant={showVowels ? "contained" : "outlined"} onClick={() => { setShowVowels(true); setSelected(null); }}>ස්වර</Button>
+        <Box className="stk-sinhala-layout">
+          <Box className="stk-left-pane">
+            <Typography variant="caption" sx={{ fontWeight: 700 }}>අකුරු තෝරන්න · Select letters</Typography>
+            <Box className="stk-letter-grid">
+              {consonants.map(c => key(c, () => setSelected(c), selected === c))}
+              {vowels.map(v => key(v, () => insert(v)))}
+            </Box>
           </Box>
-          {showVowels ? (
-            <Box className="stk-grid">{vowels.map(v => key(v, () => insert(v)))}</Box>
-          ) : (
-            <>
-              <Typography variant="caption">1. Select a consonant · 2. Tap the desired form</Typography>
-              <Box className="stk-grid">{consonants.map(c => key(c, () => setSelected(c), selected === c))}</Box>
-              {selected && (
-                <Box className="stk-forms">
-                  <Typography sx={{ fontWeight: 700 }}>{selected} — අකුරු ආකාර</Typography>
-                  <Box className="stk-grid">{forms.map((form, index) => (
-                    <button type="button" key={index} className="stk-key stk-form"
-                      onPointerDown={event => event.preventDefault()} onClick={() => insert(selected + form)}>
-                      {selected + form}
-                    </button>
-                  ))}</Box>
-                </Box>
-              )}
-            </>
-          )}
-        </>
+          <Box className="stk-right-pane">
+            <Typography variant="caption" sx={{ fontWeight: 700 }}>
+              {selected} — අකුරු ආකාර · Forms
+            </Typography>
+            <Box className="stk-form-grid">
+              {forms.map((form, index) => (
+                <button type="button" key={index} className="stk-key stk-form"
+                  onPointerDown={event => event.preventDefault()}
+                  onClick={() => insert(selected + form)}>
+                  {selected + form}
+                </button>
+              ))}
+            </Box>
+          </Box>
+        </Box>
       )}
       {mode === "en" && (
         <Box className="stk-english">{englishRows.map(row => (
