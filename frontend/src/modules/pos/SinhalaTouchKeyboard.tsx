@@ -1,11 +1,10 @@
 import { useState } from "react";
 import type { RefObject } from "react";
-import { BackspaceOutlined, Close, KeyboardOutlined } from "@mui/icons-material";
+import { BackspaceOutlined, Close } from "@mui/icons-material";
 import { Box, Button, IconButton, Typography } from "@mui/material";
 import "./SinhalaTouchKeyboard.css";
 
 type Props = {
-  title: string;
   value: string;
   onChange: (value: string) => void;
   onClose: () => void;
@@ -23,7 +22,7 @@ const forms = ["","ා","ැ","ෑ","ි","ී","ු","ූ","ෙ","ේ","ෛ","�
 const englishRows = ["qwertyuiop","asdfghjkl","zxcvbnm"];
 const numberKeys = ["1","2","3","4","5","6","7","8","9","0",".","-","/","(",")",",",":"];
 
-export default function SinhalaTouchKeyboard({ title, value, onChange, onClose, inputRef }: Props) {
+export default function SinhalaTouchKeyboard({ value, onChange, onClose, inputRef }: Props) {
   const [mode, setMode] = useState<"si" | "en" | "num">("si");
   const [selected, setSelected] = useState<string>("ක");
 
@@ -73,34 +72,23 @@ export default function SinhalaTouchKeyboard({ title, value, onChange, onClose, 
 
   return (
     <section className="stk-panel" aria-label="Sinhala touch keyboard">
-      <Box className="stk-heading">
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <KeyboardOutlined color="success" />
-          <Typography sx={{ fontWeight: 750 }}>{title}</Typography>
+      <Box className="stk-topbar">
+        <Box className="stk-modes">
+          <Button size="small" variant={mode === "si" ? "contained" : "outlined"} onClick={() => setMode("si")}>සිංහල</Button>
+          <Button size="small" variant={mode === "en" ? "contained" : "outlined"} onClick={() => setMode("en")}>English</Button>
+          <Button size="small" variant={mode === "num" ? "contained" : "outlined"} onClick={() => setMode("num")}>123</Button>
         </Box>
-        <IconButton aria-label="Close keyboard" onClick={onClose}><Close /></IconButton>
-      </Box>
-      <Typography variant="caption" color="text.secondary">
-        Letters are inserted directly into the active POS field. Product results update as you type.
-      </Typography>
-      <Box className="stk-modes">
-        <Button size="small" variant={mode === "si" ? "contained" : "outlined"} onClick={() => setMode("si")}>සිංහල</Button>
-        <Button size="small" variant={mode === "en" ? "contained" : "outlined"} onClick={() => setMode("en")}>English</Button>
-        <Button size="small" variant={mode === "num" ? "contained" : "outlined"} onClick={() => setMode("num")}>123</Button>
+        <IconButton aria-label="Close keyboard" size="small" onClick={onClose}><Close /></IconButton>
       </Box>
       {mode === "si" && (
         <Box className="stk-sinhala-layout">
           <Box className="stk-left-pane">
-            <Typography variant="caption" sx={{ fontWeight: 700 }}>අකුරු තෝරන්න · Select letters</Typography>
             <Box className="stk-letter-grid">
               {consonants.map(c => key(c, () => setSelected(c), selected === c))}
               {vowels.map(v => key(v, () => insert(v)))}
             </Box>
           </Box>
           <Box className="stk-right-pane">
-            <Typography variant="caption" sx={{ fontWeight: 700 }}>
-              {selected} — අකුරු ආකාර · Forms
-            </Typography>
             <Box className="stk-form-grid">
               {forms.map((form, index) => (
                 <button type="button" key={index} className="stk-key stk-form"
