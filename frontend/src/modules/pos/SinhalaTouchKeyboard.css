@@ -71,3 +71,19 @@
 .stk-footer .stk-modes{display:flex;align-items:center;gap:5px;margin-left:auto;flex-wrap:wrap}
 .stk-footer .stk-modes button{min-width:0;min-height:32px;padding:3px 10px;font-size:12px}
 @media(max-width:680px){.stk-footer{gap:6px}.stk-footer .stk-modes{margin-left:auto}}
+
+/* Compact, clearly identifiable close action. */
+.stk-panel .stk-close{
+  width:27px;
+  height:27px;
+  padding:3px;
+  min-width:27px;
+  color:#c62828;
+  background:#fff1f0!important;
+  border:1px solid #f0b5b5;
+  border-radius:7px;
+  margin-bottom:-27px!important;
+}
+.stk-panel .stk-close:hover{background:#ffd9d6!important;color:#a31919}
+.stk-panel .stk-close svg{width:17px;height:17px}
+.stk-panel .stk-close:focus-visible{outline:2px solid #c62828;outline-offset:2px}
