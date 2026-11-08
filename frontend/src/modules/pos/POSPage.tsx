@@ -985,6 +985,7 @@ export default function POSPage() {
 
                       <div className="pos-product-name">
                         {product.name}
+                        {product.sinhalaName && <small style={{ display: "block", color: "#246a36", marginTop: 3 }}>{product.sinhalaName}</small>}
                       </div>
 
                       <div className="pos-product-price">
