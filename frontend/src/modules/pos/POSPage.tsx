@@ -23,7 +23,6 @@ import {
 } from "@mui/material";
 
 import {
-  CheckCircleOutlined,
   Close,
   CreditCard,
   DeleteOutlined,
@@ -39,6 +38,7 @@ import {
 import "./pos.css";
 import SinhalaTouchKeyboard from "./SinhalaTouchKeyboard";
 import PaymentCheckout from "./PaymentCheckout";
+import AppSnackbar from "../../components/common/AppSnackbar";
 
 type Category =
   | "Groceries"
@@ -892,19 +892,12 @@ export default function POSPage() {
         </div>
       </div>
 
-      {notice && (
-        <div className="pos-notice">
-          <CheckCircleOutlined />
-          <span>{notice}</span>
-
-          <button
-            aria-label="Dismiss notification"
-            onClick={() => setNotice("")}
-          >
-            <Close fontSize="small" />
-          </button>
-        </div>
-      )}
+      <AppSnackbar
+        open={Boolean(notice)}
+        message={notice}
+        severity="success"
+        onClose={() => setNotice("")}
+      />
 
       <div className="pos-workspace">
         {/* PRODUCT PANEL */}
