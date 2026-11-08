@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ArrowBack, CheckCircle, CreditCard, LocalAtm, Payments, PhoneAndroid, Print, PictureAsPdf, Email, Sms, ReceiptLong, Redeem, AccountBalanceWallet, Close, ShoppingCart, SwapHoriz, RestartAlt, QrCode2, AccountBalance } from "@mui/icons-material";
-import { Alert, Button, Checkbox, FormControlLabel, TextField } from "@mui/material";
+import { Alert, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, TextField } from "@mui/material";
 import "./PaymentCheckout.css";
 
 export type CheckoutItem = { id: number; name: string; emoji: string; quantity: number; price: number; unit: string };
@@ -32,7 +32,7 @@ export default function PaymentCheckout({ items, invoice, subtotal, discount, ta
   const [cardReference, setCardReference] = useState("");
   const [cardConfirmed, setCardConfirmed] = useState(false);
   const [mobileType, setMobileType] = useState<"qr" | "transfer">("qr");
-  const [mobileReference, setMobileReference] = useState("");
+  const [mobileDisplayOpen, setMobileDisplayOpen] = useState(false);
   const [mobileConfirmed, setMobileConfirmed] = useState(false);
   const [notes, setNotes] = useState("");
   const [printReceipt, setPrintReceipt] = useState(true);
@@ -48,7 +48,7 @@ export default function PaymentCheckout({ items, invoice, subtotal, discount, ta
       setWarning(method === "mobile" ? "Confirm that the QR or online transfer payment has been received." : method === "card" ? "Confirm that the external card terminal approved the payment." : "Enter a valid cash amount that covers the total.");
       return;
     }
-    onComplete(method === "cash" ? received : total, method === "card" ? `${notes}${notes ? " | " : ""}Card ${cardNetwork}${cardReference.trim() ? `, terminal reference: ${cardReference.trim()}` : ""}` : method === "mobile" ? `${notes}${notes ? " | " : ""}${mobileType === "qr" ? "QR payment" : "Online transfer"}${mobileReference.trim() ? `, reference: ${mobileReference.trim()}` : ""}` : notes, printReceipt, method);
+    onComplete(method === "cash" ? received : total, method === "card" ? `${notes}${notes ? " | " : ""}Card ${cardNetwork}${cardReference.trim() ? `, terminal reference: ${cardReference.trim()}` : ""}` : method === "mobile" ? `${notes}${notes ? " | " : ""}${mobileType === "qr" ? "QR payment" : "Online transfer"} (manually confirmed)` : notes, printReceipt, method);
   };
   useEffect(() => {
     const handleKey = (event: KeyboardEvent) => {
@@ -125,26 +125,14 @@ export default function PaymentCheckout({ items, invoice, subtotal, discount, ta
             <div className="checkout-card-due"><span>Amount to Pay</span><strong>{money(total)}</strong></div>
             <label>Payment Type</label>
             <div className="checkout-mobile-types">
-              <button type="button" className={mobileType === "qr" ? "is-active" : ""} onClick={() => { setMobileType("qr"); setMobileConfirmed(false); setWarning(""); }}><QrCode2 />QR Payment</button>
-              <button type="button" className={mobileType === "transfer" ? "is-active" : ""} onClick={() => { setMobileType("transfer"); setMobileConfirmed(false); setWarning(""); }}><AccountBalance />Online Transfer</button>
+              <button type="button" className={mobileType === "qr" ? "is-active" : ""} onClick={() => { setMobileType("qr"); setMobileDisplayOpen(false); setMobileConfirmed(false); setWarning(""); }}><QrCode2 />QR Payment</button>
+              <button type="button" className={mobileType === "transfer" ? "is-active" : ""} onClick={() => { setMobileType("transfer"); setMobileDisplayOpen(false); setMobileConfirmed(false); setWarning(""); }}><AccountBalance />Online Transfer</button>
             </div>
-            {mobileType === "qr" ? (
-              <div className="checkout-mobile-info">
-                <strong>QR Payment</strong>
-                <span>Merchant payment QR not configured.</span>
-                <span>Verify the customer's payment using your payment provider before confirming.</span>
-              </div>
-            ) : (
-              <div className="checkout-mobile-info">
-                <strong>Online Transfer</strong>
-                <span>Store bank account details not configured.</span>
-                <span>Verify the received transfer in your bank or wallet account before confirming.</span>
-              </div>
-            )}
-            <label htmlFor="checkout-mobile-ref">Transaction Reference (Optional)</label>
-            <TextField id="checkout-mobile-ref" fullWidth size="small" value={mobileReference} placeholder="Enter reference if available" onChange={e => { setMobileReference(e.target.value); setMobileConfirmed(false); setWarning(""); }} slotProps={{ htmlInput: { maxLength: 80 } }} />
+            <Button className="checkout-mobile-display-button" variant="contained" color="success" startIcon={mobileType === "qr" ? <QrCode2 /> : <AccountBalance />} onClick={() => setMobileDisplayOpen(true)}>
+              {mobileType === "qr" ? "Display Payment QR" : "Display Bank Details"}
+            </Button>
             <FormControlLabel className="checkout-card-confirm" control={<Checkbox checked={mobileConfirmed} onChange={e => { setMobileConfirmed(e.target.checked); setWarning(""); }} />} label="I confirm this payment has been received and verified." />
-            <Button className="checkout-reset" variant="outlined" color="error" startIcon={<RestartAlt />} onClick={() => { setMobileReference(""); setMobileConfirmed(false); setWarning(""); }}>Reset Payment Details</Button>
+            <Button className="checkout-reset" variant="outlined" color="error" startIcon={<RestartAlt />} onClick={() => { setMobileDisplayOpen(false); setMobileConfirmed(false); setWarning(""); }}>Reset Payment Details</Button>
           </div>}
         </section>
         <section className="checkout-card checkout-summary">
@@ -166,6 +154,18 @@ export default function PaymentCheckout({ items, invoice, subtotal, discount, ta
           <button type="button" className="checkout-cancel" onClick={onBack}><Close /> Cancel (Esc)</button>
         </section>
       </div>
+      <Dialog open={mobileDisplayOpen && method === "mobile"} onClose={() => setMobileDisplayOpen(false)} fullWidth maxWidth="xs" aria-labelledby="checkout-mobile-display-title">
+        <DialogTitle id="checkout-mobile-display-title">{mobileType === "qr" ? "Customer QR Display" : "Store Bank Details"}</DialogTitle>
+        <DialogContent>
+          <div className="checkout-mobile-dialog-body">
+            {mobileType === "qr" ? <QrCode2 className="checkout-mobile-dialog-icon" /> : <AccountBalance className="checkout-mobile-dialog-icon" />}
+            <strong>{money(total)}</strong>
+            <p>{mobileType === "qr" ? "Merchant payment QR is not configured yet. A scannable payment QR will appear here after integration." : "Store bank account details have not been configured yet. The beneficiary and bank information will appear here once set up."}</p>
+            <span>No payment is initiated or verified by this display.</span>
+          </div>
+        </DialogContent>
+        <DialogActions><Button onClick={() => setMobileDisplayOpen(false)}>Close</Button></DialogActions>
+      </Dialog>
     </div>
   );
 }
