@@ -972,7 +972,10 @@ export default function POSPage() {
                       key={product.id}
                       className="pos-product-card"
                       disabled={product.stock <= 0}
-                      onClick={() => addProduct(product)}
+                      onClick={() => {
+                        addProduct(product);
+                        changeSearch("");
+                      }}
                     >
                       <div
                         className="pos-product-image"
