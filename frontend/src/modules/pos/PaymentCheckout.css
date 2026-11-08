@@ -119,3 +119,14 @@
 .checkout-card-confirm .MuiCheckbox-root{padding:5px}
 .checkout-card-payment .checkout-reset{min-height:38px;background:#fff4f4}
 .checkout-summary .checkout-change strong:last-child{font-size:clamp(12px,1vw,18px)}
+
+/* Mobile QR / online transfer options share the existing compact checkout panel. */
+.checkout-mobile-payment{align-content:start;overflow-y:auto;min-height:0}
+.checkout-mobile-types{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.checkout-mobile-types button{min-width:0;min-height:62px;border:1px solid #cdd9e8;border-radius:10px;background:#f6f8fb;color:#20314a;font-size:12px;font-weight:750;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer}
+.checkout-mobile-types button svg{font-size:25px}
+.checkout-mobile-types button.is-active{background:#e5f9eb;border:2px solid #159447;color:#096b2b}
+.checkout-mobile-types button:focus-visible{outline:2px solid #15803d;outline-offset:2px}
+.checkout-mobile-info{display:grid;gap:5px;border:1px dashed #b8cddd;border-radius:10px;background:#f6f9fc;padding:10px;font-size:11px;line-height:1.4;color:#58687b}
+.checkout-mobile-info strong{color:#233c55;font-size:12px}
+.checkout-mobile-payment .checkout-reset{min-height:36px;background:#fff4f4}
