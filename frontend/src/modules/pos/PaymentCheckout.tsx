@@ -113,7 +113,7 @@ export default function PaymentCheckout({ items, invoice, subtotal, discount, ta
               <option>Visa</option><option>Mastercard</option><option>Other card</option>
             </select>
             <label htmlFor="checkout-card-ref">Terminal Transaction Reference</label>
-            <TextField id="checkout-card-ref" fullWidth size="small" value={cardReference} placeholder="Enter terminal receipt reference" onChange={e => { setCardReference(e.target.value); setCardConfirmed(false); setWarning(""); }} inputProps={{ maxLength: 80 }} />
+            <TextField id="checkout-card-ref" fullWidth size="small" value={cardReference} placeholder="Enter terminal receipt reference" onChange={e => { setCardReference(e.target.value); setCardConfirmed(false); setWarning(""); }} slotProps={{ htmlInput: { maxLength: 80 } }} />
             <FormControlLabel className="checkout-card-confirm" control={<Checkbox checked={cardConfirmed} onChange={e => { setCardConfirmed(e.target.checked); setWarning(""); }} />} label="I confirm the terminal shows an approved payment for this amount." />
             <p className="checkout-card-help">Never enter the customer's card number, PIN, or CVV here.</p>
             <Button className="checkout-reset" variant="outlined" color="error" startIcon={<RestartAlt />} onClick={() => { setCardReference(""); setCardConfirmed(false); setWarning(""); }}>Reset Card Details</Button>
