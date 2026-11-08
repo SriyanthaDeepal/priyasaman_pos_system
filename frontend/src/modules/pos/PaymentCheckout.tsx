@@ -13,7 +13,7 @@ type Props = {
   total: number;
   customer: string;
   onBack: () => void;
-  onComplete: (received: number, notes: string, printReceipt: boolean) => void;
+  onComplete: (received: number, notes: string, printReceipt: boolean, method: "cash" | "card") => void;
 };
 const money = (n: number) => "Rs. " + n.toLocaleString("en-LK", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const methods = [
@@ -27,20 +27,25 @@ const methods = [
 
 export default function PaymentCheckout({ items, invoice, subtotal, discount, tax, total, onBack, onComplete }: Props) {
   const [amount, setAmount] = useState("");
+  const [method, setMethod] = useState<"cash" | "card">("cash");
+  const [cardNetwork, setCardNetwork] = useState("Visa");
+  const [cardReference, setCardReference] = useState("");
+  const [cardConfirmed, setCardConfirmed] = useState(false);
   const [notes, setNotes] = useState("");
   const [printReceipt, setPrintReceipt] = useState(true);
   const [warning, setWarning] = useState("");
   const received = amount.trim() === "" ? 0 : Number(amount);
   const validAmount = Number.isFinite(received) && received >= 0;
-  const canComplete = items.length > 0 && validAmount && received >= total;
-  const change = validAmount ? Math.max(0, Math.round((received - total) * 100) / 100) : 0;
+  const cardReady = cardConfirmed && cardReference.trim().length > 0;
+  const canComplete = items.length > 0 && (method === "card" ? cardReady : validAmount && received >= total);
+  const change = method === "cash" && validAmount ? Math.max(0, Math.round((received - total) * 100) / 100) : 0;
 
   const complete = () => {
     if (!canComplete) {
-      setWarning("Enter a valid cash amount that covers the total.");
+      setWarning(method === "card" ? "Confirm the terminal approval and enter its transaction reference." : "Enter a valid cash amount that covers the total.");
       return;
     }
-    onComplete(received, notes, printReceipt);
+    onComplete(method === "card" ? total : received, method === "card" ? `${notes}${notes ? " | " : ""}Card ${cardNetwork}, terminal reference: ${cardReference.trim()}` : notes, printReceipt, method);
   };
   useEffect(() => {
     const handleKey = (event: KeyboardEvent) => {
@@ -84,13 +89,13 @@ export default function PaymentCheckout({ items, invoice, subtotal, discount, ta
         <section className="checkout-card checkout-payment">
           <h2><LocalAtm color="success" /> Payment Method</h2>
           <div className="checkout-methods">{methods.map(method => (
-            <button type="button" key={method.id} className={`checkout-method checkout-${method.tone} ${method.id === "cash" ? "checkout-selected" : ""}`}
-              disabled={method.id !== "cash"} title={method.id !== "cash" ? "Coming soon — no payment processing yet" : "Cash payment"}>
-              {method.id === "cash" && <CheckCircle className="checkout-method-check" />}
-              {method.icon}<span>{method.label}</span>{method.id !== "cash" && <small>Coming soon</small>}
+            <button type="button" key={method.id} className={`checkout-method checkout-${method.tone} ${method.id === method ? "checkout-selected" : ""}`}
+              disabled={method.id !== "cash" && method.id !== "card"} onClick={() => { if (method.id === "cash" || method.id === "card") { setMethod(method.id); setWarning(""); } }} title={method.id === "card" ? "Record a card payment approved on an external terminal (demo only)" : method.id !== "cash" ? "Coming soon" : "Cash payment"}>
+              {method.id === method && <CheckCircle className="checkout-method-check" />}
+              {method.icon}<span>{method.label}</span>{method.id === "card" ? <small>Manual terminal</small> : method.id !== "cash" && <small>Coming soon</small>}
             </button>
           ))}</div>
-          <div className="checkout-cash">
+          {method === "cash" ? <div className="checkout-cash">
             <h3><Payments color="success" /> Cash Payment</h3>
             <label htmlFor="checkout-amount">Amount Received</label>
             <TextField id="checkout-amount" fullWidth type="number" value={amount} placeholder="0.00"
@@ -99,13 +104,26 @@ export default function PaymentCheckout({ items, invoice, subtotal, discount, ta
             <div className="checkout-quick">{[1,2,5,10,20,50,100,500,1000,2000,5000].map(n => <button type="button" key={n} onClick={() => { setAmount(String(Math.round(((validAmount ? received : 0) + n) * 100) / 100)); setWarning(""); }}>+{n.toLocaleString()}</button>)}</div>
             <Button variant="outlined" color="success" onClick={() => { setAmount(String(total)); setWarning(""); }}startIcon={<CheckCircle />} >Exact Amount</Button>
             <Button className="checkout-reset" variant="outlined" color="error" onClick={() => { setAmount(""); setWarning(""); }}startIcon={<RestartAlt />} >Reset Amount</Button>
-          </div>
+          </div> : <div className="checkout-cash checkout-card-payment">
+            <h3><CreditCard color="success" /> Card Payment</h3>
+            <div className="checkout-card-due"><span>Amount to charge on terminal</span><strong>{money(total)}</strong></div>
+            <p className="checkout-card-help">Charge the customer using your separate card terminal first. This POS does not communicate with the terminal or process cards.</p>
+            <label htmlFor="checkout-card-network">Card Type</label>
+            <select id="checkout-card-network" value={cardNetwork} onChange={e => setCardNetwork(e.target.value)}>
+              <option>Visa</option><option>Mastercard</option><option>Other card</option>
+            </select>
+            <label htmlFor="checkout-card-ref">Terminal Transaction Reference</label>
+            <TextField id="checkout-card-ref" fullWidth size="small" value={cardReference} placeholder="Enter terminal receipt reference" onChange={e => { setCardReference(e.target.value); setCardConfirmed(false); setWarning(""); }} inputProps={{ maxLength: 80 }} />
+            <FormControlLabel className="checkout-card-confirm" control={<Checkbox checked={cardConfirmed} onChange={e => { setCardConfirmed(e.target.checked); setWarning(""); }} />} label="I confirm the terminal shows an approved payment for this amount." />
+            <p className="checkout-card-help">Never enter the customer's card number, PIN, or CVV here.</p>
+            <Button className="checkout-reset" variant="outlined" color="error" startIcon={<RestartAlt />} onClick={() => { setCardReference(""); setCardConfirmed(false); setWarning(""); }}>Reset Card Details</Button>
+          </div>}
         </section>
         <section className="checkout-card checkout-summary">
           <h2 className="checkout-summary-title"><CheckCircle /> Payment Summary</h2>
           <div className="checkout-summary-row"><span>Total Amount</span><strong>{money(total)}</strong></div>
-          <div className="checkout-summary-row"><span>Amount Received</span><strong>{money(validAmount ? received : 0)}</strong></div>
-          <div className="checkout-change"><strong>Change</strong><strong>{money(change)}</strong></div>
+          <div className="checkout-summary-row"><span>Amount Received</span><strong>{money(method === "card" ? (cardReady ? total : 0) : (validAmount ? received : 0))}</strong></div>
+          <div className="checkout-change"><strong>{method === "card" ? "Card Status" : "Change"}</strong><strong>{method === "card" ? (cardReady ? "Terminal confirmed" : "Awaiting confirmation") : money(change)}</strong></div>
           <div className="checkout-receipt-options">
             <div className="checkout-receipt-heading">Receipt Options</div>
             <FormControlLabel control={<Checkbox checked={printReceipt} onChange={e => setPrintReceipt(e.target.checked)} />} label={<span><Print fontSize="small" /> Print Receipt <small>(demo preference)</small></span>} />
