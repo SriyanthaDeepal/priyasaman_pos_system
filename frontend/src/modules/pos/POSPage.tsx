@@ -433,7 +433,6 @@ const modalTitle: Record<
   discount: "Bill Discount",
   clear: "Clear Current Bill",
   customer: "Select Customer",
-  payment: "Proceed to Payment",
 };
 
 export default function POSPage() {
