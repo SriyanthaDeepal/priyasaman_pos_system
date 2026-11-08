@@ -64,7 +64,7 @@
 
 /* Give bill details more width while keeping the summary comfortable. */
 @media(min-width:1201px){
-  .checkout-columns{grid-template-columns:minmax(0,1.2fr) minmax(0,.9fr) minmax(0,1fr)}
+  .checkout-columns{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,.8fr)}
 }
 /* Compact denominations so all shortcuts and reset fit in the payment panel. */
 .checkout-quick{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
