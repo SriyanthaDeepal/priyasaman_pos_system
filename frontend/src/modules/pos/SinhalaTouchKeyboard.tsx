@@ -110,7 +110,7 @@ export default function SinhalaTouchKeyboard({ open, title, value, onChange, onC
                 <Box className="stk-grid">{consonants.map(c => key(c, () => setSelected(c), selected === c))}</Box>
                 {selected && (
                   <Box className="stk-forms">
-                    <Typography fontWeight={700}>{selected} — අකුරු ආකාර</Typography>
+                    <Typography sx={{ fontWeight: 700 }}>{selected} — අකුරු ආකාර</Typography>
                     <Box className="stk-grid">{forms.map((form, index) => (
                       <button type="button" key={index} className="stk-key stk-form" onClick={() => insert(selected + form)}>
                         {selected + form}
