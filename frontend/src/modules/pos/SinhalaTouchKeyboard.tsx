@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { RefObject } from "react";
 import { BackspaceOutlined, Close } from "@mui/icons-material";
-import { Box, Button, IconButton, Typography } from "@mui/material";
+import { Box, Button, IconButton } from "@mui/material";
 import "./SinhalaTouchKeyboard.css";
 
 type Props = {
