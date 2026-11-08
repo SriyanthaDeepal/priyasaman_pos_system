@@ -1,15 +1,15 @@
-import { useRef, useState } from "react";
-import type { ChangeEvent } from "react";
-import { Close, BackspaceOutlined, KeyboardOutlined } from "@mui/icons-material";
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, TextField, Typography } from "@mui/material";
+import { useState } from "react";
+import type { RefObject } from "react";
+import { BackspaceOutlined, Close, KeyboardOutlined } from "@mui/icons-material";
+import { Box, Button, IconButton, Typography } from "@mui/material";
 import "./SinhalaTouchKeyboard.css";
 
 type Props = {
-  open: boolean;
   title: string;
   value: string;
   onChange: (value: string) => void;
   onClose: () => void;
+  inputRef: RefObject<HTMLInputElement | null>;
 };
 
 const consonants = [
@@ -23,120 +23,111 @@ const forms = ["","ා","ැ","ෑ","ි","ී","ු","ූ","ෙ","ේ","ෛ","�
 const englishRows = ["qwertyuiop","asdfghjkl","zxcvbnm"];
 const numberKeys = ["1","2","3","4","5","6","7","8","9","0",".","-","/","(",")",",",":"];
 
-export default function SinhalaTouchKeyboard({ open, title, value, onChange, onClose }: Props) {
+export default function SinhalaTouchKeyboard({ title, value, onChange, onClose, inputRef }: Props) {
   const [mode, setMode] = useState<"si" | "en" | "num">("si");
   const [selected, setSelected] = useState<string | null>(null);
   const [showVowels, setShowVowels] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const caretRef = useRef<number | null>(null);
 
-  const cursor = () => {
+  const getSelection = () => {
     const input = inputRef.current;
-    return input ? { start: input.selectionStart ?? value.length, end: input.selectionEnd ?? value.length } :
-      { start: caretRef.current ?? value.length, end: caretRef.current ?? value.length };
+    return {
+      start: input?.selectionStart ?? value.length,
+      end: input?.selectionEnd ?? value.length,
+    };
   };
 
-  const insert = (character: string) => {
-    const { start, end } = cursor();
-    const next = value.slice(0, start) + character + value.slice(end);
-    const position = start + character.length;
-    caretRef.current = position;
-    onChange(next);
+  const restoreCursor = (position: number) => {
     requestAnimationFrame(() => {
-      inputRef.current?.focus();
+      inputRef.current?.focus({ preventScroll: true });
       inputRef.current?.setSelectionRange(position, position);
     });
   };
 
-  const backspace = () => {
-    const { start, end } = cursor();
-    let from = start;
-    if (start === end && start > 0) {
-      // Delete a Sinhala base plus dependent vowel signs as one visible unit.
-      const before = value.slice(0, start);
-      const clusters = before.match(/(?:[^\p{M}]\p{M}*)|(?:\p{M}+)/gu) ?? [];
-      from = start - (clusters.at(-1)?.length ?? 1);
-    }
-    const next = value.slice(0, from) + value.slice(end);
-    caretRef.current = from;
-    onChange(next);
-    requestAnimationFrame(() => {
-      inputRef.current?.focus();
-      inputRef.current?.setSelectionRange(from, from);
-    });
+  const insert = (character: string) => {
+    const { start, end } = getSelection();
+    onChange(value.slice(0, start) + character + value.slice(end));
+    restoreCursor(start + character.length);
   };
 
-  const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
-    caretRef.current = event.target.selectionStart;
-    onChange(event.target.value);
+  const backspace = () => {
+    const { start, end } = getSelection();
+    let from = start;
+    if (start === end && start > 0) {
+      const before = value.slice(0, start);
+      // Segment by visible grapheme to avoid deleting only a Sinhala vowel sign.
+      if (typeof Intl.Segmenter !== "undefined") {
+        const segments = [...new Intl.Segmenter("si", { granularity: "grapheme" }).segment(before)];
+        from = segments.at(-1)?.index ?? start - 1;
+      } else {
+        const clusters = before.match(/(?:[^\p{M}]\p{M}*)|(?:\p{M}+)/gu) ?? [];
+        from = start - (clusters.at(-1)?.length ?? 1);
+      }
+    }
+    onChange(value.slice(0, from) + value.slice(end));
+    restoreCursor(from);
   };
 
   const key = (label: string, action: () => void, active = false) => (
-    <button type="button" key={label} className={`stk-key${active ? " stk-key-active" : ""}`} onClick={action}>{label}</button>
+    <button type="button" key={label} className={`stk-key${active ? " stk-key-active" : ""}`}
+      onPointerDown={event => event.preventDefault()} onClick={action}>{label}</button>
   );
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md"
-      slotProps={{ paper: { sx: { borderRadius: 3, maxHeight: "95dvh" } } }}>
-      <DialogTitle sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontWeight: 750 }}>
+    <section className="stk-panel" aria-label="Sinhala touch keyboard">
+      <Box className="stk-heading">
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <KeyboardOutlined color="success" /> {title}
+          <KeyboardOutlined color="success" />
+          <Typography sx={{ fontWeight: 750 }}>{title}</Typography>
         </Box>
         <IconButton aria-label="Close keyboard" onClick={onClose}><Close /></IconButton>
-      </DialogTitle>
-      <DialogContent dividers sx={{ display: "grid", gap: 2 }}>
-        <TextField inputRef={inputRef} fullWidth autoFocus label="Type or select letters" value={value}
-          onChange={handleInput} onClick={() => { caretRef.current = inputRef.current?.selectionStart ?? value.length; }}
-          onKeyUp={() => { caretRef.current = inputRef.current?.selectionStart ?? value.length; }}
-          slotProps={{ htmlInput: { lang: mode === "si" ? "si" : "en", autoComplete: "off" } }} />
-        <Box className="stk-modes">
-          <Button variant={mode === "si" ? "contained" : "outlined"} onClick={() => setMode("si")}>සිංහල</Button>
-          <Button variant={mode === "en" ? "contained" : "outlined"} onClick={() => setMode("en")}>English</Button>
-          <Button variant={mode === "num" ? "contained" : "outlined"} onClick={() => setMode("num")}>123</Button>
-        </Box>
-        {mode === "si" && (
-          <>
-            <Box className="stk-modes">
-              <Button variant={!showVowels ? "contained" : "outlined"} onClick={() => setShowVowels(false)}>ව්‍යංජන</Button>
-              <Button variant={showVowels ? "contained" : "outlined"} onClick={() => { setShowVowels(true); setSelected(null); }}>ස්වර</Button>
-            </Box>
-            {showVowels ? (
-              <Box className="stk-grid">{vowels.map(v => key(v, () => insert(v)))}</Box>
-            ) : (
-              <>
-                <Typography variant="body2" color="text.secondary">
-                  1. Select a consonant · 2. Select its visible form to insert
-                </Typography>
-                <Box className="stk-grid">{consonants.map(c => key(c, () => setSelected(c), selected === c))}</Box>
-                {selected && (
-                  <Box className="stk-forms">
-                    <Typography sx={{ fontWeight: 700 }}>{selected} — අකුරු ආකාර</Typography>
-                    <Box className="stk-grid">{forms.map((form, index) => (
-                      <button type="button" key={index} className="stk-key stk-form" onClick={() => insert(selected + form)}>
-                        {selected + form}
-                      </button>
-                    ))}</Box>
-                  </Box>
-                )}
-              </>
-            )}
-          </>
-        )}
-        {mode === "en" && (
-          <Box className="stk-english">{englishRows.map(row => (
-            <Box className="stk-grid" key={row}>{[...row].map(letter => key(letter, () => insert(letter)))}</Box>
-          ))}</Box>
-        )}
-        {mode === "num" && <Box className="stk-grid">{numberKeys.map(k => key(k, () => insert(k)))}</Box>}
-        <Box className="stk-controls">
-          <Button variant="outlined" onClick={() => insert(" ")}>Space / හිස්තැන</Button>
-          <Button variant="outlined" startIcon={<BackspaceOutlined />} onClick={backspace}>Delete</Button>
-          <Button color="error" variant="outlined" onClick={() => { caretRef.current = 0; onChange(""); }}>Clear</Button>
-        </Box>
-      </DialogContent>
-      <DialogActions sx={{ p: 2 }}>
-        <Button variant="contained" color="success" onClick={onClose}>Done / හරි</Button>
-      </DialogActions>
-    </Dialog>
+      </Box>
+      <Typography variant="caption" color="text.secondary">
+        Letters are inserted directly into the active POS field. Product results update as you type.
+      </Typography>
+      <Box className="stk-modes">
+        <Button size="small" variant={mode === "si" ? "contained" : "outlined"} onClick={() => setMode("si")}>සිංහල</Button>
+        <Button size="small" variant={mode === "en" ? "contained" : "outlined"} onClick={() => setMode("en")}>English</Button>
+        <Button size="small" variant={mode === "num" ? "contained" : "outlined"} onClick={() => setMode("num")}>123</Button>
+      </Box>
+      {mode === "si" && (
+        <>
+          <Box className="stk-modes">
+            <Button size="small" variant={!showVowels ? "contained" : "outlined"} onClick={() => setShowVowels(false)}>ව්‍යංජන</Button>
+            <Button size="small" variant={showVowels ? "contained" : "outlined"} onClick={() => { setShowVowels(true); setSelected(null); }}>ස්වර</Button>
+          </Box>
+          {showVowels ? (
+            <Box className="stk-grid">{vowels.map(v => key(v, () => insert(v)))}</Box>
+          ) : (
+            <>
+              <Typography variant="caption">1. Select a consonant · 2. Tap the desired form</Typography>
+              <Box className="stk-grid">{consonants.map(c => key(c, () => setSelected(c), selected === c))}</Box>
+              {selected && (
+                <Box className="stk-forms">
+                  <Typography sx={{ fontWeight: 700 }}>{selected} — අකුරු ආකාර</Typography>
+                  <Box className="stk-grid">{forms.map((form, index) => (
+                    <button type="button" key={index} className="stk-key stk-form"
+                      onPointerDown={event => event.preventDefault()} onClick={() => insert(selected + form)}>
+                      {selected + form}
+                    </button>
+                  ))}</Box>
+                </Box>
+              )}
+            </>
+          )}
+        </>
+      )}
+      {mode === "en" && (
+        <Box className="stk-english">{englishRows.map(row => (
+          <Box className="stk-grid" key={row}>{[...row].map(letter => key(letter, () => insert(letter)))}</Box>
+        ))}</Box>
+      )}
+      {mode === "num" && <Box className="stk-grid">{numberKeys.map(k => key(k, () => insert(k)))}</Box>}
+      <Box className="stk-controls">
+        <Button variant="outlined" onPointerDown={event => event.preventDefault()} onClick={() => insert(" ")}>Space / හිස්තැන</Button>
+        <Button variant="outlined" startIcon={<BackspaceOutlined />} onPointerDown={event => event.preventDefault()} onClick={backspace}>Delete</Button>
+        <Button color="error" variant="outlined" onPointerDown={event => event.preventDefault()} onClick={() => { onChange(""); restoreCursor(0); }}>Clear</Button>
+        <Button color="success" variant="contained" onClick={onClose}>Done / හරි</Button>
+      </Box>
+    </section>
   );
 }
