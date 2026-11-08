@@ -83,3 +83,24 @@
 .checkout-receipt-options .MuiFormControlLabel-label small{font-size:10px;color:#718096}
 .checkout-receipt-options .MuiFormControlLabel-root.Mui-disabled{opacity:.68}
 .checkout-receipt-options .MuiCheckbox-root{padding:4px}
+
+/* Cash controls: breathing room and clearer touch affordances. */
+.checkout-cash{gap:10px}
+.checkout-cash label[for="checkout-amount"]{margin-bottom:0}
+.checkout-quick{column-gap:8px;row-gap:9px;margin-top:2px;margin-bottom:4px}
+.checkout-quick button{min-height:35px;border:1px solid #b8ebc7;border-radius:9px;background:#dcfce5;color:#075d26;font-weight:800;transition:background-color .15s,border-color .15s,transform .1s}
+.checkout-quick button:hover{background:#b9f4cc;border-color:#62c783}
+.checkout-quick button:active{background:#96e9b0;transform:scale(.97)}
+.checkout-quick button:focus-visible{outline:3px solid #15803d;outline-offset:2px}
+.checkout-cash>.MuiButton-root{min-height:38px;border-radius:9px;font-size:12px;font-weight:750;gap:5px;transition:background-color .15s,border-color .15s}
+.checkout-cash>.MuiButton-root:not(.checkout-reset){margin-top:3px;background:#effcf2;border-color:#89cfa0;color:#087335}
+.checkout-cash>.MuiButton-root:not(.checkout-reset):hover{background:#d7f7df;border-color:#159447}
+.checkout-cash .checkout-reset{min-height:38px;margin-top:1px;background:#fff4f4;border-color:#e9a5a5;color:#bd2525;font-weight:750}
+.checkout-cash .checkout-reset:hover{background:#ffe4e4;border-color:#d94c4c}
+.checkout-cash>.MuiButton-root .MuiButton-startIcon{margin-right:4px}
+@media(min-width:1201px) and (max-height:850px){
+ .checkout-cash{gap:8px}
+ .checkout-quick{column-gap:7px;row-gap:7px;margin-bottom:3px}
+ .checkout-quick button{min-height:32px;padding:5px 2px}
+ .checkout-cash>.MuiButton-root{min-height:35px}
+}
