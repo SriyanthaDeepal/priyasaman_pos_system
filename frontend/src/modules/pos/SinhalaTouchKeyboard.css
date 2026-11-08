@@ -47,3 +47,18 @@
 @media(max-height:750px){
   .pos-workspace > .pos-keyboard-overlay{height:clamp(185px,35%,275px)}
 }
+
+/* Compact, readable touch keys: preserve Sinhala glyph size while reducing empty padding. */
+.stk-panel{padding:8px;gap:6px}
+.stk-topbar{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.stk-topbar .stk-modes{gap:5px}
+.stk-topbar .stk-modes button{min-width:0;min-height:30px;padding:3px 10px;font-size:12px}
+.stk-sinhala-layout{gap:8px}
+.stk-left-pane,.stk-right-pane{gap:4px}
+.stk-right-pane{padding:6px}
+.stk-letter-grid{grid-template-columns:repeat(auto-fit,minmax(37px,1fr));gap:3px}
+.stk-form-grid{grid-template-columns:repeat(auto-fit,minmax(48px,1fr));gap:4px}
+.stk-letter-grid .stk-key,.stk-form-grid .stk-key{min-height:34px;height:36px;padding:1px 2px;font-size:20px;line-height:1.25;border-radius:6px}
+.stk-controls{gap:5px}
+.stk-controls button{min-height:32px;padding:3px 10px;font-size:12px}
+@media(max-width:680px){.stk-letter-grid{grid-template-columns:repeat(auto-fit,minmax(34px,1fr))}.stk-form-grid{grid-template-columns:repeat(auto-fit,minmax(44px,1fr))}.stk-letter-grid .stk-key,.stk-form-grid .stk-key{min-height:34px;height:36px;font-size:20px}}
