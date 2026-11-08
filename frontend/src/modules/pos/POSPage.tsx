@@ -1252,17 +1252,18 @@ export default function POSPage() {
             Proceed to Payment (F9)
           </button>
         </section>
+        {touchTarget === "search" && (
+          <div className="pos-keyboard-overlay">
+            <SinhalaTouchKeyboard
+              title="Product Search / භාණ්ඩ සෙවීම"
+              value={search}
+              onChange={changeSearch}
+              inputRef={searchRef}
+              onClose={() => setTouchTarget(null)}
+            />
+          </div>
+        )}
       </div>
-
-      {touchTarget === "search" && (
-        <SinhalaTouchKeyboard
-          title="Product Search / භාණ්ඩ සෙවීම"
-          value={search}
-          onChange={changeSearch}
-          inputRef={searchRef}
-          onClose={() => setTouchTarget(null)}
-        />
-      )}
 
       {/* DIALOGS */}
       <Dialog
