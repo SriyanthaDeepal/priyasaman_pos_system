@@ -1255,7 +1255,6 @@ export default function POSPage() {
         {touchTarget === "search" && (
           <div className="pos-keyboard-overlay">
             <SinhalaTouchKeyboard
-              title="Product Search / භාණ්ඩ සෙවීම"
               value={search}
               onChange={changeSearch}
               inputRef={searchRef}
@@ -1431,7 +1430,6 @@ export default function POSPage() {
               <Button variant="outlined" onClick={() => setTouchTarget(current => current === "customer" ? null : "customer")}>⌨ Sinhala Touch Keyboard</Button>
               {touchTarget === "customer" && (
                 <SinhalaTouchKeyboard
-                  title="Customer Name / පාරිභෝගික නම"
                   value={customerInput}
                   onChange={setCustomerInput}
                   inputRef={customerRef}
