@@ -7,3 +7,14 @@
 .stk-form-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
 .stk-letter-grid .stk-key,.stk-form-grid .stk-key{min-width:0}
 @media(max-width:680px){.stk-sinhala-layout{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:7px}.stk-letter-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}.stk-form-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}.stk-right-pane{padding:6px}.stk-letter-grid .stk-key,.stk-form-grid .stk-key{font-size:17px;min-height:41px}}
+
+/* Embedded keyboard: occupies its own layout row, never covers products or bill. */
+.stk-panel{position:relative;inset:auto;right:auto;bottom:auto;z-index:auto;width:100%;max-height:100%;height:100%;min-height:0;overflow-y:auto;box-shadow:0 2px 12px #09271318;border-radius:12px}
+.pos-page:has(> .stk-panel) .pos-workspace{min-height:0;flex:1 1 0}
+.pos-page > .stk-panel{flex:0 0 clamp(220px,34dvh,335px);height:clamp(220px,34dvh,335px)}
+.pos-page:has(> .stk-panel) .pos-products-panel,.pos-page:has(> .stk-panel) .pos-bill-panel{min-height:0}
+.pos-page:has(> .stk-panel) .pos-product-grid{overflow-y:auto}
+.pos-page:has(> .stk-panel) .pos-product-card{min-height:0}
+.pos-page:has(> .stk-panel) .pos-category-sidebar{overflow-y:auto}
+@media(max-height:760px){.pos-page > .stk-panel{flex-basis:clamp(190px,32dvh,260px);height:clamp(190px,32dvh,260px)}}
+@media(max-width:850px){.pos-page:has(> .stk-panel){height:auto;min-height:100%;overflow:visible}.pos-page:has(> .stk-panel) .pos-workspace{min-height:520px;flex:none}.pos-page > .stk-panel{height:300px;flex-basis:300px}}
