@@ -107,7 +107,7 @@ export default function PaymentCheckout({ items, invoice, subtotal, discount, ta
           </div> : <div className="checkout-cash checkout-card-payment">
             <h3><CreditCard color="success" /> Card Payment</h3>
             <div className="checkout-card-due"><span>Amount to charge on terminal</span><strong>{money(total)}</strong></div>
-            <p className="checkout-card-help">Charge the customer using your separate card terminal first. This POS does not communicate with the terminal or process cards.</p>
+            
             <label htmlFor="checkout-card-network">Card Type</label>
             <select id="checkout-card-network" value={cardNetwork} onChange={e => setCardNetwork(e.target.value)}>
               <option>Visa</option><option>Mastercard</option><option>Other card</option>
@@ -115,7 +115,7 @@ export default function PaymentCheckout({ items, invoice, subtotal, discount, ta
             <label htmlFor="checkout-card-ref">Terminal Transaction Reference</label>
             <TextField id="checkout-card-ref" fullWidth size="small" value={cardReference} placeholder="Enter terminal receipt reference" onChange={e => { setCardReference(e.target.value); setCardConfirmed(false); setWarning(""); }} slotProps={{ htmlInput: { maxLength: 80 } }} />
             <FormControlLabel className="checkout-card-confirm" control={<Checkbox checked={cardConfirmed} onChange={e => { setCardConfirmed(e.target.checked); setWarning(""); }} />} label="I confirm the terminal shows an approved payment for this amount." />
-            <p className="checkout-card-help">Never enter the customer's card number, PIN, or CVV here.</p>
+            
             <Button className="checkout-reset" variant="outlined" color="error" startIcon={<RestartAlt />} onClick={() => { setCardReference(""); setCardConfirmed(false); setWarning(""); }}>Reset Card Details</Button>
           </div>}
         </section>
