@@ -72,14 +72,7 @@ export default function SinhalaTouchKeyboard({ value, onChange, onClose, inputRe
 
   return (
     <section className="stk-panel" aria-label="Sinhala touch keyboard">
-      <Box className="stk-topbar">
-        <Box className="stk-modes">
-          <Button size="small" variant={mode === "si" ? "contained" : "outlined"} onClick={() => setMode("si")}>සිංහල</Button>
-          <Button size="small" variant={mode === "en" ? "contained" : "outlined"} onClick={() => setMode("en")}>English</Button>
-          <Button size="small" variant={mode === "num" ? "contained" : "outlined"} onClick={() => setMode("num")}>123</Button>
-        </Box>
-        <IconButton aria-label="Close keyboard" size="small" onClick={onClose}><Close /></IconButton>
-      </Box>
+      <IconButton className="stk-close" aria-label="Close keyboard" size="small" onClick={onClose}><Close /></IconButton>
       {mode === "si" && (
         <Box className="stk-sinhala-layout">
           <Box className="stk-left-pane">
@@ -107,11 +100,18 @@ export default function SinhalaTouchKeyboard({ value, onChange, onClose, inputRe
         ))}</Box>
       )}
       {mode === "num" && <Box className="stk-grid">{numberKeys.map(k => key(k, () => insert(k)))}</Box>}
-      <Box className="stk-controls">
-        <Button variant="outlined" onPointerDown={event => event.preventDefault()} onClick={() => insert(" ")}>Space / හිස්තැන</Button>
-        <Button variant="outlined" startIcon={<BackspaceOutlined />} onPointerDown={event => event.preventDefault()} onClick={backspace}>Delete</Button>
-        <Button color="error" variant="outlined" onPointerDown={event => event.preventDefault()} onClick={() => { onChange(""); restoreCursor(0); }}>Clear</Button>
-        <Button color="success" variant="contained" onClick={onClose}>Done / හරි</Button>
+      <Box className="stk-footer">
+        <Box className="stk-controls">
+          <Button variant="outlined" onPointerDown={event => event.preventDefault()} onClick={() => insert(" ")}>Space / හිස්තැන</Button>
+          <Button variant="outlined" startIcon={<BackspaceOutlined />} onPointerDown={event => event.preventDefault()} onClick={backspace}>Delete</Button>
+          <Button color="error" variant="outlined" onPointerDown={event => event.preventDefault()} onClick={() => { onChange(""); restoreCursor(0); }}>Clear</Button>
+          <Button color="success" variant="contained" onClick={onClose}>Done / හරි</Button>
+        </Box>
+        <Box className="stk-modes">
+          <Button size="small" variant={mode === "si" ? "contained" : "outlined"} onClick={() => setMode("si")}>සිංහල</Button>
+          <Button size="small" variant={mode === "en" ? "contained" : "outlined"} onClick={() => setMode("en")}>English</Button>
+          <Button size="small" variant={mode === "num" ? "contained" : "outlined"} onClick={() => setMode("num")}>123</Button>
+        </Box>
       </Box>
     </section>
   );
