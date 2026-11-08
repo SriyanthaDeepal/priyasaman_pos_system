@@ -130,3 +130,10 @@
 .checkout-mobile-info{display:grid;gap:5px;border:1px dashed #b8cddd;border-radius:10px;background:#f6f9fc;padding:10px;font-size:11px;line-height:1.4;color:#58687b}
 .checkout-mobile-info strong{color:#233c55;font-size:12px}
 .checkout-mobile-payment .checkout-reset{min-height:36px;background:#fff4f4}
+
+.checkout-mobile-payment .checkout-mobile-display-button{min-height:42px;text-transform:none;font-size:13px;font-weight:750;border-radius:9px}
+.checkout-mobile-dialog-body{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;padding:18px 8px 24px;color:#273c52}
+.checkout-mobile-dialog-icon{font-size:74px!important;color:#21894c}
+.checkout-mobile-dialog-body strong{font-size:23px;color:#096b2b}
+.checkout-mobile-dialog-body p{max-width:320px;margin:0;font-size:14px;line-height:1.6}
+.checkout-mobile-dialog-body span{font-size:12px;color:#66768a}
