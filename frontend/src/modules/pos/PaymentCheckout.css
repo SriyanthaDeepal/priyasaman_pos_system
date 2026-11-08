@@ -104,3 +104,18 @@
  .checkout-quick button{min-height:32px;padding:5px 2px}
  .checkout-cash>.MuiButton-root{min-height:35px}
 }
+
+/* Card terminal workflow uses the same compact payment panel as cash. */
+.checkout-method:not(:disabled){cursor:pointer}
+.checkout-method:not(:disabled):hover{filter:brightness(.97)}
+.checkout-card-payment{align-content:start}
+.checkout-card-due{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#e8f9ec;border:1px solid #bde5c7;border-radius:9px;padding:10px;color:#075d25;font-size:12px}
+.checkout-card-due strong{font-size:16px;white-space:nowrap}
+.checkout-card-help{margin:0;font-size:11px;line-height:1.45;color:#596879}
+.checkout-card-payment select{width:100%;min-height:38px;padding:8px 10px;border:1px solid #cdd7e6;border-radius:8px;background:#fff;font:inherit;font-size:13px}
+.checkout-card-payment select:focus-visible{outline:2px solid #008b30;outline-offset:2px}
+.checkout-card-confirm{margin:0!important;align-items:flex-start!important}
+.checkout-card-confirm .MuiFormControlLabel-label{font-size:12px;line-height:1.4;padding-top:7px}
+.checkout-card-confirm .MuiCheckbox-root{padding:5px}
+.checkout-card-payment .checkout-reset{min-height:38px;background:#fff4f4}
+.checkout-summary .checkout-change strong:last-child{font-size:clamp(12px,1vw,18px)}
