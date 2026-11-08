@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowBack, CheckCircle, CreditCard, LocalAtm, Payments, PhoneAndroid, Print, ReceiptLong, Redeem, AccountBalanceWallet, Close, ShoppingCart, SwapHoriz } from "@mui/icons-material";
+import { ArrowBack, CheckCircle, CreditCard, LocalAtm, Payments, PhoneAndroid, Print, PictureAsPdf, Email, Sms, ReceiptLong, Redeem, AccountBalanceWallet, Close, ShoppingCart, SwapHoriz } from "@mui/icons-material";
 import { Alert, Button, Checkbox, FormControlLabel, TextField } from "@mui/material";
 import "./PaymentCheckout.css";
 
@@ -29,7 +29,6 @@ export default function PaymentCheckout({ items, invoice, subtotal, discount, ta
   const [amount, setAmount] = useState("");
   const [notes, setNotes] = useState("");
   const [printReceipt, setPrintReceipt] = useState(true);
-  const [digitalReceipt, setDigitalReceipt] = useState(false);
   const [warning, setWarning] = useState("");
   const received = amount.trim() === "" ? 0 : Number(amount);
   const validAmount = Number.isFinite(received) && received >= 0;
@@ -108,14 +107,16 @@ export default function PaymentCheckout({ items, invoice, subtotal, discount, ta
           <div className="checkout-summary-row"><span>Amount Received</span><strong>{money(validAmount ? received : 0)}</strong></div>
           <div className="checkout-change"><strong>Change</strong><strong>{money(change)}</strong></div>
           <div className="checkout-receipt-options">
-            <FormControlLabel control={<Checkbox checked={printReceipt} onChange={e => setPrintReceipt(e.target.checked)} />} label={<span><Print fontSize="small" /> Print Receipt (demo preference)</span>} />
-            <FormControlLabel control={<Checkbox checked={digitalReceipt} onChange={e => setDigitalReceipt(e.target.checked)} />} label={<span><ReceiptLong fontSize="small" /> Digital Receipt (not connected)</span>} />
+            <div className="checkout-receipt-heading">Receipt Options</div>
+            <FormControlLabel control={<Checkbox checked={printReceipt} onChange={e => setPrintReceipt(e.target.checked)} />} label={<span><Print fontSize="small" /> Print Receipt <small>(demo preference)</small></span>} />
+            <FormControlLabel control={<Checkbox disabled />} label={<span><PictureAsPdf fontSize="small" /> Save Receipt as PDF <small>(coming soon)</small></span>} />
+            <FormControlLabel control={<Checkbox disabled />} label={<span><Email fontSize="small" /> Email Receipt <small>(not connected)</small></span>} />
+            <FormControlLabel control={<Checkbox disabled />} label={<span><Sms fontSize="small" /> Send Receipt via SMS <small>(not connected)</small></span>} />
           </div>
-          {digitalReceipt && <Alert severity="info">SMS/email delivery is not connected. No digital receipt will be sent.</Alert>}
           <label htmlFor="checkout-notes">Notes (Optional)</label>
           <TextField id="checkout-notes" multiline minRows={2} placeholder="Add a note for this sale..." value={notes} onChange={e => setNotes(e.target.value)} />
           {warning && <Alert severity="warning">{warning}</Alert>}
-          <button type="button" className="checkout-complete" disabled={!canComplete} onClick={complete}><CheckCircle /> Complete Demo Sale (F10)</button>
+          <button type="button" className="checkout-complete" disabled={!canComplete} onClick={complete}><CheckCircle /> Complete Sale (F10)</button>
           <button type="button" className="checkout-cancel" onClick={onBack}><Close /> Cancel (Esc)</button>
         </section>
       </div>
