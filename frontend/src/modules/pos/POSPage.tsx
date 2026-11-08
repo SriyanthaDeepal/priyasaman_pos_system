@@ -749,13 +749,13 @@ export default function POSPage() {
     setNotice(`${product.name} added to bill.`);
   };
 
-  const completePayment = (_received: number, _notes: string, _printReceipt: boolean) => {
+  const completePayment = (_received: number, _notes: string, _printReceipt: boolean, method: "cash" | "card") => {
     if (cart.length === 0) return;
     // Frontend-only demo. No payment or sale is recorded in the backend.
     setInvoiceNumber((previous) => previous + 1);
     resetBill();
     setCheckoutOpen(false);
-    setNotice("Demo cash checkout completed. No real payment, receipt, or backend sale was recorded.");
+    setNotice(method === "card" ? "Card terminal approval recorded in this demo. No backend sale or payment record was created." : "Demo cash checkout completed. No real payment, receipt, or backend sale was recorded.");
   };
 
   const focusSearch = useCallback(() => {
