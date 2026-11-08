@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ArrowBack, CheckCircle, CreditCard, LocalAtm, Payments, PhoneAndroid, Print, ReceiptLong, Redeem, AccountBalanceWallet, Close, ShoppingCart, SwapHoriz } from "@mui/icons-material";
-import { Alert, Box, Button, Checkbox, FormControlLabel, TextField, Typography } from "@mui/material";
+import { Alert, Button, Checkbox, FormControlLabel, TextField, Typography } from "@mui/material";
 import "./PaymentCheckout.css";
 
 export type CheckoutItem = { id: number; name: string; emoji: string; quantity: number; price: number; unit: string };
