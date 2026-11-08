@@ -1,0 +1,2682 @@
+
+
+/* =========================================================
+
+   PRIYASAMAN POS — DASHBOARD
+
+   FINAL RESPONSIVE STYLESHEET
+
+   ========================================================= */
+
+
+
+.pd-dashboard {
+
+  --pd-green: #008b30;
+
+  --pd-orange: #ff8500;
+
+  --pd-text: #142033;
+
+  --pd-muted: #667085;
+
+  --pd-border: #dce4ec;
+
+
+
+  container-type: inline-size;
+
+
+
+  width: 100%;
+
+  min-width: 0;
+
+  min-height: 100%;
+
+  margin: 0;
+
+  padding: 0;
+
+  border: 0;
+
+
+
+  background: #f8fafc;
+
+  color: var(--pd-text);
+
+  overflow-x: clip;
+
+
+
+  font-family: Inter, Arial, Helvetica, sans-serif;
+
+}
+
+
+
+.pd-dashboard *,
+
+.pd-dashboard *::before,
+
+.pd-dashboard *::after {
+
+  box-sizing: border-box;
+
+}
+
+
+
+.pd-dashboard button,
+
+.pd-dashboard select {
+
+  font: inherit;
+
+}
+
+
+
+.pd-dashboard button {
+
+  cursor: pointer;
+
+}
+
+
+
+/* =========================================================
+
+   MAIN CONTENT
+
+   ========================================================= */
+
+
+
+.pd-dashboard-content {
+
+  width: 100%;
+
+  max-width: 2100px;
+
+  min-width: 0;
+
+  margin: 0 auto;
+
+  padding: 24px 26px 38px;
+
+}
+
+
+
+/* =========================================================
+
+   WELCOME SECTION
+
+   ========================================================= */
+
+
+
+.pd-welcome-row {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 22px;
+
+  margin-bottom: 24px;
+
+}
+
+
+
+.pd-welcome-left {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 16px;
+
+  min-width: 0;
+
+}
+
+
+
+.pd-sun-icon {
+
+  flex-shrink: 0;
+
+  color: #ff8500;
+
+  font-size: 54px !important;
+
+}
+
+
+
+.pd-welcome-left h1 {
+
+  margin: 0;
+
+  color: #101828;
+
+  font-size: clamp(25px, 2.2vw, 37px);
+
+  font-weight: 800;
+
+  letter-spacing: -0.8px;
+
+  line-height: 1.2;
+
+}
+
+
+
+.pd-welcome-left p {
+
+  margin: 7px 0 0;
+
+  color: #475467;
+
+  font-size: 15px;
+
+  line-height: 1.5;
+
+}
+
+
+
+.pd-date-control {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 11px;
+
+  min-height: 48px;
+
+  padding: 0 15px;
+
+
+
+  border: 1px solid #d2dce7;
+
+  border-radius: 11px;
+
+  background: #fff;
+
+  box-shadow: 0 2px 6px #10182807;
+
+}
+
+
+
+.pd-date-control svg {
+
+  color: #254367;
+
+}
+
+
+
+.pd-date-control select {
+
+  min-width: 120px;
+
+  border: 0;
+
+  outline: 0;
+
+  background: transparent;
+
+  color: #142033;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+}
+
+
+
+/* =========================================================
+
+   NOTIFICATION
+
+   ========================================================= */
+
+
+
+.pd-notice {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  gap: 12px;
+
+  margin-bottom: 16px;
+
+  padding: 12px 15px;
+
+  border: 1px solid #bfdbfe;
+
+  border-radius: 10px;
+
+  background: #eff6ff;
+
+  color: #1d4ed8;
+
+  font-size: 13px;
+
+}
+
+
+
+.pd-notice button {
+
+  border: 0;
+
+  background: transparent;
+
+  color: inherit;
+
+  font-size: 20px;
+
+}
+
+
+
+/* =========================================================
+
+   KPI CARDS
+
+   ========================================================= */
+
+
+
+.pd-kpis {
+
+  display: grid;
+
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  gap: 16px;
+
+  margin-bottom: 20px;
+
+}
+
+
+
+.pd-stat-card {
+
+  position: relative;
+
+  min-width: 0;
+
+  min-height: 150px;
+
+  padding: 20px 17px;
+
+
+
+  border: 1px solid;
+
+  border-radius: 15px;
+
+  overflow: hidden;
+
+  box-shadow: 0 3px 9px #1018280b;
+
+
+
+  transition:
+
+    transform 0.18s ease,
+
+    box-shadow 0.18s ease;
+
+}
+
+
+
+.pd-stat-card:hover {
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 8px 18px #10182812;
+
+}
+
+
+
+.pd-stat-green {
+
+  background: linear-gradient(135deg, #fff, #e0fbe8);
+
+  border-color: #b2eac1;
+
+  color: #008e2d;
+
+}
+
+
+
+.pd-stat-orange {
+
+  background: linear-gradient(135deg, #fff, #fff0e1);
+
+  border-color: #ffd0a1;
+
+  color: #f47700;
+
+}
+
+
+
+.pd-stat-blue {
+
+  background: linear-gradient(135deg, #fff, #e4f2ff);
+
+  border-color: #b3d9ff;
+
+  color: #0878f6;
+
+}
+
+
+
+.pd-stat-purple {
+
+  background: linear-gradient(135deg, #fff, #f2e6ff);
+
+  border-color: #dabaff;
+
+  color: #9129f2;
+
+}
+
+
+
+.pd-stat-main {
+
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 13px;
+
+  min-width: 0;
+
+}
+
+
+
+.pd-stat-icon {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  width: 56px;
+
+  height: 56px;
+
+  flex: 0 0 56px;
+
+  border-radius: 50%;
+
+}
+
+
+
+.pd-stat-icon svg {
+
+  font-size: 30px;
+
+}
+
+
+
+.pd-stat-green .pd-stat-icon {
+
+  background: #bdf4cc;
+
+}
+
+
+
+.pd-stat-orange .pd-stat-icon {
+
+  background: #ffe0c0;
+
+}
+
+
+
+.pd-stat-blue .pd-stat-icon {
+
+  background: #cee7ff;
+
+}
+
+
+
+.pd-stat-purple .pd-stat-icon {
+
+  background: #e6ceff;
+
+}
+
+
+
+.pd-stat-body {
+
+  display: flex;
+
+  flex: 1;
+
+  flex-direction: column;
+
+  gap: 9px;
+
+  min-width: 0;
+
+  color: #101828;
+
+}
+
+
+
+.pd-stat-label {
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+}
+
+
+
+.pd-stat-value {
+
+  font-size: clamp(20px, 1.7vw, 29px);
+
+  font-weight: 800;
+
+  line-height: 1.2;
+
+  letter-spacing: -0.5px;
+
+  overflow-wrap: anywhere;
+
+}
+
+
+
+.pd-stat-change {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  align-items: center;
+
+  gap: 5px;
+
+  font-size: 12px;
+
+}
+
+
+
+.pd-stat-change strong {
+
+  color: #00852c;
+
+}
+
+
+
+.pd-stat-change span {
+
+  color: #475467;
+
+}
+
+
+
+.pd-sparkline {
+
+  position: absolute;
+
+  right: 12px;
+
+  bottom: 14px;
+
+  width: 43px;
+
+  height: 30px;
+
+}
+
+
+
+/* =========================================================
+
+   MAIN DASHBOARD GRID
+
+   ========================================================= */
+
+
+
+/*
+
+   ROW 1:
+
+   Sales Overview | Quick Actions
+
+
+
+   ROW 2:
+
+   Sales by Category | Today's Summary
+
+
+
+   CSS Grid automatically matches row heights.
+
+*/
+
+
+
+.pd-main-columns {
+
+  display: grid;
+
+
+
+  grid-template-columns:
+
+    minmax(0, 1.75fr)
+
+    minmax(0, 1fr);
+
+
+
+  grid-template-rows: auto auto;
+
+
+
+  gap: 20px;
+
+  align-items: stretch;
+
+  min-width: 0;
+
+}
+
+
+
+/*
+
+   The existing JSX contains left and right column wrappers.
+
+   display: contents allows their panels to participate
+
+   directly in the parent grid.
+
+*/
+
+
+
+.pd-left-column,
+
+.pd-right-column {
+
+  display: contents;
+
+}
+
+
+
+/* FIRST ROW */
+
+
+
+.pd-sales-panel {
+
+  grid-column: 1;
+
+  grid-row: 1;
+
+  min-height: 0;
+
+}
+
+
+
+.pd-quick-panel {
+
+  grid-column: 2;
+
+  grid-row: 1;
+
+}
+
+
+
+/* SECOND ROW — MATCHED HEIGHT */
+
+
+
+.pd-category-panel {
+
+  grid-column: 1;
+
+  grid-row: 2;
+
+
+
+  height: 100%;
+
+  min-height: 0;
+
+}
+
+
+
+.pd-summary-panel {
+
+  grid-column: 2;
+
+  grid-row: 2;
+
+
+
+  height: 100%;
+
+  min-height: 0;
+
+
+
+  display: flex;
+
+  flex-direction: column;
+
+}
+
+
+
+/* Fill available summary space */
+
+
+
+.pd-summary-panel .pd-summary-list {
+
+  display: flex;
+
+  flex: 1;
+
+  flex-direction: column;
+
+  justify-content: space-evenly;
+
+}
+
+
+
+/* =========================================================
+
+   BOTTOM ROW
+
+   ========================================================= */
+
+
+
+.pd-bottom-row {
+
+  display: grid;
+
+
+
+  grid-template-columns:
+
+    minmax(0, 1.75fr)
+
+    minmax(0, 1fr);
+
+
+
+  gap: 20px;
+
+  align-items: stretch;
+
+
+
+  margin-top: 20px;
+
+  min-width: 0;
+
+}
+
+
+
+.pd-bottom-row > .pd-panel {
+
+  height: 100%;
+
+  min-width: 0;
+
+}
+
+
+
+/* =========================================================
+
+   SHARED PANEL STYLES
+
+   ========================================================= */
+
+
+
+.pd-panel {
+
+  min-width: 0;
+
+  padding: 22px;
+
+
+
+  border: 1px solid var(--pd-border);
+
+  border-radius: 15px;
+
+  background: #fff;
+
+  box-shadow: 0 3px 10px #10182809;
+
+
+
+  transition:
+
+    box-shadow 0.18s ease,
+
+    border-color 0.18s ease;
+
+}
+
+
+
+.pd-panel:hover {
+
+  border-color: #cbd8e3;
+
+  box-shadow: 0 6px 16px #1018280c;
+
+}
+
+
+
+.pd-panel-header {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  flex-wrap: wrap;
+
+  gap: 12px;
+
+  margin-bottom: 20px;
+
+}
+
+
+
+.pd-panel-heading {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 11px;
+
+  min-width: 0;
+
+}
+
+
+
+.pd-panel-icon {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  color: #172033;
+
+}
+
+
+
+.pd-panel-icon svg {
+
+  font-size: 27px;
+
+}
+
+
+
+.pd-panel-heading h2 {
+
+  margin: 0;
+
+  font-size: 20px;
+
+  font-weight: 800;
+
+  letter-spacing: -0.4px;
+
+}
+
+
+
+.pd-view-all {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  padding: 5px;
+
+  border: 0;
+
+  background: transparent;
+
+  color: #007d2a;
+
+  font-size: 13px;
+
+  font-weight: 800;
+
+  white-space: nowrap;
+
+}
+
+
+
+.pd-view-all:hover {
+
+  color: #ff8500;
+
+}
+
+
+
+/* =========================================================
+
+   SALES OVERVIEW
+
+   ========================================================= */
+
+
+
+.pd-chart-tabs {
+
+  display: inline-flex;
+
+  padding: 3px;
+
+
+
+  border: 1px solid #d8e0e8;
+
+  border-radius: 9px;
+
+  background: #f3f6f9;
+
+}
+
+
+
+.pd-chart-tabs button {
+
+  padding: 9px 14px;
+
+  border: 0;
+
+  border-radius: 7px;
+
+
+
+  background: transparent;
+
+  color: #344054;
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+}
+
+
+
+.pd-chart-tabs button.active {
+
+  background: linear-gradient(180deg, #ff9b00, #ff7500);
+
+  color: #fff;
+
+}
+
+
+
+.pd-chart-container {
+
+  width: 100%;
+
+  min-width: 0;
+
+  padding-top: 6px;
+
+}
+
+
+
+.pd-chart-svg {
+
+  display: block;
+
+  width: 100%;
+
+  height: auto;
+
+}
+
+
+
+/* =========================================================
+
+   SALES BY CATEGORY
+
+   ========================================================= */
+
+
+
+.pd-category-content {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+
+
+  gap: clamp(24px, 4vw, 55px);
+
+  min-width: 0;
+
+  padding: 12px 0 16px;
+
+}
+
+
+
+.pd-donut {
+
+  position: relative;
+
+
+
+  width: clamp(210px, 21vw, 295px);
+
+  height: clamp(210px, 21vw, 295px);
+
+
+
+  flex: 0 0 auto;
+
+  aspect-ratio: 1;
+
+  border-radius: 50%;
+
+}
+
+
+
+.pd-donut-center {
+
+  position: absolute;
+
+  inset: 25%;
+
+
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+
+
+  border-radius: 50%;
+
+  background: #fff;
+
+  text-align: center;
+
+}
+
+
+
+.pd-donut-center strong {
+
+  font-size: clamp(15px, 1.45vw, 22px);
+
+  font-weight: 800;
+
+  white-space: nowrap;
+
+}
+
+
+
+.pd-donut-center span {
+
+  margin-top: 5px;
+
+  color: #475467;
+
+  font-size: 13px;
+
+  white-space: nowrap;
+
+}
+
+
+
+.pd-category-legend {
+
+  display: flex;
+
+  flex: 1;
+
+  flex-direction: column;
+
+
+
+  gap: 17px;
+
+  min-width: 0;
+
+  max-width: 320px;
+
+}
+
+
+
+.pd-legend-row {
+
+  display: grid;
+
+  grid-template-columns: 13px minmax(0, 1fr) auto;
+
+  align-items: center;
+
+  gap: 10px;
+
+  font-size: 14px;
+
+}
+
+
+
+.pd-legend-dot {
+
+  width: 13px;
+
+  height: 13px;
+
+  border-radius: 50%;
+
+}
+
+
+
+.pd-legend-name {
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+
+}
+
+
+
+.pd-legend-row strong {
+
+  font-weight: 800;
+
+}
+
+
+
+/* =========================================================
+
+   QUICK ACTIONS
+
+   ========================================================= */
+
+
+
+.pd-quick-panel {
+
+  background: linear-gradient(140deg, #f6fff8, #e7ffed);
+
+  border-color: #bdeac8;
+
+}
+
+
+
+.pd-quick-panel .pd-panel-icon {
+
+  color: #008b30;
+
+}
+
+
+
+.pd-quick-grid {
+
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 11px;
+
+}
+
+
+
+.pd-quick-action {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  flex-direction: column;
+
+
+
+  gap: 10px;
+
+  min-width: 0;
+
+  min-height: 112px;
+
+  padding: 14px 9px;
+
+
+
+  border: 1px solid;
+
+  border-radius: 12px;
+
+  text-align: center;
+
+
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  line-height: 1.3;
+
+
+
+  transition:
+
+    transform 0.16s ease,
+
+    box-shadow 0.16s ease;
+
+}
+
+
+
+.pd-quick-action:hover {
+
+  transform: translateY(-3px);
+
+  box-shadow: 0 6px 14px #10182818;
+
+}
+
+
+
+.pd-quick-icon {
+
+  display: inline-flex;
+
+}
+
+
+
+.pd-quick-icon svg {
+
+  font-size: 33px;
+
+}
+
+
+
+.pd-quick-label {
+
+  overflow-wrap: anywhere;
+
+}
+
+
+
+.pd-action-green {
+
+  color: #008b2c;
+
+  background: #e2ffea;
+
+  border-color: #a4e6b4;
+
+}
+
+
+
+.pd-action-orange {
+
+  color: #f47700;
+
+  background: #fff0e1;
+
+  border-color: #ffd1a1;
+
+}
+
+
+
+.pd-action-purple {
+
+  color: #8524e9;
+
+  background: #f3e8ff;
+
+  border-color: #dcb8ff;
+
+}
+
+
+
+.pd-action-blue {
+
+  color: #0876ee;
+
+  background: #e7f4ff;
+
+  border-color: #add7ff;
+
+}
+
+
+
+.pd-action-teal {
+
+  color: #008e90;
+
+  background: #e4fffa;
+
+  border-color: #a3e8e2;
+
+}
+
+
+
+.pd-action-pink {
+
+  color: #e51d69;
+
+  background: #fff0f5;
+
+  border-color: #ffc0d8;
+
+}
+
+
+
+/* =========================================================
+
+   TODAY'S SUMMARY
+
+   ========================================================= */
+
+
+
+.pd-summary-list {
+
+  display: flex;
+
+  flex-direction: column;
+
+  width: 100%;
+
+}
+
+
+
+.pd-summary-row {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+
+
+  gap: 12px;
+
+  min-height: 55px;
+
+
+
+  border-bottom: 1px solid #e9edf2;
+
+  font-size: 15px;
+
+}
+
+
+
+.pd-summary-row strong {
+
+  font-size: 15px;
+
+  font-weight: 800;
+
+  text-align: right;
+
+  overflow-wrap: anywhere;
+
+}
+
+
+
+.pd-summary-row .pd-green-text {
+
+  color: #007c2c;
+
+}
+
+
+
+.pd-margin-row {
+
+  margin-top: 13px;
+
+  padding: 0 14px;
+
+
+
+  border: 0;
+
+  border-radius: 9px;
+
+  background: linear-gradient(90deg, #e5ffeb, #c9f7d5);
+
+}
+
+
+
+.pd-margin-row strong {
+
+  color: #007b2a;
+
+  font-size: 22px;
+
+}
+
+
+
+/* =========================================================
+
+   RECENT TRANSACTIONS
+
+   ========================================================= */
+
+
+
+.pd-transaction-list {
+
+  display: flex;
+
+  flex-direction: column;
+
+}
+
+
+
+.pd-transaction-row {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+
+
+  gap: 13px;
+
+  width: 100%;
+
+  min-width: 0;
+
+  min-height: 73px;
+
+  padding: 12px 3px;
+
+
+
+  border: 0;
+
+  border-bottom: 1px solid #edf1f5;
+
+  background: transparent;
+
+  text-align: left;
+
+
+
+  transition: background 0.15s ease;
+
+}
+
+
+
+.pd-transaction-row:last-child {
+
+  border-bottom: 0;
+
+}
+
+
+
+.pd-transaction-row:hover {
+
+  background: #f1faf4;
+
+}
+
+
+
+.pd-transaction-details {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 6px;
+
+  min-width: 0;
+
+}
+
+
+
+.pd-transaction-details strong {
+
+  color: #00852c;
+
+  font-size: 14px;
+
+}
+
+
+
+.pd-transaction-details small {
+
+  overflow: hidden;
+
+  color: #667085;
+
+  font-size: 12px;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+
+}
+
+
+
+.pd-transaction-amount {
+
+  flex-shrink: 0;
+
+  color: #142033;
+
+  font-size: 14px;
+
+  font-weight: 800;
+
+  white-space: nowrap;
+
+}
+
+
+
+/* =========================================================
+
+   LOW STOCK ALERTS
+
+   ========================================================= */
+
+
+
+.pd-stock-panel .pd-panel-icon {
+
+  color: #ff8500;
+
+}
+
+
+
+.pd-stock-list {
+
+  display: flex;
+
+  flex-direction: column;
+
+}
+
+
+
+.pd-stock-row {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+
+
+  width: 100%;
+
+  min-width: 0;
+
+  min-height: 77px;
+
+  padding: 11px 3px;
+
+
+
+  border: 0;
+
+  border-bottom: 1px solid #edf1f5;
+
+  background: transparent;
+
+  text-align: left;
+
+
+
+  transition: background 0.15s ease;
+
+}
+
+
+
+.pd-stock-row:last-child {
+
+  border-bottom: 0;
+
+}
+
+
+
+.pd-stock-row:hover {
+
+  background: #fff8f0;
+
+}
+
+
+
+.pd-stock-image {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+
+
+  width: 53px;
+
+  height: 53px;
+
+  flex: 0 0 53px;
+
+
+
+  border-radius: 10px;
+
+  background: #f2f5f8;
+
+  font-size: 30px;
+
+}
+
+
+
+.pd-stock-info {
+
+  display: flex;
+
+  flex: 1;
+
+  flex-direction: column;
+
+
+
+  gap: 6px;
+
+  min-width: 0;
+
+}
+
+
+
+.pd-stock-info strong {
+
+  overflow: hidden;
+
+  color: #1d2939;
+
+  font-size: 14px;
+
+  font-weight: 800;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+
+}
+
+
+
+.pd-stock-info small {
+
+  color: #667085;
+
+  font-size: 12px;
+
+}
+
+
+
+.pd-stock-quantity {
+
+  flex-shrink: 0;
+
+  padding: 9px 12px;
+
+
+
+  border-radius: 22px;
+
+  background: #ffe1e1;
+
+  color: #dc2626;
+
+
+
+  font-size: 13px;
+
+  font-weight: 800;
+
+  white-space: nowrap;
+
+}
+
+
+
+/* =========================================================
+
+   SYSTEM STATUS
+
+   ========================================================= */
+
+
+
+.pd-system-panel {
+
+  margin-top: 20px;
+
+}
+
+
+
+.pd-system-panel .pd-panel-icon {
+
+  color: #008b30;
+
+}
+
+
+
+.pd-system-grid {
+
+  display: grid;
+
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  gap: 14px;
+
+}
+
+
+
+.pd-status-item {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 11px;
+
+
+
+  min-width: 0;
+
+  min-height: 72px;
+
+  padding: 14px;
+
+
+
+  border-radius: 10px;
+
+  background: #eafbef;
+
+}
+
+
+
+.pd-status-item-icon {
+
+  display: inline-flex;
+
+  color: #008b30;
+
+}
+
+
+
+.pd-status-item-icon svg {
+
+  font-size: 24px;
+
+}
+
+
+
+.pd-status-item-label {
+
+  flex: 1;
+
+  min-width: 0;
+
+  color: #344054;
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+}
+
+
+
+.pd-status-badge {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+
+
+  padding: 7px 10px;
+
+  border-radius: 20px;
+
+
+
+  background: #c9f6d4;
+
+  color: #00732a;
+
+
+
+  font-size: 12px;
+
+  font-weight: 800;
+
+  white-space: nowrap;
+
+}
+
+
+
+/* =========================================================
+
+   RESPONSIVE — MEDIUM DESKTOP
+
+   ========================================================= */
+
+
+
+@container (max-width: 1450px) {
+
+  .pd-dashboard-content {
+
+    padding: 20px 20px 32px;
+
+  }
+
+
+
+  .pd-kpis {
+
+    gap: 12px;
+
+  }
+
+
+
+  .pd-stat-card {
+
+    padding: 16px 13px;
+
+    min-height: 135px;
+
+  }
+
+
+
+  .pd-stat-icon {
+
+    width: 47px;
+
+    height: 47px;
+
+    flex-basis: 47px;
+
+  }
+
+
+
+  .pd-stat-icon svg {
+
+    font-size: 26px;
+
+  }
+
+
+
+  .pd-stat-value {
+
+    font-size: 21px;
+
+  }
+
+
+
+  .pd-main-columns,
+
+  .pd-bottom-row {
+
+    gap: 16px;
+
+  }
+
+
+
+  .pd-bottom-row {
+
+    margin-top: 16px;
+
+  }
+
+
+
+  .pd-panel {
+
+    padding: 18px;
+
+  }
+
+
+
+  .pd-panel-heading h2 {
+
+    font-size: 18px;
+
+  }
+
+
+
+  .pd-donut {
+
+    width: 240px;
+
+    height: 240px;
+
+  }
+
+
+
+  .pd-quick-action {
+
+    min-height: 101px;
+
+  }
+
+
+
+  .pd-system-panel {
+
+    margin-top: 16px;
+
+  }
+
+}
+
+
+
+/* =========================================================
+
+   RESPONSIVE — SMALL LAPTOP
+
+   ========================================================= */
+
+
+
+@container (max-width: 1050px) {
+
+  .pd-kpis {
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  }
+
+
+
+  .pd-stat-card {
+
+    min-height: 125px;
+
+  }
+
+
+
+  .pd-stat-value {
+
+    font-size: 24px;
+
+  }
+
+
+
+  .pd-main-columns,
+
+  .pd-bottom-row {
+
+    grid-template-columns:
+
+      minmax(0, 1.4fr)
+
+      minmax(0, 1fr);
+
+  }
+
+
+
+  .pd-category-content {
+
+    flex-direction: column;
+
+    gap: 25px;
+
+  }
+
+
+
+  .pd-category-legend {
+
+    width: 100%;
+
+    max-width: 430px;
+
+  }
+
+
+
+  .pd-donut {
+
+    width: 230px;
+
+    height: 230px;
+
+  }
+
+
+
+  .pd-system-grid {
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  }
+
+
+
+  .pd-quick-action {
+
+    min-height: 96px;
+
+    font-size: 13px;
+
+  }
+
+}
+
+
+
+/* =========================================================
+
+   RESPONSIVE — TABLET
+
+   ========================================================= */
+
+
+
+@container (max-width: 760px) {
+
+  .pd-main-columns,
+
+  .pd-bottom-row {
+
+    grid-template-columns: minmax(0, 1fr);
+
+  }
+
+
+
+  /*
+
+     Reset explicit desktop grid positions.
+
+     This prevents overlapping cards on tablets.
+
+  */
+
+
+
+  .pd-sales-panel,
+
+  .pd-category-panel,
+
+  .pd-quick-panel,
+
+  .pd-summary-panel {
+
+    grid-column: 1;
+
+    grid-row: auto;
+
+    height: auto;
+
+  }
+
+
+
+  .pd-category-content {
+
+    flex-direction: row;
+
+  }
+
+
+
+  .pd-category-legend {
+
+    max-width: 320px;
+
+  }
+
+
+
+  .pd-donut {
+
+    width: 220px;
+
+    height: 220px;
+
+  }
+
+
+
+  .pd-quick-grid {
+
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  }
+
+
+
+  .pd-summary-panel .pd-summary-list {
+
+    flex: none;
+
+    justify-content: flex-start;
+
+  }
+
+}
+
+
+
+/* =========================================================
+
+   RESPONSIVE — MOBILE
+
+   ========================================================= */
+
+
+
+@container (max-width: 520px) {
+
+  .pd-dashboard-content {
+
+    padding: 15px 12px 28px;
+
+  }
+
+
+
+  .pd-welcome-row {
+
+    flex-wrap: wrap;
+
+    align-items: flex-start;
+
+    gap: 15px;
+
+  }
+
+
+
+  .pd-welcome-left {
+
+    gap: 10px;
+
+  }
+
+
+
+  .pd-sun-icon {
+
+    font-size: 40px !important;
+
+  }
+
+
+
+  .pd-welcome-left h1 {
+
+    font-size: 23px;
+
+  }
+
+
+
+  .pd-welcome-left p {
+
+    font-size: 13px;
+
+  }
+
+
+
+  .pd-date-control {
+
+    width: 100%;
+
+  }
+
+
+
+  .pd-date-control select {
+
+    flex: 1;
+
+  }
+
+
+
+  .pd-kpis {
+
+    gap: 10px;
+
+  }
+
+
+
+  .pd-stat-card {
+
+    min-height: 150px;
+
+    padding: 13px;
+
+  }
+
+
+
+  .pd-stat-main {
+
+    flex-direction: column;
+
+    gap: 10px;
+
+  }
+
+
+
+  .pd-stat-icon {
+
+    width: 42px;
+
+    height: 42px;
+
+    flex-basis: 42px;
+
+  }
+
+
+
+  .pd-stat-icon svg {
+
+    font-size: 24px;
+
+  }
+
+
+
+  .pd-stat-label {
+
+    font-size: 12px;
+
+  }
+
+
+
+  .pd-stat-value {
+
+    font-size: 18px;
+
+  }
+
+
+
+  .pd-stat-change {
+
+    font-size: 11px;
+
+  }
+
+
+
+  .pd-sparkline {
+
+    width: 28px;
+
+    opacity: 0.7;
+
+  }
+
+
+
+  .pd-panel {
+
+    padding: 15px;
+
+  }
+
+
+
+  .pd-panel-header {
+
+    margin-bottom: 15px;
+
+  }
+
+
+
+  .pd-panel-heading h2 {
+
+    font-size: 18px;
+
+  }
+
+
+
+  .pd-chart-tabs button {
+
+    padding: 7px 10px;
+
+    font-size: 12px;
+
+  }
+
+
+
+  .pd-category-content {
+
+    flex-direction: column;
+
+  }
+
+
+
+  .pd-donut {
+
+    width: 220px;
+
+    height: 220px;
+
+  }
+
+
+
+  .pd-quick-grid {
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  }
+
+
+
+  .pd-quick-action {
+
+    min-height: 100px;
+
+  }
+
+
+
+  .pd-system-grid {
+
+    grid-template-columns: minmax(0, 1fr);
+
+  }
+
+
+
+  .pd-status-item {
+
+    min-height: 60px;
+
+  }
+
+
+
+  .pd-summary-row,
+
+  .pd-summary-row strong {
+
+    font-size: 13px;
+
+  }
+
+}
+
+
+
+/* =========================================================
+
+   RESPONSIVE — VERY SMALL PHONES
+
+   ========================================================= */
+
+
+
+@container (max-width: 350px) {
+
+  .pd-kpis {
+
+    grid-template-columns: minmax(0, 1fr);
+
+  }
+
+
+
+  .pd-stat-card {
+
+    min-height: 115px;
+
+  }
+
+
+
+  .pd-stat-main {
+
+    flex-direction: row;
+
+  }
+
+
+
+  .pd-stat-value {
+
+    font-size: 21px;
+
+  }
+
+
+
+  .pd-panel-heading h2 {
+
+    font-size: 16px;
+
+  }
+
+
+
+  .pd-stock-info strong {
+
+    font-size: 12px;
+
+  }
+
+
+
+  .pd-stock-quantity {
+
+    padding: 7px 9px;
+
+    font-size: 11px;
+
+  }
+
+
+
+  .pd-transaction-amount {
+
+    font-size: 12px;
+
+  }
+
+}
+
+
+
+/* =========================================================
+
+   ACCESSIBILITY
+
+   ========================================================= */
+
+
+
+.pd-dashboard button:focus-visible {
+
+  outline: 2px solid #ff8500;
+
+  outline-offset: 3px;
+
+}
+
+/* Date filter: remove orange select outline while retaining a subtle focus cue */
+.pd-date-control select:focus,
+.pd-date-control select:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.pd-date-control:focus-within {
+  border-color: #8bbfa3;
+}
+
+
+
+
+@media (prefers-reduced-motion: reduce) {
+
+  .pd-dashboard *,
+
+  .pd-dashboard *::before,
+
+  .pd-dashboard *::after {
+
+    transition-duration: 0.01ms !important;
+
+    animation-duration: 0.01ms !important;
+
+  }
+
+}
+
+/* =========================================================
+   CUSTOM DATE RANGE POPOVER
+   ========================================================= */
+.pd-date-picker-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  min-width: 0;
+  z-index: 5;
+}
+.pd-date-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #254367;
+}
+.pd-date-icon-button:focus-visible {
+  outline: 2px solid #008b30 !important;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+.pd-date-control select:focus-visible { outline: none; }
+.pd-date-popover {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 30;
+  width: min(360px, calc(100vw - 32px));
+  padding: 18px;
+  border: 1px solid #dce4ec;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 14px 40px #10182826;
+}
+.pd-date-popover-heading {
+  margin-bottom: 15px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #142033;
+}
+.pd-date-inputs { display: grid; gap: 12px; }
+.pd-date-inputs label { display: grid; gap: 6px; font-size: 13px; font-weight: 700; color: #344054; }
+.pd-date-inputs input {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid #d2dce7;
+  border-radius: 9px;
+  background: #fff;
+  color: #142033;
+  font: inherit;
+  color-scheme: light;
+}
+.pd-date-inputs input:focus-visible {
+  outline: 2px solid #008b30;
+  outline-offset: 1px;
+}
+.pd-date-popover-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+.pd-date-popover-actions button {
+  padding: 9px 18px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 800;
+}
+.pd-date-cancel { border: 1px solid #d2dce7; background: #fff; color: #344054; }
+.pd-date-apply { border: 1px solid #008b30; background: #008b30; color: #fff; }
+.pd-date-apply:disabled { opacity: 0.45; cursor: not-allowed; }
+.pd-date-range-caption { margin-top: 5px; color: #667085; font-size: 11px; }
+@container (max-width: 520px) {
+  .pd-date-picker-wrap { width: 100%; align-items: stretch; }
+  .pd-date-popover { left: 0; right: auto; }
+}

@@ -1,0 +1,439 @@
+
+/* ======================================================
+   PRIYASAMAN POS — SIDEBAR
+   DARK EMERALD / ORANGE THEME
+   ====================================================== */
+
+.ps-sidebar {
+  --ps-sidebar-width: 240px;
+
+  position: relative;
+  z-index: 20;
+
+  display: flex;
+  flex-direction: column;
+
+  width: var(--ps-sidebar-width);
+  min-width: var(--ps-sidebar-width);
+
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+
+  color: #ffffff;
+
+  background:
+    radial-gradient(
+      ellipse at 90% 85%,
+      rgba(0, 153, 98, 0.32),
+      transparent 55%
+    ),
+    linear-gradient(
+      165deg,
+      #002d20 0%,
+      #003f2d 42%,
+      #00543a 72%,
+      #003c2b 100%
+    );
+
+  /* Square edges for a clean connection to Header */
+  border-radius: 0;
+
+  box-shadow: 3px 0 12px rgba(0, 0, 0, 0.12);
+
+  isolation: isolate;
+}
+
+.ps-sidebar *,
+.ps-sidebar *::before,
+.ps-sidebar *::after {
+  box-sizing: border-box;
+}
+
+/* ======================================================
+   BRAND
+   ====================================================== */
+
+.ps-sidebar-brand {
+  position: relative;
+  flex-shrink: 0;
+
+  min-height: 112px;
+  padding: 20px 13px 16px;
+}
+
+.ps-sidebar-brand-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.ps-sidebar-brand-icon {
+  color: #ffa400;
+  font-size: 39px !important;
+  transform: rotate(-9deg);
+  flex-shrink: 0;
+}
+
+.ps-sidebar-brand-text {
+  min-width: 0;
+}
+
+.ps-sidebar-brand-name.MuiTypography-root {
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.65px;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+.ps-sidebar-brand-subtitle.MuiTypography-root {
+  margin-top: 5px;
+  color: #f0fff5;
+  font-size: 11px;
+  text-align: center;
+}
+
+.ps-sidebar-brand-curve {
+  position: absolute;
+  left: 21px;
+  right: 21px;
+  bottom: 12px;
+
+  height: 10px;
+  border-bottom: 3px solid #08c36a;
+  border-radius: 0 0 50% 50%;
+  transform: rotate(-2deg);
+}
+
+.ps-sidebar-close.MuiIconButton-root {
+  display: none;
+  color: #ffffff;
+}
+
+/* ======================================================
+   SCROLLABLE NAVIGATION
+   ====================================================== */
+
+.ps-sidebar-scroll {
+  position: relative;
+  z-index: 2;
+
+  flex: 1 1 auto;
+  min-height: 0;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  padding: 0 10px 8px;
+
+  scrollbar-width: thin;
+  scrollbar-color:
+    rgba(255, 255, 255, 0.27) transparent;
+}
+
+.ps-sidebar-nav.MuiList-root {
+  padding: 0;
+}
+
+/* ======================================================
+   MAIN NAVIGATION ROW
+   ====================================================== */
+
+.ps-sidebar-nav-row {
+  display: flex;
+  align-items: center;
+  position: relative;
+
+  min-height: 45px;
+  margin-bottom: 2px;
+  border-radius: 11px;
+}
+
+.ps-sidebar-nav-row-active {
+  background: linear-gradient(
+    180deg,
+    #ffa900 0%,
+    #ff8900 55%,
+    #ff7200 100%
+  );
+
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.18),
+    inset 0 1px rgba(255, 255, 255, 0.25);
+}
+
+/* ======================================================
+   MAIN NAVIGATION ITEMS
+   ====================================================== */
+
+.ps-sidebar-item.MuiListItemButton-root {
+  display: flex;
+  align-items: center;
+
+  flex: 1;
+  min-width: 0;
+  min-height: 45px;
+
+  margin-bottom: 0;
+  padding: 9px 12px;
+
+  border-radius: 11px;
+  color: #f5fff9;
+  background: transparent;
+
+  transition: background 160ms ease;
+}
+
+.ps-sidebar-item.MuiListItemButton-root:hover {
+  background: rgba(255, 255, 255, 0.11);
+}
+
+.ps-sidebar-item-active.MuiListItemButton-root,
+.ps-sidebar-item-active.MuiListItemButton-root.Mui-selected,
+.ps-sidebar-item-active.MuiListItemButton-root.Mui-selected:hover {
+  background: linear-gradient(
+    180deg,
+    #ffa900 0%,
+    #ff8900 55%,
+    #ff7200 100%
+  );
+
+  color: #ffffff;
+}
+
+.ps-sidebar-nav-row-active
+  .ps-sidebar-item-active.MuiListItemButton-root {
+  background: transparent;
+}
+
+/* ======================================================
+   MAIN ICONS AND TEXT
+   ====================================================== */
+
+.ps-sidebar-item-icon.MuiListItemIcon-root {
+  min-width: 36px;
+  color: inherit;
+}
+
+.ps-sidebar-item-icon .MuiSvgIcon-root {
+  font-size: 23px;
+}
+
+.ps-sidebar-item-label.MuiTypography-root {
+  color: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+/* ======================================================
+   INVENTORY ARROW
+   ====================================================== */
+
+.ps-sidebar-expand-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  margin-left: auto;
+  color: inherit;
+}
+
+.ps-sidebar-expand-icon .MuiSvgIcon-root {
+  font-size: 19px;
+}
+
+/* ======================================================
+   INVENTORY SUBMENU
+   ====================================================== */
+
+.ps-sidebar-submenu {
+  margin: 3px 0 8px 28px;
+  padding: 3px 0 3px 9px;
+
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.ps-sidebar-subitem.MuiListItemButton-root {
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+  min-height: 36px;
+
+  margin-bottom: 3px;
+  padding: 7px 9px;
+
+  border-radius: 7px;
+  color: #d8f9e5;
+  background: transparent;
+
+  transition: background 160ms ease;
+}
+
+.ps-sidebar-subitem.MuiListItemButton-root:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.ps-sidebar-subitem-icon.MuiSvgIcon-root {
+  font-size: 17px;
+  flex-shrink: 0;
+  color: inherit;
+}
+
+.ps-sidebar-subitem-label.MuiTypography-root {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: inherit;
+  white-space: nowrap;
+}
+
+/* ======================================================
+   ACTIVE INVENTORY SUBMENU — ORANGE
+   ====================================================== */
+
+.ps-sidebar-subitem-active.MuiListItemButton-root,
+.ps-sidebar-subitem-active.MuiListItemButton-root.Mui-selected,
+.ps-sidebar-subitem-active.MuiListItemButton-root.Mui-selected:hover {
+  background: linear-gradient(
+    180deg,
+    #ffa900 0%,
+    #ff8900 55%,
+    #ff7200 100%
+  );
+
+  color: #ffffff;
+
+  box-shadow:
+    0 3px 8px rgba(0, 0, 0, 0.15),
+    inset 0 1px rgba(255, 255, 255, 0.2);
+}
+
+/* ======================================================
+   SETTINGS — BOTTOM EDGE
+   ====================================================== */
+
+.ps-sidebar-settings {
+  position: relative;
+  z-index: 2;
+
+  flex-shrink: 0;
+  margin-top: auto;
+
+  padding: 10px 10px 16px;
+  background: transparent;
+}
+
+.ps-sidebar-divider {
+  height: 1px;
+  width: calc(100% + 20px);
+
+  margin: 0 -10px 12px;
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.ps-sidebar-settings .ps-sidebar-item {
+  margin-bottom: 0;
+}
+
+/* ======================================================
+   MOBILE BACKDROP
+   ====================================================== */
+
+.ps-sidebar-backdrop {
+  display: none;
+}
+
+/* ======================================================
+   COMPACT DESKTOP
+   ====================================================== */
+
+@media (max-height: 760px) and (min-width: 901px) {
+  .ps-sidebar-brand {
+    min-height: 92px;
+    padding-top: 14px;
+  }
+
+  .ps-sidebar-nav-row {
+    min-height: 39px;
+  }
+
+  .ps-sidebar-item.MuiListItemButton-root {
+    min-height: 39px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+}
+
+/* ======================================================
+   TABLET AND MOBILE
+   ====================================================== */
+
+@media (max-width: 900px) {
+  .ps-sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1301;
+
+    height: 100dvh;
+    width: min(280px, 85vw);
+    min-width: 0;
+
+    /* Rounded corners only for the mobile drawer */
+    border-radius: 0 14px 14px 0;
+
+    transform: translateX(-105%);
+    visibility: hidden;
+
+    transition:
+      transform 220ms ease,
+      visibility 220ms ease;
+  }
+
+  .ps-sidebar.ps-sidebar-open {
+    transform: translateX(0);
+    visibility: visible;
+  }
+
+  .ps-sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1300;
+    display: block;
+
+    background: rgba(10, 20, 30, 0.48);
+  }
+
+  .ps-sidebar-close.MuiIconButton-root {
+    display: inline-flex;
+    position: absolute;
+    right: 7px;
+    top: 7px;
+  }
+}
+
+/* ======================================================
+   ACCESSIBILITY
+   ====================================================== */
+
+.ps-sidebar-item:focus-visible,
+.ps-sidebar-subitem:focus-visible {
+  outline: 2px solid #ffad33;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ps-sidebar,
+  .ps-sidebar-item,
+  .ps-sidebar-subitem {
+    transition: none !important;
+  }
+}
