@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowBack, CheckCircle, CreditCard, LocalAtm, Payments, PhoneAndroid, Print, PictureAsPdf, Email, Sms, ReceiptLong, Redeem, AccountBalanceWallet, Close, ShoppingCart, SwapHoriz, RestartAlt } from "@mui/icons-material";
+import { ArrowBack, CheckCircle, CreditCard, LocalAtm, Payments, PhoneAndroid, Print, PictureAsPdf, Email, Sms, ReceiptLong, Redeem, AccountBalanceWallet, Close, ShoppingCart, SwapHoriz, RestartAlt, QrCode2, AccountBalance } from "@mui/icons-material";
 import { Alert, Button, Checkbox, FormControlLabel, TextField } from "@mui/material";
 import "./PaymentCheckout.css";
 
@@ -13,7 +13,7 @@ type Props = {
   total: number;
   customer: string;
   onBack: () => void;
-  onComplete: (received: number, notes: string, printReceipt: boolean, method: "cash" | "card") => void;
+  onComplete: (received: number, notes: string, printReceipt: boolean, method: "cash" | "card" | "mobile") => void;
 };
 const money = (n: number) => "Rs. " + n.toLocaleString("en-LK", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const methods = [
@@ -27,25 +27,28 @@ const methods = [
 
 export default function PaymentCheckout({ items, invoice, subtotal, discount, tax, total, onBack, onComplete }: Props) {
   const [amount, setAmount] = useState("");
-  const [method, setMethod] = useState<"cash" | "card">("cash");
+  const [method, setMethod] = useState<"cash" | "card" | "mobile">("cash");
   const [cardNetwork, setCardNetwork] = useState("Visa");
   const [cardReference, setCardReference] = useState("");
   const [cardConfirmed, setCardConfirmed] = useState(false);
+  const [mobileType, setMobileType] = useState<"qr" | "transfer">("qr");
+  const [mobileReference, setMobileReference] = useState("");
+  const [mobileConfirmed, setMobileConfirmed] = useState(false);
   const [notes, setNotes] = useState("");
   const [printReceipt, setPrintReceipt] = useState(true);
   const [warning, setWarning] = useState("");
   const received = amount.trim() === "" ? 0 : Number(amount);
   const validAmount = Number.isFinite(received) && received >= 0;
   const cardReady = cardConfirmed;
-  const canComplete = items.length > 0 && (method === "card" ? cardReady : validAmount && received >= total);
+  const canComplete = items.length > 0 && (method === "mobile" ? mobileConfirmed : method === "card" ? cardReady : validAmount && received >= total);
   const change = method === "cash" && validAmount ? Math.max(0, Math.round((received - total) * 100) / 100) : 0;
 
   const complete = () => {
     if (!canComplete) {
-      setWarning(method === "card" ? "Confirm that the external card terminal approved the payment." : "Enter a valid cash amount that covers the total.");
+      setWarning(method === "mobile" ? "Confirm that the QR or online transfer payment has been received." : method === "card" ? "Confirm that the external card terminal approved the payment." : "Enter a valid cash amount that covers the total.");
       return;
     }
-    onComplete(method === "card" ? total : received, method === "card" ? `${notes}${notes ? " | " : ""}Card ${cardNetwork}, terminal reference: ${cardReference.trim()}` : notes, printReceipt, method);
+    onComplete(method === "cash" ? received : total, method === "card" ? `${notes}${notes ? " | " : ""}Card ${cardNetwork}${cardReference.trim() ? `, terminal reference: ${cardReference.trim()}` : ""}` : method === "mobile" ? `${notes}${notes ? " | " : ""}${mobileType === "qr" ? "QR payment" : "Online transfer"}${mobileReference.trim() ? `, reference: ${mobileReference.trim()}` : ""}` : notes, printReceipt, method);
   };
   useEffect(() => {
     const handleKey = (event: KeyboardEvent) => {
@@ -90,9 +93,9 @@ export default function PaymentCheckout({ items, invoice, subtotal, discount, ta
           <h2><LocalAtm color="success" /> Payment Method</h2>
           <div className="checkout-methods">{methods.map(option => (
             <button type="button" key={option.id} className={`checkout-method checkout-${option.tone} ${option.id === method ? "checkout-selected" : ""}`}
-              disabled={option.id !== "cash" && option.id !== "card"} onClick={() => { if (option.id === "cash" || option.id === "card") { setMethod(option.id); setWarning(""); } }} title={option.id === "card" ? "Record a card payment approved on an external terminal (demo only)" : option.id !== "cash" ? "Coming soon" : "Cash payment"}>
+              disabled={option.id !== "cash" && option.id !== "card" && option.id !== "mobile"} onClick={() => { if (option.id === "cash" || option.id === "card" || option.id === "mobile") { setMethod(option.id); setWarning(""); } }} title={option.id === "card" ? "Manual card terminal confirmation" : option.id === "mobile" ? "Manual QR or online transfer confirmation" : option.id !== "cash" ? "Coming soon" : "Cash payment"}>
               {option.id === method && <CheckCircle className="checkout-method-check" />}
-              {option.icon}<span>{option.label}</span>{option.id === "card" ? <small>Manual terminal</small> : option.id !== "cash" && <small>Coming soon</small>}
+              {option.icon}<span>{option.label}</span>{option.id === "card" ? <small>Manual terminal</small> : option.id === "mobile" ? <small>Manual verification</small> : option.id !== "cash" && <small>Coming soon</small>}
             </button>
           ))}</div>
           {method === "cash" ? <div className="checkout-cash">
@@ -104,7 +107,7 @@ export default function PaymentCheckout({ items, invoice, subtotal, discount, ta
             <div className="checkout-quick">{[1,2,5,10,20,50,100,500,1000,2000,5000].map(n => <button type="button" key={n} onClick={() => { setAmount(String(Math.round(((validAmount ? received : 0) + n) * 100) / 100)); setWarning(""); }}>+{n.toLocaleString()}</button>)}</div>
             <Button variant="outlined" color="success" onClick={() => { setAmount(String(total)); setWarning(""); }}startIcon={<CheckCircle />} >Exact Amount</Button>
             <Button className="checkout-reset" variant="outlined" color="error" onClick={() => { setAmount(""); setWarning(""); }}startIcon={<RestartAlt />} >Reset Amount</Button>
-          </div> : <div className="checkout-cash checkout-card-payment">
+          </div> : method === "card" ? <div className="checkout-cash checkout-card-payment">
             <h3><CreditCard color="success" /> Card Payment</h3>
             <div className="checkout-card-due"><span>Amount to charge on terminal</span><strong>{money(total)}</strong></div>
             
@@ -117,13 +120,38 @@ export default function PaymentCheckout({ items, invoice, subtotal, discount, ta
             <FormControlLabel className="checkout-card-confirm" control={<Checkbox checked={cardConfirmed} onChange={e => { setCardConfirmed(e.target.checked); setWarning(""); }} />} label="I confirm the terminal shows an approved payment for this amount." />
             
             <Button className="checkout-reset" variant="outlined" color="error" startIcon={<RestartAlt />} onClick={() => { setCardReference(""); setCardConfirmed(false); setWarning(""); }}>Reset Card Details</Button>
+          </div> : <div className="checkout-cash checkout-mobile-payment">
+            <h3><PhoneAndroid color="success" /> Mobile Payment</h3>
+            <div className="checkout-card-due"><span>Amount to Pay</span><strong>{money(total)}</strong></div>
+            <label>Payment Type</label>
+            <div className="checkout-mobile-types">
+              <button type="button" className={mobileType === "qr" ? "is-active" : ""} onClick={() => { setMobileType("qr"); setMobileConfirmed(false); setWarning(""); }}><QrCode2 />QR Payment</button>
+              <button type="button" className={mobileType === "transfer" ? "is-active" : ""} onClick={() => { setMobileType("transfer"); setMobileConfirmed(false); setWarning(""); }}><AccountBalance />Online Transfer</button>
+            </div>
+            {mobileType === "qr" ? (
+              <div className="checkout-mobile-info">
+                <strong>QR Payment</strong>
+                <span>Merchant payment QR not configured.</span>
+                <span>Verify the customer's payment using your payment provider before confirming.</span>
+              </div>
+            ) : (
+              <div className="checkout-mobile-info">
+                <strong>Online Transfer</strong>
+                <span>Store bank account details not configured.</span>
+                <span>Verify the received transfer in your bank or wallet account before confirming.</span>
+              </div>
+            )}
+            <label htmlFor="checkout-mobile-ref">Transaction Reference (Optional)</label>
+            <TextField id="checkout-mobile-ref" fullWidth size="small" value={mobileReference} placeholder="Enter reference if available" onChange={e => { setMobileReference(e.target.value); setMobileConfirmed(false); setWarning(""); }} slotProps={{ htmlInput: { maxLength: 80 } }} />
+            <FormControlLabel className="checkout-card-confirm" control={<Checkbox checked={mobileConfirmed} onChange={e => { setMobileConfirmed(e.target.checked); setWarning(""); }} />} label="I confirm this payment has been received and verified." />
+            <Button className="checkout-reset" variant="outlined" color="error" startIcon={<RestartAlt />} onClick={() => { setMobileReference(""); setMobileConfirmed(false); setWarning(""); }}>Reset Payment Details</Button>
           </div>}
         </section>
         <section className="checkout-card checkout-summary">
           <h2 className="checkout-summary-title"><CheckCircle /> Payment Summary</h2>
           <div className="checkout-summary-row"><span>Total Amount</span><strong>{money(total)}</strong></div>
-          <div className="checkout-summary-row"><span>Amount Received</span><strong>{money(method === "card" ? (cardReady ? total : 0) : (validAmount ? received : 0))}</strong></div>
-          <div className="checkout-change"><strong>{method === "card" ? "Card Status" : "Change"}</strong><strong>{method === "card" ? (cardReady ? "Terminal confirmed" : "Awaiting confirmation") : money(change)}</strong></div>
+          <div className="checkout-summary-row"><span>Amount Received</span><strong>{money(method === "mobile" ? (mobileConfirmed ? total : 0) : method === "card" ? (cardReady ? total : 0) : (validAmount ? received : 0))}</strong></div>
+          <div className="checkout-change"><strong>{method === "mobile" ? "Payment Status" : method === "card" ? "Card Status" : "Change"}</strong><strong>{method === "mobile" ? (mobileConfirmed ? "Manually confirmed" : "Awaiting verification") : method === "card" ? (cardReady ? "Terminal confirmed" : "Awaiting confirmation") : money(change)}</strong></div>
           <div className="checkout-receipt-options">
             <div className="checkout-receipt-heading">Receipt Options</div>
             <FormControlLabel control={<Checkbox checked={printReceipt} onChange={e => setPrintReceipt(e.target.checked)} />} label={<span><Print fontSize="small" /> Print Receipt <small>(demo preference)</small></span>} />
