@@ -1,0 +1,89 @@
+.stk-panel{position:fixed;z-index:1400;right:clamp(10px,3vw,36px);bottom:12px;width:min(760px,calc(100vw - 20px));max-height:min(62dvh,620px);overflow-y:auto;background:#fff;border:1px solid #a6d5b0;border-radius:16px;box-shadow:0 12px 45px #09271340;padding:14px;display:grid;gap:10px}.stk-heading{display:flex;align-items:center;justify-content:space-between}.stk-modes,.stk-controls{display:flex;gap:8px;flex-wrap:wrap}.stk-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(48px,1fr));gap:6px}.stk-key{min-height:45px;padding:6px 3px;border:1px solid #cbd9d0;border-radius:9px;background:#f7fbf8;color:#183625;font-size:20px;font-family:"Noto Sans Sinhala","Iskoola Pota",sans-serif;cursor:pointer;touch-action:manipulation}.stk-key:hover{background:#e2f5e7}.stk-key-active{background:#006c14;color:#fff}.stk-forms{border:1px solid #9dd7aa;background:#f2fff4;padding:10px;border-radius:12px;display:grid;gap:8px}.stk-form{background:#fff}.stk-english{display:grid;gap:8px}.stk-controls button{min-height:42px}@media(max-width:520px){.stk-panel{right:5px;bottom:5px;width:calc(100vw - 10px);max-height:65dvh;padding:9px}.stk-grid{grid-template-columns:repeat(auto-fit,minmax(40px,1fr));gap:4px}.stk-key{min-height:43px;font-size:18px}.stk-controls button{flex:1}}
+/* Unified Sinhala letters on the left; forms for the selected consonant on the right. */
+.stk-sinhala-layout{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);gap:12px;align-items:start}
+.stk-left-pane,.stk-right-pane{min-width:0;display:grid;gap:9px}
+.stk-right-pane{background:#f2fff4;border:1px solid #9dd7aa;border-radius:12px;padding:10px}
+.stk-letter-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.stk-form-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.stk-letter-grid .stk-key,.stk-form-grid .stk-key{min-width:0}
+@media(max-width:680px){.stk-sinhala-layout{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:7px}.stk-letter-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}.stk-form-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}.stk-right-pane{padding:6px}.stk-letter-grid .stk-key,.stk-form-grid .stk-key{font-size:17px;min-height:41px}}
+
+/* Embedded keyboard: occupies its own layout row, never covers products or bill. */
+.stk-panel{position:relative;inset:auto;right:auto;bottom:auto;z-index:auto;width:100%;max-height:100%;height:100%;min-height:0;overflow-y:auto;box-shadow:0 2px 12px #09271318;border-radius:12px}
+.pos-page:has(> .stk-panel) .pos-workspace{min-height:0;flex:1 1 0}
+.pos-page > .stk-panel{flex:0 0 clamp(220px,34dvh,335px);height:clamp(220px,34dvh,335px)}
+.pos-page:has(> .stk-panel) .pos-products-panel,.pos-page:has(> .stk-panel) .pos-bill-panel{min-height:0}
+.pos-page:has(> .stk-panel) .pos-product-grid{overflow-y:auto}
+.pos-page:has(> .stk-panel) .pos-product-card{min-height:0}
+.pos-page:has(> .stk-panel) .pos-category-sidebar{overflow-y:auto}
+@media(max-height:760px){.pos-page > .stk-panel{flex-basis:clamp(190px,32dvh,260px);height:clamp(190px,32dvh,260px)}}
+@media(max-width:850px){.pos-page:has(> .stk-panel){height:auto;min-height:100%;overflow:visible}.pos-page:has(> .stk-panel) .pos-workspace{min-height:520px;flex:none}.pos-page > .stk-panel{height:300px;flex-basis:300px}}
+
+/* Overlay ONLY the lower area indicated in the POS screenshot.
+   Keep product search, upper product rows and bill items visible. */
+.pos-workspace{position:relative}
+.pos-workspace > .pos-keyboard-overlay{
+  position:absolute;
+  z-index:20;
+  left:0;
+  right:0;
+  bottom:0;
+  height:clamp(220px,31%,330px);
+  min-height:0;
+  pointer-events:none;
+}
+.pos-keyboard-overlay > .stk-panel{
+  position:relative;
+  inset:auto;
+  width:100%;
+  height:100%;
+  max-height:none;
+  overflow-y:auto;
+  pointer-events:auto;
+  border:1px solid #a6d5b0;
+  border-radius:12px;
+  box-shadow:0 -6px 24px #09271324;
+}
+@media(max-height:750px){
+  .pos-workspace > .pos-keyboard-overlay{height:clamp(185px,35%,275px)}
+}
+
+/* Compact, readable touch keys: preserve Sinhala glyph size while reducing empty padding. */
+.stk-panel{padding:8px;gap:6px}
+.stk-topbar{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.stk-topbar .stk-modes{gap:5px}
+.stk-topbar .stk-modes button{min-width:0;min-height:30px;padding:3px 10px;font-size:12px}
+.stk-sinhala-layout{gap:8px}
+.stk-left-pane,.stk-right-pane{gap:4px}
+.stk-right-pane{padding:6px}
+.stk-letter-grid{grid-template-columns:repeat(auto-fit,minmax(37px,1fr));gap:3px}
+.stk-form-grid{grid-template-columns:repeat(auto-fit,minmax(48px,1fr));gap:4px}
+.stk-letter-grid .stk-key,.stk-form-grid .stk-key{min-height:34px;height:36px;padding:1px 2px;font-size:20px;line-height:1.25;border-radius:6px}
+.stk-controls{gap:5px}
+.stk-controls button{min-height:32px;padding:3px 10px;font-size:12px}
+@media(max-width:680px){.stk-letter-grid{grid-template-columns:repeat(auto-fit,minmax(34px,1fr))}.stk-form-grid{grid-template-columns:repeat(auto-fit,minmax(44px,1fr))}.stk-letter-grid .stk-key,.stk-form-grid .stk-key{min-height:34px;height:36px;font-size:20px}}
+
+/* Footer controls: editing actions left, language modes right; close at top edge. */
+.stk-panel{position:relative;padding-top:7px}
+.stk-close{position:sticky!important;top:0;align-self:end;justify-self:end;z-index:2;margin-bottom:-34px!important;background:#fff!important}
+.stk-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:4px}
+.stk-footer .stk-controls{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.stk-footer .stk-modes{display:flex;align-items:center;gap:5px;margin-left:auto;flex-wrap:wrap}
+.stk-footer .stk-modes button{min-width:0;min-height:32px;padding:3px 10px;font-size:12px}
+@media(max-width:680px){.stk-footer{gap:6px}.stk-footer .stk-modes{margin-left:auto}}
+
+/* Compact, clearly identifiable close action. */
+.stk-panel .stk-close{
+  width:27px;
+  height:27px;
+  padding:3px;
+  min-width:27px;
+  color:#c62828;
+  background:#fff1f0!important;
+  border:1px solid #f0b5b5;
+  border-radius:7px;
+  margin-bottom:-27px!important;
+}
+.stk-panel .stk-close:hover{background:#ffd9d6!important;color:#a31919}
+.stk-panel .stk-close svg{width:17px;height:17px}
+.stk-panel .stk-close:focus-visible{outline:2px solid #c62828;outline-offset:2px}

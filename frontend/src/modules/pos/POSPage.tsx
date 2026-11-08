@@ -37,6 +37,7 @@ import {
 } from "@mui/icons-material";
 
 import "./pos.css";
+import SinhalaTouchKeyboard from "./SinhalaTouchKeyboard";
 
 type Category =
   | "Groceries"
@@ -53,6 +54,7 @@ type Unit = "pcs" | "kg" | "L";
 type Product = {
   id: number;
   name: string;
+  sinhalaName?: string;
   category: Category;
   price: number;
   stock: number;
@@ -123,6 +125,7 @@ const products: Product[] = [
   {
     id: 1,
     name: "Basmati Rice 5 kg",
+    sinhalaName: "බාස්මතී සහල් කිලෝ 5",
     category: "Groceries",
     price: 4900,
     stock: 72,
@@ -135,6 +138,7 @@ const products: Product[] = [
   {
     id: 2,
     name: "Sunflower Oil 1 L",
+    sinhalaName: "සූරියකාන්ත තෙල් ලීටර් 1",
     category: "Groceries",
     price: 1450,
     stock: 48,
@@ -147,6 +151,7 @@ const products: Product[] = [
   {
     id: 3,
     name: "Milk Powder 400 g",
+    sinhalaName: "කිරිපිටි ග්‍රෑම් 400",
     category: "Groceries",
     price: 2350,
     stock: 15,
@@ -159,6 +164,7 @@ const products: Product[] = [
   {
     id: 4,
     name: "Sugar 1 kg",
+    sinhalaName: "සීනි කිලෝ 1",
     category: "Groceries",
     price: 280,
     stock: 104,
@@ -171,6 +177,7 @@ const products: Product[] = [
   {
     id: 5,
     name: "Toothpaste 120 g",
+    sinhalaName: "දන්තාලේප",
     category: "Personal Care",
     price: 380,
     stock: 96,
@@ -195,6 +202,7 @@ const products: Product[] = [
   {
     id: 7,
     name: "Tea 200 g",
+    sinhalaName: "තේ කොළ",
     category: "Groceries",
     price: 640,
     stock: 36,
@@ -207,6 +215,7 @@ const products: Product[] = [
   {
     id: 8,
     name: "Eggs (10 pcs)",
+    sinhalaName: "බිත්තර",
     category: "Groceries",
     price: 420,
     stock: 120,
@@ -219,6 +228,7 @@ const products: Product[] = [
   {
     id: 9,
     name: "Tomatoes",
+    sinhalaName: "තක්කාලි",
     category: "Vegetables",
     price: 320,
     stock: 42.5,
@@ -231,6 +241,7 @@ const products: Product[] = [
   {
     id: 10,
     name: "Potatoes",
+    sinhalaName: "අර්තාපල්",
     category: "Vegetables",
     price: 260,
     stock: 75,
@@ -243,6 +254,7 @@ const products: Product[] = [
   {
     id: 11,
     name: "Carrots",
+    sinhalaName: "කැරට්",
     category: "Vegetables",
     price: 380,
     stock: 28.5,
@@ -255,6 +267,7 @@ const products: Product[] = [
   {
     id: 12,
     name: "Onions",
+    sinhalaName: "ලූනු",
     category: "Vegetables",
     price: 240,
     stock: 64,
@@ -267,6 +280,7 @@ const products: Product[] = [
   {
     id: 13,
     name: "Cabbage",
+    sinhalaName: "ගෝවා",
     category: "Vegetables",
     price: 210,
     stock: 35,
@@ -279,6 +293,7 @@ const products: Product[] = [
   {
     id: 14,
     name: "Red Apples",
+    sinhalaName: "ඇපල්",
     category: "Fruits",
     price: 980,
     stock: 24,
@@ -291,6 +306,7 @@ const products: Product[] = [
   {
     id: 15,
     name: "Bananas",
+    sinhalaName: "කෙසෙල්",
     category: "Fruits",
     price: 290,
     stock: 38,
@@ -303,6 +319,7 @@ const products: Product[] = [
   {
     id: 16,
     name: "Oranges",
+    sinhalaName: "දොඩම්",
     category: "Fruits",
     price: 760,
     stock: 26,
@@ -327,6 +344,7 @@ const products: Product[] = [
   {
     id: 18,
     name: "Fresh Milk",
+    sinhalaName: "නැවුම් කිරි",
     category: "Beverages",
     price: 450,
     stock: 65,
@@ -375,6 +393,7 @@ const products: Product[] = [
   {
     id: 22,
     name: "Chocolate Biscuits",
+    sinhalaName: "චොකලට් බිස්කට්",
     category: "Snacks",
     price: 250,
     stock: 80,
@@ -422,6 +441,7 @@ export default function POSPage() {
     useState<CategoryFilter>("All Products");
 
   const [search, setSearch] = useState("");
+  const [touchTarget, setTouchTarget] = useState<"search" | "customer" | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
 
   const [cart, setCart] = useState<CartItem[]>([
@@ -456,6 +476,7 @@ export default function POSPage() {
   const [amountReceived, setAmountReceived] = useState("");
 
   const searchRef = useRef<HTMLInputElement>(null);
+  const customerRef = useRef<HTMLInputElement>(null);
 
   const filtered = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -468,6 +489,7 @@ export default function POSPage() {
       const matchesSearch =
         !query ||
         product.name.toLowerCase().includes(query) ||
+        product.sinhalaName?.toLowerCase().includes(query) ||
         product.barcode.includes(query) ||
         product.sku.toLowerCase().includes(query);
 
@@ -928,6 +950,8 @@ export default function POSPage() {
                   />
                 </label>
 
+                <button type="button" className="pos-scan-button" onClick={() => { setTouchTarget(current => current === "search" ? null : "search"); }} aria-label="Toggle Sinhala touch keyboard">⌨ සිංහල</button>
+
                 <button
                   className="pos-scan-button"
                   onClick={() => setModal("scan")}
@@ -948,7 +972,10 @@ export default function POSPage() {
                       key={product.id}
                       className="pos-product-card"
                       disabled={product.stock <= 0}
-                      onClick={() => addProduct(product)}
+                      onClick={() => {
+                        addProduct(product);
+                        changeSearch("");
+                      }}
                     >
                       <div
                         className="pos-product-image"
@@ -961,6 +988,7 @@ export default function POSPage() {
 
                       <div className="pos-product-name">
                         {product.name}
+                        {product.sinhalaName && <small style={{ display: "block", color: "#246a36", marginTop: 3 }}>{product.sinhalaName}</small>}
                       </div>
 
                       <div className="pos-product-price">
@@ -1227,6 +1255,16 @@ export default function POSPage() {
             Proceed to Payment (F9)
           </button>
         </section>
+        {touchTarget === "search" && (
+          <div className="pos-keyboard-overlay">
+            <SinhalaTouchKeyboard
+              value={search}
+              onChange={changeSearch}
+              inputRef={searchRef}
+              onClose={() => setTouchTarget(null)}
+            />
+          </div>
+        )}
       </div>
 
       {/* DIALOGS */}
@@ -1385,11 +1423,22 @@ export default function POSPage() {
               <TextField
                 fullWidth
                 label="Customer Name"
+                inputRef={customerRef}
                 value={customerInput}
                 onChange={(event) =>
                   setCustomerInput(event.target.value)
                 }
               />
+
+              <Button variant="outlined" onClick={() => setTouchTarget(current => current === "customer" ? null : "customer")}>⌨ Sinhala Touch Keyboard</Button>
+              {touchTarget === "customer" && (
+                <SinhalaTouchKeyboard
+                  value={customerInput}
+                  onChange={setCustomerInput}
+                  inputRef={customerRef}
+                  onClose={() => setTouchTarget(null)}
+                />
+              )}
 
               <Button
                 variant="contained"
