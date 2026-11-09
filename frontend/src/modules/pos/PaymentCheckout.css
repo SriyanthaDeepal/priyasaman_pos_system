@@ -163,3 +163,12 @@
   .checkout-columns{height:auto;min-height:auto;flex:none}
   .checkout-card{overflow:visible}
 }
+
+/* Keep content-driven payment panels compact on tall desktop displays.
+   Bill Details alone fills the available height so its item list can grow. */
+@media (min-width:1201px) and (min-height:621px){
+  .checkout-columns{align-items:start}
+  .checkout-details{height:100%;align-self:stretch}
+  .checkout-card.checkout-summary,
+  .checkout-card.checkout-method{height:auto;align-self:start;max-height:100%;overflow-y:auto}
+}
