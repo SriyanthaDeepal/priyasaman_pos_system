@@ -8,6 +8,7 @@ import Sidebar from "./Sidebar";
 import type { SidebarPage } from "./Sidebar";
 
 import Header from "./Header";
+import FeedbackSnackbar from "../../components/common/FeedbackSnackbar";
 
 import POSPage from "../../modules/pos/POSPage";
 import SalesPage from "../../modules/sales/SalesPage";
@@ -34,6 +35,7 @@ export default function MainLayout({
 
   const [returnInvoice, setReturnInvoice] = useState<ExchangeSale | null>(null);
   const [invoiceScanRequested, setInvoiceScanRequested] = useState(false);
+  const [feedback, setFeedback] = useState("");
   const [mobileSidebarOpen, setMobileSidebarOpen] =
     useState(false);
 
@@ -61,7 +63,7 @@ export default function MainLayout({
         return <POSPage />;
 
       case "sales":
-        return returnInvoice ? <ReturnExchangePage sale={returnInvoice} onBack={() => setReturnInvoice(null)} /> : <SalesPage key={invoiceScanRequested ? "invoice-scan" : "sales"} initialScanOpen={invoiceScanRequested} onNewSale={() => handleNavigate("pos")} onReturnRefund={sale => { setInvoiceScanRequested(false); setReturnInvoice(sale); }} />;
+        return returnInvoice ? <ReturnExchangePage sale={returnInvoice} onBack={() => setReturnInvoice(null)} onComplete={() => { setReturnInvoice(null); setFeedback("Return / exchange preview confirmed successfully."); }} /> : <SalesPage key={invoiceScanRequested ? "invoice-scan" : "sales"} initialScanOpen={invoiceScanRequested} onNewSale={() => handleNavigate("pos")} onReturnRefund={sale => { setInvoiceScanRequested(false); setReturnInvoice(sale); }} />;
 
       default:
         return children;
@@ -81,6 +83,7 @@ export default function MainLayout({
         bgcolor: "#fbfcfe",
       }}
     >
+      <FeedbackSnackbar open={Boolean(feedback)} message={feedback} onClose={() => setFeedback("")} />
       {/* SIDEBAR */}
       <Sidebar
         activePage={activePage}
