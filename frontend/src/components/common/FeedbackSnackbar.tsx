@@ -21,9 +21,9 @@ export default function FeedbackSnackbar({
       onClose={(_, reason) => {
         if (reason !== "clickaway") onClose();
       }}
-      anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
       sx={{
-        top: { xs: 20, sm: 24 },
+        bottom: { xs: 20, sm: 24 },
         right: { xs: 12, sm: 24 },
         left: { xs: 12, sm: "auto" },
         maxWidth: { xs: "calc(100vw - 24px)", sm: 440 },
