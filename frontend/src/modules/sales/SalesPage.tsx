@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { BarChart, CalendarMonth, AccessTime, KeyboardArrowDown, CheckCircle, Close, Description, Email, FilterAlt, LocalPrintshop, PersonOutlined, PointOfSale, ReceiptLong, Replay, Search, Visibility } from "@mui/icons-material";
+import { BarChart, CalendarMonth, AccessTime, KeyboardArrowDown, CheckCircle, Close, Description, Email, LocalPrintshop, PersonOutlined, PointOfSale, ReceiptLong, Replay, Search, Visibility } from "@mui/icons-material";
 import "./SalesPage.css";
 import BoundedTimePicker from "./BoundedTimePicker";
 
@@ -66,6 +66,5 @@ export default function SalesPage({onNewSale}:{onNewSale:()=>void}){
       <div className="sales-actions"><button onClick={()=>notify("Print")}><LocalPrintshop/> Print (F2)</button><button onClick={()=>notify("PDF export")}><Description/> PDF</button><button onClick={()=>notify("Email receipt")}><Email/> Email</button><button onClick={()=>changeStatus("Returned")} disabled={!active||active.status!=="Completed"}><Replay/> Return / Refund</button><button onClick={()=>notify("Duplicate sale")}><Description/> Duplicate Sale</button><button className="danger" onClick={()=>changeStatus("Voided")} disabled={!active||active.status!=="Completed"}><Close/> Void Sale</button></div>
     </aside></div>
     {notice&&<div className="sales-notice" role="status"><span>{notice}</span><button onClick={()=>setNotice("")} aria-label="Dismiss"><Close/></button></div>}
-    <div className="sales-demo-label"><FilterAlt/> Demonstration data only — sales, refunds, and voids are not connected to the backend.</div>
   </div>;
 }
