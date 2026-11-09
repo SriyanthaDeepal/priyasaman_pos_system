@@ -64,3 +64,43 @@
   .inv-choice-row button{font-size:10px}
   .inv-lines-head .inv-search{max-width:220px}
 }
+
+/* Compact header and KPI strip; keep both overview panels aligned. */
+.inv-heading{margin-bottom:12px;min-height:54px}
+.inv-heading-title{gap:10px}
+.inv-heading-icon svg{font-size:38px}
+.inv-heading h1{font-size:clamp(21px,1.8vw,28px);line-height:1.15}
+.inv-heading p{font-size:12px;margin-top:2px}
+.inv-heading-actions:empty{display:none}
+.inv-kpis{margin-bottom:12px}
+.inv-kpi{min-height:64px;max-height:78px}
+.inv-kpi>span{width:38px;height:38px;font-size:23px}
+.inv-kpi div{gap:3px}
+.inv-kpi strong{font-size:clamp(15px,1.25vw,21px)}
+.inv-overview-grid{align-items:stretch}
+.inv-overview-grid>.inv-panel{min-width:0;width:100%;max-width:100%}
+.inv-detail{align-self:stretch;display:flex;flex-direction:column}
+.inv-catalog{display:flex;flex-direction:column}
+.inv-catalog .inv-table-scroll{flex:1 1 auto}
+.inv-table-scroll{min-width:0;overflow-x:auto;overflow-y:visible}
+.inv-catalog .inv-table{width:100%;min-width:0;table-layout:auto;font-size:clamp(9px,.7vw,11px)}
+.inv-catalog .inv-table th,.inv-catalog .inv-table td{padding:8px clamp(3px,.4vw,7px)}
+.inv-catalog .inv-table th{white-space:normal;line-height:1.2}
+.inv-catalog .inv-product-name{gap:4px}
+.inv-catalog .inv-emoji{font-size:21px;flex-shrink:0}
+.inv-catalog .inv-product-name strong{white-space:normal;overflow-wrap:anywhere;line-height:1.25}
+.inv-catalog .inv-table td small{font-size:9px;overflow-wrap:anywhere}
+.inv-catalog .inv-status{padding:4px 6px;min-width:0}
+.inv-detail-head{flex-wrap:wrap}
+.inv-detail-head>div{flex:1 1 130px}
+.inv-detail .inv-muted{line-height:1.5}
+.inv-categories{margin-bottom:9px}
+.inv-search-row{margin-bottom:10px}
+.inv-table-footer{margin-top:auto}
+@container (max-width:1050px){
+  .inv-catalog .inv-table{font-size:9px}
+  .inv-catalog .inv-table th,.inv-catalog .inv-table td{padding:7px 3px}
+  .inv-catalog .inv-emoji{font-size:17px}
+  .inv-catalog .inv-stock{padding:4px 6px}
+  .inv-detail-kpis strong{font-size:12px}
+}
