@@ -153,7 +153,7 @@ export default function ReturnExchangePage({ sale, onBack }: { sale: ExchangeSal
           <tbody>{sale.items.map((item,index)=><tr key={index}><td><span className="rex-original-row-number">{index+1}</span><strong>{item.name}</strong></td><td>{item.qty}</td><td>{money(item.price)}</td><td>{money(item.qty*item.price)}</td></tr>)}</tbody>
         </table></div>
         <div className="rex-original-grand-total"><span>Original Subtotal</span><strong>{money(originalSubtotal)}</strong></div>
-        <p className="rex-original-disclaimer">Demonstration invoice summary. Original sale taxes and discounts are not recalculated here.</p>
+        
       </DialogContent>
     </Dialog>
     <Dialog open={scanner!==null} onClose={() => setScanner(null)} fullWidth maxWidth="sm" slotProps={{paper:{sx:{borderRadius:2.5}}}}><DialogTitle sx={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>{scanner==="return"?"Scan Returned Item":"Scan Replacement Item"}<IconButton onClick={() => setScanner(null)} aria-label="Close scanner"><Close/></IconButton></DialogTitle><DialogContent dividers><BarcodeScanner label="Product barcode / SKU" placeholder="Scan or enter product barcode" submitLabel="Add Item" onScan={scan}/></DialogContent></Dialog>
