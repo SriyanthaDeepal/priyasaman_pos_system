@@ -187,3 +187,6 @@
 
 /* Keep customer icon inline without breaking native table-cell layout. */
 .sales-page .sales-table td:nth-child(3) svg{display:inline-block;vertical-align:middle;margin-right:5px;flex-shrink:0}
+
+/* Separate KPI cards from the transactions panel at all viewport sizes. */
+.sales-page .sales-left>.sales-stats{margin-bottom:clamp(10px,1.1vw,14px)}
