@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import { Button, Dialog, DialogContent, DialogTitle, IconButton, MenuItem, Select } from "@mui/material";
 import BarcodeScanner from "../../components/common/BarcodeScanner/BarcodeScanner";
-import { Add, ArrowBack, ArrowForward, CheckCircle, DeleteOutlined, Inventory2Outlined, LocalShippingOutlined, Search, SwapHoriz, Tune } from "@mui/icons-material";
+import { Add, ArrowBack, ArrowForward, CheckCircle, DeleteOutlined, Inventory2Outlined, Search, SwapHoriz, Tune } from "@mui/icons-material";
 import "./InventoryPage.css";
 
 export type InventoryView = "overview" | "adjustment" | "transfer";
