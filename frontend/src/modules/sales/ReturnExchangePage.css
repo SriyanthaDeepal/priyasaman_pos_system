@@ -619,3 +619,23 @@
 .rex-page .rex-keyboard-dock .stk-english{
  margin-top:auto;
 }
+
+/* Optional cash note/coin counter, visible only for Cash settlements. */
+.rex-page .rex-cash-denominations{margin:12px 0 15px;padding:12px;border:1px solid #cdebd6;border-radius:12px;background:#f9fffa;min-width:0}
+.rex-page .rex-cash-heading{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+.rex-page .rex-cash-heading h3{margin:0;font-size:13px}
+.rex-page .rex-cash-heading small{font-size:10px;font-weight:500;color:#607587}
+.rex-page .rex-cash-heading>button{padding:5px 9px;border:1px solid #d7e1e7;border-radius:7px;background:#fff;color:#345;cursor:pointer}
+.rex-page .rex-cash-heading>button:disabled{opacity:.45;cursor:default}
+.rex-page .rex-cash-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+.rex-page .rex-cash-denom{min-width:0;display:flex;flex-direction:column;gap:3px}
+.rex-page .rex-cash-add{width:100%;min-height:36px;padding:5px 2px;border:1px solid #aee6bd;border-radius:9px;background:#dcfbe5;color:#006c2b;font:inherit;font-size:12px;font-weight:750;cursor:pointer}
+.rex-page .rex-cash-add:hover{background:#c5f5d2}
+.rex-page .rex-cash-counter{display:flex;align-items:center;justify-content:space-between;gap:2px;font-size:12px;font-weight:750}
+.rex-page .rex-cash-counter button{width:24px;height:23px;border:1px solid #cddfe0;border-radius:5px;background:#fff;color:#00752e;cursor:pointer}
+.rex-page .rex-cash-counted{display:flex;flex-direction:column;gap:6px;margin-top:11px;padding-top:9px;border-top:1px solid #dcebe2;font-size:11px}
+.rex-page .rex-cash-counted span{display:flex;justify-content:space-between;gap:8px}
+.rex-page .rex-cash-counted strong{font-size:12px;font-variant-numeric:tabular-nums}
+@media(max-width:1100px){.rex-page .rex-cash-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:760px){.rex-page .rex-cash-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:380px){.rex-page .rex-cash-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
