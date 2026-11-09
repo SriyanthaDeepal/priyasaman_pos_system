@@ -8,8 +8,12 @@ import Sidebar from "./Sidebar";
 import type { SidebarPage } from "./Sidebar";
 
 import Header from "./Header";
+import FeedbackSnackbar from "../../components/common/FeedbackSnackbar";
 
 import POSPage from "../../modules/pos/POSPage";
+import SalesPage from "../../modules/sales/SalesPage";
+import ReturnExchangePage from "../../modules/sales/ReturnExchangePage";
+import type { ExchangeSale } from "../../modules/sales/ReturnExchangePage";
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -29,6 +33,10 @@ export default function MainLayout({
      MOBILE SIDEBAR
      ========================================== */
 
+  const [returnInvoice, setReturnInvoice] = useState<ExchangeSale | null>(null);
+  const [invoiceScanRequested, setInvoiceScanRequested] = useState(false);
+  const [feedback, setFeedback] = useState("");
+  const [returnedInvoices, setReturnedInvoices] = useState<string[]>([]);
   const [mobileSidebarOpen, setMobileSidebarOpen] =
     useState(false);
 
@@ -38,6 +46,8 @@ export default function MainLayout({
 
   const handleNavigate = (page: SidebarPage) => {
     setActivePage(page);
+    setReturnInvoice(null);
+    setInvoiceScanRequested(false);
     setMobileSidebarOpen(false);
   };
 
@@ -52,6 +62,9 @@ export default function MainLayout({
 
       case "pos":
         return <POSPage />;
+
+      case "sales":
+        return returnInvoice ? <ReturnExchangePage sale={returnInvoice} onBack={() => setReturnInvoice(null)} onComplete={() => { setReturnedInvoices(previous => previous.includes(returnInvoice.invoice) ? previous : [...previous, returnInvoice.invoice]); setReturnInvoice(null); setFeedback("Return / exchange completed successfully."); }} /> : <SalesPage key={invoiceScanRequested ? "invoice-scan" : "sales"} initialScanOpen={invoiceScanRequested} returnedInvoices={returnedInvoices} onNewSale={() => handleNavigate("pos")} onReturnRefund={sale => { setInvoiceScanRequested(false); setReturnInvoice(sale); }} />;
 
       default:
         return children;
@@ -71,6 +84,7 @@ export default function MainLayout({
         bgcolor: "#fbfcfe",
       }}
     >
+      <FeedbackSnackbar open={Boolean(feedback)} message={feedback} onClose={() => setFeedback("")} />
       {/* SIDEBAR */}
       <Sidebar
         activePage={activePage}

@@ -23,7 +23,6 @@ import {
 } from "@mui/material";
 
 import {
-  CheckCircleOutlined,
   Close,
   CreditCard,
   DeleteOutlined,
@@ -37,33 +36,11 @@ import {
 } from "@mui/icons-material";
 
 import "./pos.css";
+import { products } from "./productCatalog";
+import type { Product } from "./productCatalog";
 import SinhalaTouchKeyboard from "./SinhalaTouchKeyboard";
-
-type Category =
-  | "Groceries"
-  | "Vegetables"
-  | "Fruits"
-  | "Beverages"
-  | "Household"
-  | "Personal Care"
-  | "Snacks"
-  | "Others";
-
-type Unit = "pcs" | "kg" | "L";
-
-type Product = {
-  id: number;
-  name: string;
-  sinhalaName?: string;
-  category: Category;
-  price: number;
-  stock: number;
-  unit: Unit;
-  emoji: string;
-  color: string;
-  barcode: string;
-  sku: string;
-};
+import PaymentCheckout from "./PaymentCheckout";
+import AppSnackbar from "../../components/common/AppSnackbar";
 
 type CartItem = {
   product: Product;
@@ -77,7 +54,6 @@ type ModalType =
   | "discount"
   | "clear"
   | "customer"
-  | "payment"
   | null;
 
 type HeldSale = {
@@ -121,289 +97,6 @@ const categoryIcons: Record<CategoryFilter, string> = {
   Others: "•••",
 };
 
-const products: Product[] = [
-  {
-    id: 1,
-    name: "Basmati Rice 5 kg",
-    sinhalaName: "බාස්මතී සහල් කිලෝ 5",
-    category: "Groceries",
-    price: 4900,
-    stock: 72,
-    unit: "pcs",
-    emoji: "🍚",
-    color: "#fff6e9",
-    barcode: "100000000001",
-    sku: "GRC-001",
-  },
-  {
-    id: 2,
-    name: "Sunflower Oil 1 L",
-    sinhalaName: "සූරියකාන්ත තෙල් ලීටර් 1",
-    category: "Groceries",
-    price: 1450,
-    stock: 48,
-    unit: "pcs",
-    emoji: "🫗",
-    color: "#fff9e7",
-    barcode: "100000000002",
-    sku: "GRC-002",
-  },
-  {
-    id: 3,
-    name: "Milk Powder 400 g",
-    sinhalaName: "කිරිපිටි ග්‍රෑම් 400",
-    category: "Groceries",
-    price: 2350,
-    stock: 15,
-    unit: "pcs",
-    emoji: "🥛",
-    color: "#eaf5ff",
-    barcode: "100000000003",
-    sku: "GRC-003",
-  },
-  {
-    id: 4,
-    name: "Sugar 1 kg",
-    sinhalaName: "සීනි කිලෝ 1",
-    category: "Groceries",
-    price: 280,
-    stock: 104,
-    unit: "pcs",
-    emoji: "🧂",
-    color: "#f7f7f7",
-    barcode: "100000000004",
-    sku: "GRC-004",
-  },
-  {
-    id: 5,
-    name: "Toothpaste 120 g",
-    sinhalaName: "දන්තාලේප",
-    category: "Personal Care",
-    price: 380,
-    stock: 96,
-    unit: "pcs",
-    emoji: "🪥",
-    color: "#edf7ff",
-    barcode: "100000000005",
-    sku: "PER-001",
-  },
-  {
-    id: 6,
-    name: "Dish Wash Liquid 500 ml",
-    category: "Household",
-    price: 650,
-    stock: 58,
-    unit: "pcs",
-    emoji: "🧴",
-    color: "#effff1",
-    barcode: "100000000006",
-    sku: "HOU-001",
-  },
-  {
-    id: 7,
-    name: "Tea 200 g",
-    sinhalaName: "තේ කොළ",
-    category: "Groceries",
-    price: 640,
-    stock: 36,
-    unit: "pcs",
-    emoji: "🍵",
-    color: "#fff1eb",
-    barcode: "100000000007",
-    sku: "GRC-005",
-  },
-  {
-    id: 8,
-    name: "Eggs (10 pcs)",
-    sinhalaName: "බිත්තර",
-    category: "Groceries",
-    price: 420,
-    stock: 120,
-    unit: "pcs",
-    emoji: "🥚",
-    color: "#fff7ed",
-    barcode: "100000000008",
-    sku: "GRC-006",
-  },
-  {
-    id: 9,
-    name: "Tomatoes",
-    sinhalaName: "තක්කාලි",
-    category: "Vegetables",
-    price: 320,
-    stock: 42.5,
-    unit: "kg",
-    emoji: "🍅",
-    color: "#fff0ed",
-    barcode: "100000000009",
-    sku: "VEG-001",
-  },
-  {
-    id: 10,
-    name: "Potatoes",
-    sinhalaName: "අර්තාපල්",
-    category: "Vegetables",
-    price: 260,
-    stock: 75,
-    unit: "kg",
-    emoji: "🥔",
-    color: "#fff5e6",
-    barcode: "100000000010",
-    sku: "VEG-002",
-  },
-  {
-    id: 11,
-    name: "Carrots",
-    sinhalaName: "කැරට්",
-    category: "Vegetables",
-    price: 380,
-    stock: 28.5,
-    unit: "kg",
-    emoji: "🥕",
-    color: "#fff2e8",
-    barcode: "100000000011",
-    sku: "VEG-003",
-  },
-  {
-    id: 12,
-    name: "Onions",
-    sinhalaName: "ලූනු",
-    category: "Vegetables",
-    price: 240,
-    stock: 64,
-    unit: "kg",
-    emoji: "🧅",
-    color: "#fff8eb",
-    barcode: "100000000012",
-    sku: "VEG-004",
-  },
-  {
-    id: 13,
-    name: "Cabbage",
-    sinhalaName: "ගෝවා",
-    category: "Vegetables",
-    price: 210,
-    stock: 35,
-    unit: "kg",
-    emoji: "🥬",
-    color: "#edffef",
-    barcode: "100000000013",
-    sku: "VEG-005",
-  },
-  {
-    id: 14,
-    name: "Red Apples",
-    sinhalaName: "ඇපල්",
-    category: "Fruits",
-    price: 980,
-    stock: 24,
-    unit: "kg",
-    emoji: "🍎",
-    color: "#fff0f0",
-    barcode: "100000000014",
-    sku: "FRT-001",
-  },
-  {
-    id: 15,
-    name: "Bananas",
-    sinhalaName: "කෙසෙල්",
-    category: "Fruits",
-    price: 290,
-    stock: 38,
-    unit: "kg",
-    emoji: "🍌",
-    color: "#fffbe8",
-    barcode: "100000000015",
-    sku: "FRT-002",
-  },
-  {
-    id: 16,
-    name: "Oranges",
-    sinhalaName: "දොඩම්",
-    category: "Fruits",
-    price: 760,
-    stock: 26,
-    unit: "kg",
-    emoji: "🍊",
-    color: "#fff4e9",
-    barcode: "100000000016",
-    sku: "FRT-003",
-  },
-  {
-    id: 17,
-    name: "Grapes",
-    category: "Fruits",
-    price: 1250,
-    stock: 18,
-    unit: "kg",
-    emoji: "🍇",
-    color: "#f6edff",
-    barcode: "100000000017",
-    sku: "FRT-004",
-  },
-  {
-    id: 18,
-    name: "Fresh Milk",
-    sinhalaName: "නැවුම් කිරි",
-    category: "Beverages",
-    price: 450,
-    stock: 65,
-    unit: "L",
-    emoji: "🥛",
-    color: "#edf7ff",
-    barcode: "100000000018",
-    sku: "BEV-001",
-  },
-  {
-    id: 19,
-    name: "Orange Juice 1 L",
-    category: "Beverages",
-    price: 780,
-    stock: 42,
-    unit: "pcs",
-    emoji: "🧃",
-    color: "#fff5e8",
-    barcode: "100000000019",
-    sku: "BEV-002",
-  },
-  {
-    id: 20,
-    name: "Laundry Detergent",
-    category: "Household",
-    price: 890,
-    stock: 34,
-    unit: "pcs",
-    emoji: "🧼",
-    color: "#eef7ff",
-    barcode: "100000000020",
-    sku: "HOU-002",
-  },
-  {
-    id: 21,
-    name: "Shampoo 200 ml",
-    category: "Personal Care",
-    price: 950,
-    stock: 45,
-    unit: "pcs",
-    emoji: "🧴",
-    color: "#f1f5ff",
-    barcode: "100000000021",
-    sku: "PER-002",
-  },
-  {
-    id: 22,
-    name: "Chocolate Biscuits",
-    sinhalaName: "චොකලට් බිස්කට්",
-    category: "Snacks",
-    price: 250,
-    stock: 80,
-    unit: "pcs",
-    emoji: "🍪",
-    color: "#fff4e9",
-    barcode: "100000000022",
-    sku: "SNK-001",
-  },
-];
 
 const money = (value: number) =>
   `Rs. ${value.toLocaleString("en-LK", {
@@ -433,7 +126,6 @@ const modalTitle: Record<
   discount: "Bill Discount",
   clear: "Clear Current Bill",
   customer: "Select Customer",
-  payment: "Proceed to Payment",
 };
 
 export default function POSPage() {
@@ -473,7 +165,7 @@ export default function POSPage() {
   const [invoiceNumber, setInvoiceNumber] =
     useState(9842);
 
-  const [amountReceived, setAmountReceived] = useState("");
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
 
   const searchRef = useRef<HTMLInputElement>(null);
   const customerRef = useRef<HTMLInputElement>(null);
@@ -638,10 +330,6 @@ export default function POSPage() {
   const tax = roundMoney(taxableAmount * TAX_RATE);
   const grandTotal = roundMoney(taxableAmount + tax);
 
-  const received = Number(amountReceived) || 0;
-  const changeDue = roundMoney(
-    Math.max(0, received - grandTotal)
-  );
 
   const applyCoupon = () => {
     if (!coupon.trim()) {
@@ -754,28 +442,13 @@ export default function POSPage() {
     setNotice(`${product.name} added to bill.`);
   };
 
-  const completePayment = () => {
-    if (cart.length === 0) {
-      setNotice("Add products before payment.");
-      return;
-    }
-
-    if (received < grandTotal) {
-      setNotice(
-        "Received amount is less than the total."
-      );
-      return;
-    }
-
-    // Frontend demo only. No real payment is processed.
+  const completePayment = (_received: number, _notes: string, _printReceipt: boolean, method: "cash" | "card" | "mobile") => {
+    if (cart.length === 0) return;
+    // Frontend-only demo. No payment or sale is recorded in the backend.
     setInvoiceNumber((previous) => previous + 1);
     resetBill();
-    setAmountReceived("");
-    setModal(null);
-
-    setNotice(
-      "Demo payment completed. No backend sale was recorded."
-    );
+    setCheckoutOpen(false);
+    setNotice(method === "mobile" ? "Mobile payment manually confirmed in this demo. No bank verification or backend sale was recorded." : method === "card" ? "Card terminal approval recorded in this demo. No backend sale or payment record was created." : "Demo cash checkout completed. No real payment, receipt, or backend sale was recorded.");
   };
 
   const focusSearch = useCallback(() => {
@@ -800,7 +473,7 @@ export default function POSPage() {
         F6: () => setModal("discount"),
         F7: () => setModal("clear"),
         F8: () => setModal("customer"),
-        F9: () => setModal("payment"),
+        F9: () => { if (cart.length > 0) { setTouchTarget(null); setCheckoutOpen(true); } },
       };
 
       const action = actions[event.key];
@@ -820,6 +493,29 @@ export default function POSPage() {
       );
     };
   }, [focusSearch]);
+
+  if (checkoutOpen) {
+    return (
+      <PaymentCheckout
+        items={cart.map(({ product, quantity }) => ({
+          id: product.id,
+          name: product.name,
+          emoji: product.emoji,
+          quantity,
+          price: product.price,
+          unit: product.unit,
+        }))}
+        invoice={`INV-${String(invoiceNumber).padStart(6, "0")}`}
+        subtotal={subtotal}
+        discount={discount}
+        tax={tax}
+        total={grandTotal}
+        customer={customer}
+        onBack={() => setCheckoutOpen(false)}
+        onComplete={completePayment}
+      />
+    );
+  }
 
   return (
     <div className="pos-page">
@@ -889,19 +585,12 @@ export default function POSPage() {
         </div>
       </div>
 
-      {notice && (
-        <div className="pos-notice">
-          <CheckCircleOutlined />
-          <span>{notice}</span>
-
-          <button
-            aria-label="Dismiss notification"
-            onClick={() => setNotice("")}
-          >
-            <Close fontSize="small" />
-          </button>
-        </div>
-      )}
+      <AppSnackbar
+        open={Boolean(notice)}
+        message={notice}
+        severity="success"
+        onClose={() => setNotice("")}
+      />
 
       <div className="pos-workspace">
         {/* PRODUCT PANEL */}
@@ -1247,8 +936,8 @@ export default function POSPage() {
             className="pos-pay-button"
             disabled={cart.length === 0}
             onClick={() => {
-              setAmountReceived("");
-              setModal("payment");
+              setTouchTarget(null);
+              setCheckoutOpen(true);
             }}
           >
             <CreditCard />
@@ -1455,49 +1144,7 @@ export default function POSPage() {
             </Box>
           )}
 
-          {modal === "payment" && (
-            <Box sx={{ display: "grid", gap: 2 }}>
-              <Typography variant="body2">
-                Customer: {customer}
-              </Typography>
 
-              <Typography
-                variant="h5"
-                sx={{
-                  fontWeight: 800,
-                  color: "success.main",
-                }}
-              >
-                {money(grandTotal)}
-              </Typography>
-
-              <TextField
-                fullWidth
-                type="number"
-                label="Amount Received"
-                value={amountReceived}
-                onChange={(event) =>
-                  setAmountReceived(event.target.value)
-                }
-              />
-
-              <Typography>
-                Change: <strong>{money(changeDue)}</strong>
-              </Typography>
-
-              <Button
-                variant="contained"
-                color="success"
-                disabled={
-                  cart.length === 0 ||
-                  received < grandTotal
-                }
-                onClick={completePayment}
-              >
-                Complete Demo Payment
-              </Button>
-            </Box>
-          )}
         </DialogContent>
 
         <DialogActions>
