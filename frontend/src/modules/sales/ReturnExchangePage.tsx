@@ -12,7 +12,7 @@ export type ExchangeSale = { invoice: string; customer: string; cashier: string;
 type ReturnRow = { index: number; qty: number; reason: string; restock: boolean };
 type ReplacementRow = ExchangeItem & { id: number };
 const money = (n: number) => "Rs. " + n.toLocaleString("en-LK", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-export default function ReturnExchangePage({ sale, onBack }: { sale: ExchangeSale; onBack: () => void }) {
+export default function ReturnExchangePage({ sale, onBack, onComplete }: { sale: ExchangeSale; onBack: () => void; onComplete: () => void }) {
   const [returns, setReturns] = useState<ReturnRow[]>([]);
   const [replacements, setReplacements] = useState<ReplacementRow[]>([]);
   const [returnSearch, setReturnSearch] = useState("");
@@ -107,8 +107,7 @@ export default function ReturnExchangePage({ sale, onBack }: { sale: ExchangeSal
   };
   const confirm = () => {
     if (!returns.length) { setMessage("Select at least one original invoice item to return."); return; }
-    setConfirmed(true);
-    setMessage("Demo preview confirmed. No refund, payment, stock change, or new invoice was saved to the backend.");
+    onComplete();
   };
   return <div className="rex-page">
     <header className="rex-heading">
