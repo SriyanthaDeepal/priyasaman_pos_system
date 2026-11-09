@@ -203,3 +203,13 @@
 .sales-page .method-card{background:#e1efff;color:#075fc7}
 .sales-page .method-qr-payment{background:#e4f5fa;color:#08768c}
 .sales-page .method-online-transfer{background:#eee7ff;color:#6634bd}
+
+/* Payment quick filters: flexible, accessible, and visually consistent with POS controls. */
+.sales-page .sales-filters{grid-template-columns:minmax(200px,2fr) minmax(145px,1fr)}
+.sales-page .sales-payment-filters{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:0 0 12px}
+.sales-page .sales-payment-filters button{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:34px;padding:7px 11px;border:1px solid #d4dfeb;border-radius:10px;background:#f8fafc;color:#27374a;font:inherit;font-size:12px;font-weight:750;line-height:1.2;cursor:pointer;white-space:nowrap;transition:background .15s,border-color .15s}
+.sales-page .sales-payment-filters button svg{font-size:16px}
+.sales-page .sales-payment-filters button:hover{background:#eaf6ee;border-color:#9ddab1}
+.sales-page .sales-payment-filters button.active{background:#d9f8e2;border-color:#6fcb90;color:#086b2a;box-shadow:inset 0 0 0 1px #a2e5b8}
+.sales-page .sales-payment-filters button:focus-visible{outline:2px solid #47b56b;outline-offset:2px}
+@media(max-width:760px){.sales-page .sales-filters{grid-template-columns:minmax(0,1fr)}.sales-page .sales-payment-filters{gap:6px}.sales-page .sales-payment-filters button{padding:7px 9px}}
