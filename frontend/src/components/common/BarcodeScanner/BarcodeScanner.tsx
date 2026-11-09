@@ -335,14 +335,18 @@ function BarcodeScanner({
               )
             }
             sx={{
-              height: compact ? 56 : 40,
+              height: compact ? 46 : 40,
               whiteSpace: "nowrap",
-              // Compact Scan Invoice actions use the POS green palette.
               ...(compact && {
                 bgcolor: "#007b15",
                 color: "#fff",
                 fontWeight: 750,
-                "&:hover": { bgcolor: "#006312" },
+                fontSize: 12,
+                borderRadius: "9px",
+                textTransform: "none",
+                px: 2,
+                boxShadow: "0 2px 5px #1e293b14",
+                "&:hover": { bgcolor: "#006312", boxShadow: "0 3px 9px #1e293b1f" },
                 "&.Mui-disabled": { bgcolor: "#cce6d1" },
               }),
             }}
@@ -362,13 +366,18 @@ function BarcodeScanner({
               }
               onClick={() => void startCamera()}
               sx={{
-                height: compact ? 56 : 40,
+                height: compact ? 46 : 40,
                 whiteSpace: "nowrap",
                 ...(compact && {
-                  borderColor: "#007b15",
+                  borderColor: "#9ee6b1",
+                  bgcolor: "#e4fae9",
                   color: "#007b15",
                   fontWeight: 750,
-                  "&:hover": { borderColor: "#006312", bgcolor: "#eefaf0" },
+                  fontSize: 12,
+                  borderRadius: "9px",
+                  textTransform: "none",
+                  px: 2,
+                  "&:hover": { borderColor: "#65cb81", bgcolor: "#d1f5dc" },
                 }),
               }}
             >
