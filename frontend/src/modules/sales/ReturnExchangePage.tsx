@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { CheckCircle, Close, QrCodeScanner, Keyboard, ReceiptLong, CalendarMonth, PersonOutlined, Payments } from "@mui/icons-material";
 import { Dialog, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import BarcodeScanner from "../../components/common/BarcodeScanner/BarcodeScanner";
@@ -28,6 +28,20 @@ export default function ReturnExchangePage({ sale, onBack }: { sale: ExchangeSal
   const [nextId, setNextId] = useState(1);
   const [viewOriginal, setViewOriginal] = useState(false);
   const [focusedSearch, setFocusedSearch] = useState<"return" | "replacement" | null>(null);
+  // Dismiss uncommitted searches when the cashier interacts elsewhere.
+  // Keep the touch keyboard and both suggestion lists interactive.
+  useEffect(() => {
+    const dismissOnOutsidePointer = (event: PointerEvent) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      if (target.closest(".rex-search, .rex-suggestions, .rex-keyboard-dock")) return;
+      setFocusedSearch(null);
+      setReturnSearch("");
+      setReplacementSearch("");
+    };
+    document.addEventListener("pointerdown", dismissOnOutsidePointer);
+    return () => document.removeEventListener("pointerdown", dismissOnOutsidePointer);
+  }, []);
   const returnMatches = useMemo(() => { const q = returnSearch.trim().toLocaleLowerCase(); return q ? sale.items.map((item,index) => ({item,index})).filter(({item}) => item.name.toLocaleLowerCase().includes(q) || item.barcode?.toLowerCase().includes(q) || products.some(p => p.name === item.name && (p.sku.toLowerCase().includes(q) || p.barcode.includes(q) || p.sinhalaName?.toLocaleLowerCase().includes(q)))).slice(0,8) : []; },[returnSearch,sale.items]);
   const replacementMatches = useMemo(() => { const q = replacementSearch.trim().toLocaleLowerCase(); return q ? products.filter(p => p.name.toLocaleLowerCase().includes(q) || p.sinhalaName?.toLocaleLowerCase().includes(q) || p.sku.toLowerCase().includes(q) || p.barcode.includes(q)).slice(0,8) : []; },[replacementSearch]);
   const originalSubtotal = sale.items.reduce((sum, item) => sum + item.price * item.qty, 0);
