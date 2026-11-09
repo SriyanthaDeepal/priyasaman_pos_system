@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { ArrowBack, CheckCircle, Close, LocalPrintshop, QrCodeScanner, Search, SwapHoriz } from "@mui/icons-material";
+import { ArrowBack, CheckCircle, Close, LocalPrintshop, QrCodeScanner, Search } from "@mui/icons-material";
 import { Dialog, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import BarcodeScanner from "../../components/common/BarcodeScanner/BarcodeScanner";
 import "./ReturnExchangePage.css";
