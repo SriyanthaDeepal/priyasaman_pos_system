@@ -164,11 +164,17 @@
   .checkout-card{overflow:visible}
 }
 
-/* Keep content-driven payment panels compact on tall desktop displays.
-   Bill Details alone fills the available height so its item list can grow. */
+/* Desktop checkout reference: all three cards fill the same available height.
+   Fluid controls and internal scrolling preserve the layout at other heights. */
 @media (min-width:1201px) and (min-height:621px){
-  .checkout-columns{align-items:start}
-  .checkout-details{height:100%;align-self:stretch}
-  .checkout-card.checkout-summary,
-  .checkout-card.checkout-method{height:auto;align-self:start;max-height:100%;overflow-y:auto}
+  .checkout-columns{align-items:stretch}
+  .checkout-columns>.checkout-card{height:100%;align-self:stretch;min-height:0}
+  .checkout-card.checkout-method,.checkout-card.checkout-summary{
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    scrollbar-gutter:stable;
+  }
+  .checkout-card.checkout-method{justify-content:space-between}
+  .checkout-card.checkout-summary{justify-content:space-between}
+  .checkout-card.checkout-summary .checkout-complete{margin-top:auto}
 }
