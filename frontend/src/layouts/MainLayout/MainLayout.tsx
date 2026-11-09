@@ -11,6 +11,8 @@ import Header from "./Header";
 
 import POSPage from "../../modules/pos/POSPage";
 import SalesPage from "../../modules/sales/SalesPage";
+import ReturnExchangePage from "../../modules/sales/ReturnExchangePage";
+import type { ExchangeSale } from "../../modules/sales/ReturnExchangePage";
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -30,6 +32,7 @@ export default function MainLayout({
      MOBILE SIDEBAR
      ========================================== */
 
+  const [returnInvoice, setReturnInvoice] = useState<ExchangeSale | null>(null);
   const [mobileSidebarOpen, setMobileSidebarOpen] =
     useState(false);
 
@@ -39,6 +42,7 @@ export default function MainLayout({
 
   const handleNavigate = (page: SidebarPage) => {
     setActivePage(page);
+    setReturnInvoice(null);
     setMobileSidebarOpen(false);
   };
 
@@ -55,7 +59,7 @@ export default function MainLayout({
         return <POSPage />;
 
       case "sales":
-        return <SalesPage onNewSale={() => handleNavigate("pos")} />;
+        return returnInvoice ? <ReturnExchangePage sale={returnInvoice} onBack={() => setReturnInvoice(null)} /> : <SalesPage onNewSale={() => handleNavigate("pos")} onReturnRefund={setReturnInvoice} />;
 
       default:
         return children;
