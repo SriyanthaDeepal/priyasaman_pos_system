@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { ArrowBack, CheckCircle, Close, LocalPrintshop, QrCodeScanner, Search } from "@mui/icons-material";
+import { ArrowBack, CheckCircle, Close, LocalPrintshop, QrCodeScanner, Search, ReceiptLong, CalendarMonth, PersonOutline, Payments, Visibility } from "@mui/icons-material";
 import { Dialog, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import BarcodeScanner from "../../components/common/BarcodeScanner/BarcodeScanner";
 import BarcodeDisplay from "../../components/common/BarcodeDisplay/BarcodeDisplay";
@@ -19,7 +19,7 @@ const catalog: ExchangeItem[] = [
   { name: "Black Tea 200 g", price: 640, qty: 1, barcode: "TEA-001" },
   { name: "Cooking Oil 1 L", price: 1800, qty: 1, barcode: "OIL-002" },
 ];
-export default function ReturnExchangePage({ sale, onBack }: { sale: ExchangeSale; onBack: () => void }) {
+export default function ReturnExchangePage({ sale, onBack, onFindInvoice }: { sale: ExchangeSale; onBack: () => void; onFindInvoice: () => void }) {
   const [returns, setReturns] = useState<ReturnRow[]>([]);
   const [replacements, setReplacements] = useState<ReplacementRow[]>([]);
   const [returnSearch, setReturnSearch] = useState("");
@@ -30,6 +30,7 @@ export default function ReturnExchangePage({ sale, onBack }: { sale: ExchangeSal
   const [message, setMessage] = useState("");
   const [confirmed, setConfirmed] = useState(false);
   const [nextId, setNextId] = useState(1);
+  const [viewOriginal, setViewOriginal] = useState(false);
   const originalSubtotal = sale.items.reduce((sum, item) => sum + item.price * item.qty, 0);
   const returnCredit = useMemo(() => returns.reduce((sum, row) => sum + sale.items[row.index].price * row.qty, 0), [returns, sale.items]);
   const replacementTotal = useMemo(() => replacements.reduce((sum, row) => sum + row.price * row.qty, 0), [replacements]);
@@ -84,8 +85,15 @@ export default function ReturnExchangePage({ sale, onBack }: { sale: ExchangeSal
     setMessage("Demo preview confirmed. No refund, payment, stock change, or new invoice was saved to the backend.");
   };
   return <div className="rex-page">
-    <header className="rex-heading"><div><button className="rex-back" onClick={onBack} aria-label="Back to Sales Management"><ArrowBack /></button><div><h1>Return / Exchange</h1><p>Process product returns, exchanges and refunds with an adjusted invoice preview.</p></div></div><span className="rex-demo">DEMO WORKSPACE</span></header>
-    <section className="rex-invoice-strip"><div><small>Original Invoice</small><strong>{sale.invoice}</strong></div><div><small>Customer</small><strong>{sale.customer}</strong></div><div><small>Cashier</small><strong>{sale.cashier}</strong></div><div><small>Payment</small><strong>{sale.method}</strong></div><div><small>Original Subtotal</small><strong>{money(originalSubtotal)}</strong></div></section>
+    <header className="rex-heading"><div><button className="rex-back" onClick={onBack} aria-label="Back to Sales Management"><ArrowBack /></button><div><h1>Return / Exchange</h1><p>Process product returns, exchanges and refunds with an adjusted invoice preview.</p></div></div><div className="rex-heading-actions"><button className="rex-top-scan" onClick={onFindInvoice}><QrCodeScanner fontSize="small"/> Scan Invoice</button><button className="rex-top-find" onClick={onFindInvoice}><Search fontSize="small"/> Find Invoice</button></div></header>
+    <section className="rex-invoice-strip">
+      <div className="rex-invoice-primary"><ReceiptLong/><span><small>Original Invoice</small><strong>{sale.invoice}</strong></span></div>
+      <div><CalendarMonth fontSize="small"/><span><small>Date &amp; Time</small><strong>{sale.time}</strong></span></div>
+      <div><PersonOutline fontSize="small"/><span><small>Customer</small><strong>{sale.customer}</strong></span></div>
+      <div><Payments fontSize="small"/><span><small>Payment</small><strong className="rex-payment-pill">{sale.method}</strong></span></div>
+      <div><span><small>Original Total (Demo)</small><strong>{money(originalSubtotal)}</strong></span></div>
+      <button className="rex-view-invoice" onClick={() => setViewOriginal(true)}><Visibility fontSize="small"/> View Invoice</button>
+    </section>
     <div className="rex-steps"><span className="current">1 &nbsp; Select Returned Items</span><span>2 &nbsp; Add Replacement Items</span><span>3 &nbsp; Settle & Confirm</span></div>
     {message && <div className="rex-alert" role="status">{message}<button onClick={() => setMessage("")} aria-label="Dismiss"><Close fontSize="small" /></button></div>}
     <div className="rex-grid">
@@ -98,6 +106,7 @@ export default function ReturnExchangePage({ sale, onBack }: { sale: ExchangeSal
       <section className="rex-panel rex-receipt"><h2>Adjusted Invoice <small>(Live Preview)</small></h2><div className="rex-receipt-paper"><div className="rex-receipt-brand">PRIYASAMAN POS</div><div className="rex-receipt-sub">RETURN & EXCHANGE INVOICE</div><div className="rex-receipt-meta"><div>Preview: EX-DEMO</div><div>Original: {sale.invoice}</div><div>Customer: {sale.customer}</div></div><table><thead><tr><th>Item</th><th>Qty</th><th>Amount</th></tr></thead><tbody>{sale.items.map((item,index) => { const returned=selectedReturn(index)?.qty ?? 0; return <tr key={index}><td>{item.name}{returned>0&&<small className="rex-returned-tag">RETURNED {returned} / {item.qty}</small>}</td><td>{item.qty}</td><td>{money(item.qty*item.price)}{returned>0&&<small className="rex-returned-tag rex-crossed">− {money(returned*item.price)}</small>}</td></tr>; })}{replacements.map(item => <tr className="rex-new" key={item.id}><td>+ {item.name}</td><td>{item.qty}</td><td>{money(item.qty*item.price)}</td></tr>)}</tbody></table><div className="rex-line"><span>Original Subtotal</span><strong>{money(originalSubtotal)}</strong></div><div className="rex-line"><span>Returned Value</span><strong>− {money(returnCredit)}</strong></div><div className="rex-line"><span>New Items</span><strong>+ {money(replacementTotal)}</strong></div><div className="rex-adjusted">Adjusted Subtotal <strong>{money(originalSubtotal-returnCredit+replacementTotal)}</strong></div><div className="rex-receipt-due">{balance>0?"Additional Payment":balance<0?"Customer Refund":"No Balance Due"} <strong>{money(Math.abs(balance))}</strong></div><div className="rex-barcode"><BarcodeDisplay value="EX-DEMO" height={42} width={1.3} fontSize={11} margin={3} showDownload={false}/></div><div className="rex-receipt-foot">Preview only · Not a fiscal invoice</div></div></section>
     </div>
     <footer className="rex-footer"><button className="rex-cancel" onClick={onBack}><Close fontSize="small"/> Cancel</button><div><button className="rex-print" onClick={preview}><LocalPrintshop fontSize="small"/> Print Preview</button><button className="rex-confirm" onClick={confirm}><CheckCircle fontSize="small"/> {confirmed?"Demo Confirmed":"Confirm Return / Exchange"}</button></div></footer>
+    <Dialog open={viewOriginal} onClose={() => setViewOriginal(false)} fullWidth maxWidth="sm"><DialogTitle sx={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>Original Invoice — {sale.invoice}<IconButton onClick={() => setViewOriginal(false)} aria-label="Close original invoice"><Close/></IconButton></DialogTitle><DialogContent dividers><p><strong>Customer:</strong> {sale.customer} &nbsp; <strong>Cashier:</strong> {sale.cashier}</p><p><strong>Time:</strong> {sale.time} &nbsp; <strong>Payment:</strong> {sale.method}</p><div className="rex-table-scroll"><table><thead><tr><th>Product</th><th>Qty</th><th>Unit Price</th><th>Total</th></tr></thead><tbody>{sale.items.map((item,index)=><tr key={index}><td>{item.name}</td><td>{item.qty}</td><td>{money(item.price)}</td><td>{money(item.qty*item.price)}</td></tr>)}</tbody></table></div><div className="rex-total">Original Subtotal <strong>{money(originalSubtotal)}</strong></div><p className="rex-muted">This is a demonstration invoice summary; original sale tax and discounts are not recalculated here.</p></DialogContent></Dialog>
     <Dialog open={scanner!==null} onClose={() => setScanner(null)} fullWidth maxWidth="sm" slotProps={{paper:{sx:{borderRadius:2.5}}}}><DialogTitle sx={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>{scanner==="return"?"Scan Returned Item":"Scan Replacement Item"}<IconButton onClick={() => setScanner(null)} aria-label="Close scanner"><Close/></IconButton></DialogTitle><DialogContent dividers><BarcodeScanner label="Product barcode / SKU" placeholder="Scan or enter product barcode" submitLabel="Add Item" onScan={scan}/></DialogContent></Dialog>
   </div>;
 }
