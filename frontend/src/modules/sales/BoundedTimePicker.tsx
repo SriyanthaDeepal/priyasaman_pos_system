@@ -3,7 +3,6 @@ import "./BoundedTimePicker.css";
 
 type Props = { label: string; value: string; onChange: (value: string) => void };
 const hours = [12,1,2,3,4,5,6,7,8,9,10,11];
-const minutes = Array.from({length:60},(_,i)=>i);
 function parse(value:string){
   if(!/^([01]\d|2[0-3]):[0-5]\d$/.test(value)) return {hour:12,minute:0,period:"AM" as const};
   const [h,m]=value.split(":").map(Number);
