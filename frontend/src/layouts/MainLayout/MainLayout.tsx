@@ -36,6 +36,7 @@ export default function MainLayout({
   const [returnInvoice, setReturnInvoice] = useState<ExchangeSale | null>(null);
   const [invoiceScanRequested, setInvoiceScanRequested] = useState(false);
   const [feedback, setFeedback] = useState("");
+  const [returnedInvoices, setReturnedInvoices] = useState<string[]>([]);
   const [mobileSidebarOpen, setMobileSidebarOpen] =
     useState(false);
 
@@ -63,7 +64,7 @@ export default function MainLayout({
         return <POSPage />;
 
       case "sales":
-        return returnInvoice ? <ReturnExchangePage sale={returnInvoice} onBack={() => setReturnInvoice(null)} onComplete={() => { setReturnInvoice(null); setFeedback("Return / exchange preview confirmed successfully."); }} /> : <SalesPage key={invoiceScanRequested ? "invoice-scan" : "sales"} initialScanOpen={invoiceScanRequested} onNewSale={() => handleNavigate("pos")} onReturnRefund={sale => { setInvoiceScanRequested(false); setReturnInvoice(sale); }} />;
+        return returnInvoice ? <ReturnExchangePage sale={returnInvoice} onBack={() => setReturnInvoice(null)} onComplete={() => { setReturnedInvoices(previous => previous.includes(returnInvoice.invoice) ? previous : [...previous, returnInvoice.invoice]); setReturnInvoice(null); setFeedback("Return / exchange completed successfully."); }} /> : <SalesPage key={invoiceScanRequested ? "invoice-scan" : "sales"} initialScanOpen={invoiceScanRequested} returnedInvoices={returnedInvoices} onNewSale={() => handleNavigate("pos")} onReturnRefund={sale => { setInvoiceScanRequested(false); setReturnInvoice(sale); }} />;
 
       default:
         return children;
