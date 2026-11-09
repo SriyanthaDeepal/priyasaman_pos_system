@@ -1,5 +1,7 @@
 
 import { useState } from "react";
+import InventoryPage, { initialInventory } from "../../modules/inventory/InventoryPage";
+import type { InventoryProduct, InventoryView } from "../../modules/inventory/InventoryPage";
 import type { ReactNode } from "react";
 
 import { Box } from "@mui/material";
@@ -26,6 +28,7 @@ export default function MainLayout({
      ACTIVE PAGE
      ========================================== */
 
+  const [inventoryProducts, setInventoryProducts] = useState<InventoryProduct[]>(initialInventory);
   const [activePage, setActivePage] =
     useState<SidebarPage>("dashboard");
 
@@ -62,6 +65,12 @@ export default function MainLayout({
 
       case "pos":
         return <POSPage />;
+
+      case "inventory":
+      case "stock-overview":
+      case "stock-adjustments":
+      case "stock-transfer":
+        return <InventoryPage key={activePage} view={(activePage==="stock-adjustments"?"adjustment":activePage==="stock-transfer"?"transfer":"overview") as InventoryView} onNavigate={view=>handleNavigate(view==="overview"?"stock-overview":view==="adjustment"?"stock-adjustments":"stock-transfer")} products={inventoryProducts} setProducts={setInventoryProducts} onNotice={setFeedback} />;
 
       case "sales":
         return returnInvoice ? <ReturnExchangePage sale={returnInvoice} onBack={() => setReturnInvoice(null)} onComplete={() => { setReturnedInvoices(previous => previous.includes(returnInvoice.invoice) ? previous : [...previous, returnInvoice.invoice]); setReturnInvoice(null); setFeedback("Return / exchange completed successfully."); }} /> : <SalesPage key={invoiceScanRequested ? "invoice-scan" : "sales"} initialScanOpen={invoiceScanRequested} returnedInvoices={returnedInvoices} onNewSale={() => handleNavigate("pos")} onReturnRefund={sale => { setInvoiceScanRequested(false); setReturnInvoice(sale); }} />;
