@@ -193,3 +193,8 @@
   .rex-page .rex-receipt{position:absolute;left:0;top:0;width:100%;height:auto;overflow:visible;visibility:visible!important}
   .rex-page .rex-receipt-paper{max-width:85mm;margin:auto}
 }
+
+.rex-page .rex-barcode{display:flex;justify-content:center;align-items:center;max-width:100%;overflow:hidden;margin:13px 0 0}
+.rex-page .rex-barcode svg{max-width:100%;height:auto}
+.rex-page .rex-receipt td .rex-returned-tag{margin-top:4px}
+.rex-page .rex-receipt td .rex-returned-tag.rex-crossed{text-decoration:line-through}
