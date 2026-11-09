@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { BarChart, CalendarMonth, CheckCircle, Close, Description, Email, FilterAlt, LocalPrintshop, PersonOutlined, PointOfSale, ReceiptLong, Replay, Search, Visibility } from "@mui/icons-material";
+import { BarChart, CalendarMonth, AccessTime, KeyboardArrowDown, CheckCircle, Close, Description, Email, FilterAlt, LocalPrintshop, PersonOutlined, PointOfSale, ReceiptLong, Replay, Search, Visibility } from "@mui/icons-material";
 import "./SalesPage.css";
 
 type SaleStatus = "Completed" | "Returned" | "Voided" | "Held";
@@ -26,12 +26,16 @@ export default function SalesPage({onNewSale}:{onNewSale:()=>void}){
   const [method,setMethod]=useState("All Payment Methods");
   const [status,setStatus]=useState("All Sales");
   const [date,setDate]=useState("today");
+  const [dateMenuOpen,setDateMenuOpen]=useState(false);
+  const [timeFrom,setTimeFrom]=useState("");
+  const [timeTo,setTimeTo]=useState("");
   const [page,setPage]=useState(1);
   const [perPage,setPerPage]=useState(8);
   const [selected,setSelected]=useState("INV-009842");
   const [notice,setNotice]=useState("");
   const [sales,setSales]=useState(demoSales);
-  const filtered=useMemo(()=>sales.filter(s=>(s.invoice+" "+s.customer+" "+s.cashier).toLowerCase().includes(search.toLowerCase())&&(cashier==="All Cashiers"||s.cashier===cashier)&&(method==="All Payment Methods"||s.method===method)&&(status==="All Sales"||s.status===status)),[sales,search,cashier,method,status]);
+  const toMinutes=(value:string)=>{ const [clock,period]=value.split(" "); const [hour,minute]=clock.split(":").map(Number); return (hour%12+(period==="PM"?12:0))*60+minute; };
+  const filtered=useMemo(()=>sales.filter(s=>(!timeFrom||toMinutes(s.time)>=Number(timeFrom.slice(0,2))*60+Number(timeFrom.slice(3)))&&(!timeTo||toMinutes(s.time)<=Number(timeTo.slice(0,2))*60+Number(timeTo.slice(3)))&&(s.invoice+" "+s.customer+" "+s.cashier).toLowerCase().includes(search.toLowerCase())&&(cashier==="All Cashiers"||s.cashier===cashier)&&(method==="All Payment Methods"||s.method===method)&&(status==="All Sales"||s.status===status)),[sales,search,cashier,method,status,timeFrom,timeTo]);
   const pages=Math.max(1,Math.ceil(filtered.length/perPage));
   const rows=filtered.slice((Math.min(page,pages)-1)*perPage,Math.min(page,pages)*perPage);
   const active=sales.find(s=>s.invoice===selected)??null;
@@ -40,7 +44,7 @@ export default function SalesPage({onNewSale}:{onNewSale:()=>void}){
   const notify=(action:string)=>setNotice(action+" is not connected to the backend yet. This page currently uses demonstration data.");
   const changeStatus=(next:SaleStatus)=>{if(!active)return;setSales(prev=>prev.map(s=>s.invoice===active.invoice?{...s,status:next}:s));setNotice(active.invoice+" marked "+next.toLowerCase()+" in this demo only. No backend records were changed.");};
   return <div className="sales-page">
-    <div className="sales-heading"><div><h1><BarChart/> Sales Management</h1><p>View, search and manage sales transactions.</p></div><div className="sales-heading-actions"><label className="sales-date"><CalendarMonth/><select value={date} onChange={e=>setDate(e.target.value)} aria-label="Date range"><option value="today">Today</option><option value="week">This Week</option><option value="month">This Month</option></select></label><button className="sales-new" onClick={onNewSale}><PointOfSale/> New Sale (F2)</button></div></div>
+    <div className="sales-heading"><div><h1><BarChart/> Sales Management</h1><p>View, search and manage sales transactions.</p></div><div className="sales-heading-actions"><div className="sales-date-picker"><button type="button" className="sales-date-trigger" aria-expanded={dateMenuOpen} aria-haspopup="dialog" onClick={()=>setDateMenuOpen(v=>!v)}><CalendarMonth/><span>{date==="today"?"Today":date==="week"?"This Week":"This Month"}{timeFrom||timeTo?" · Time filter":""}</span><KeyboardArrowDown/></button>{dateMenuOpen&&<div className="sales-date-menu" role="dialog" aria-label="Filter sales by date and time"><div className="sales-date-menu-title">Date & Time Filter</div><div className="sales-date-presets">{[["today","Today"],["week","This Week"],["month","This Month"]].map(([value,label])=><button type="button" key={value} className={date===value?"selected":""} onClick={()=>setDate(value)}>{label}</button>)}</div><div className="sales-time-title"><AccessTime/> Specific time range</div><div className="sales-time-fields"><label>From<input type="time" value={timeFrom} onChange={e=>{setTimeFrom(e.target.value);setPage(1)}}/></label><label>To<input type="time" value={timeTo} onChange={e=>{setTimeTo(e.target.value);setPage(1)}}/></label></div><p className="sales-date-hint">Time filtering works with sample transactions. Date presets are display-only until real dated sales are connected.</p><div className="sales-date-menu-actions"><button type="button" onClick={()=>{setTimeFrom("");setTimeTo("");setDate("today");setPage(1)}}>Reset</button><button type="button" onClick={()=>setDateMenuOpen(false)}>Apply</button></div></div>}</div><button className="sales-new" onClick={onNewSale}><PointOfSale/> New Sale (F2)</button></div></div>
     <div className="sales-workspace"><div className="sales-left">
       <div className="sales-stats">
         <div className="sales-stat green"><PointOfSale/><div><span>Today's Sales</span><strong>{money(salesTotal)}</strong><small>Demo sales total</small></div></div>
