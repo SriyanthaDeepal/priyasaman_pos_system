@@ -33,6 +33,7 @@ export default function MainLayout({
      ========================================== */
 
   const [returnInvoice, setReturnInvoice] = useState<ExchangeSale | null>(null);
+  const [invoiceScanRequested, setInvoiceScanRequested] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] =
     useState(false);
 
@@ -43,6 +44,7 @@ export default function MainLayout({
   const handleNavigate = (page: SidebarPage) => {
     setActivePage(page);
     setReturnInvoice(null);
+    setInvoiceScanRequested(false);
     setMobileSidebarOpen(false);
   };
 
@@ -59,7 +61,7 @@ export default function MainLayout({
         return <POSPage />;
 
       case "sales":
-        return returnInvoice ? <ReturnExchangePage sale={returnInvoice} onBack={() => setReturnInvoice(null)} /> : <SalesPage onNewSale={() => handleNavigate("pos")} onReturnRefund={setReturnInvoice} />;
+        return returnInvoice ? <ReturnExchangePage sale={returnInvoice} onBack={() => setReturnInvoice(null)} onFindInvoice={() => { setInvoiceScanRequested(true); setReturnInvoice(null); }} /> : <SalesPage key={invoiceScanRequested ? "invoice-scan" : "sales"} initialScanOpen={invoiceScanRequested} onNewSale={() => handleNavigate("pos")} onReturnRefund={sale => { setInvoiceScanRequested(false); setReturnInvoice(sale); }} />;
 
       default:
         return children;
