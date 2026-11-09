@@ -70,7 +70,7 @@ export default function InventoryPage({view,onNavigate,products,setProducts,onNo
     setTransferLines([]);onNotice("Demo source stock updated. Destination ledger requires backend integration.");onNavigate("overview");
   };
   const heading=view==="overview"?"Inventory Management":view==="adjustment"?"Stock Adjustment":"Stock Transfer";
-  return <div className="inventory-page">
+  return <div className={"inventory-page"+(view==="overview"?" inventory-overview-page":"")}>
     <header className="inv-heading"><div className="inv-heading-title"><span className="inv-heading-icon">{view==="overview"?<Inventory2Outlined/>:view==="adjustment"?<Tune/>:<SwapHoriz/>}</span><div><h1>{heading}</h1><p>{view==="overview"?"Track stock levels, manage adjustments, and monitor inventory movement.":view==="adjustment"?"Increase or decrease stock quantity with a valid reason.":"Move stock between stores or warehouses."}</p></div></div><div className="inv-heading-actions">{view!=="overview"&&<button onClick={()=>onNavigate("overview")}><ArrowBack/> Back to Inventory</button>}</div></header>
     {view==="overview"?<>
       <div className="inv-kpis"><div className="inv-kpi green"><span>📦</span><div>Total Products<strong>{products.length.toLocaleString()}</strong></div></div><div className="inv-kpi blue"><span>🔷</span><div>Total Stock Value<strong>{money(products.reduce((n,p)=>n+p.stock*p.buy,0))}</strong></div></div><div className="inv-kpi amber"><span>⚠️</span><div>Low Stock Items<strong>{products.filter(p=>p.stock>0&&p.stock<=p.reorder).length}</strong></div></div><div className="inv-kpi red"><span>📦</span><div>Out of Stock<strong>{products.filter(p=>p.stock===0).length}</strong></div></div></div>
