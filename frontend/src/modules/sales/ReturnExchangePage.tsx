@@ -3,6 +3,8 @@ import { CheckCircle, Close, QrCodeScanner, Keyboard, ReceiptLong, CalendarMonth
 import { Dialog, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import BarcodeScanner from "../../components/common/BarcodeScanner/BarcodeScanner";
 import SinhalaTouchKeyboard from "../pos/SinhalaTouchKeyboard";
+import { products } from "../pos/productCatalog";
+import type { Product } from "../pos/productCatalog";
 import "./ReturnExchangePage.css";
 
 export type ExchangeItem = { name: string; qty: number; price: number; barcode?: string };
@@ -10,15 +12,6 @@ export type ExchangeSale = { invoice: string; customer: string; cashier: string;
 type ReturnRow = { index: number; qty: number; reason: string; restock: boolean };
 type ReplacementRow = ExchangeItem & { id: number };
 const money = (n: number) => "Rs. " + n.toLocaleString("en-LK", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-const catalog: ExchangeItem[] = [
-  { name: "Basmati Rice 5 kg", price: 4900, qty: 1, barcode: "RICE-005" },
-  { name: "Sunflower Oil 1 L", price: 1450, qty: 1, barcode: "OIL-001" },
-  { name: "Toothpaste 120 g", price: 380, qty: 1, barcode: "PASTE-120" },
-  { name: "Tea 200 g", price: 640, qty: 1, barcode: "TEA-200" },
-  { name: "Premium Rice 5 kg", price: 890, qty: 1, barcode: "RICE-001" },
-  { name: "Black Tea 200 g", price: 640, qty: 1, barcode: "TEA-001" },
-  { name: "Cooking Oil 1 L", price: 1800, qty: 1, barcode: "OIL-002" },
-];
 export default function ReturnExchangePage({ sale, onBack }: { sale: ExchangeSale; onBack: () => void }) {
   const [returns, setReturns] = useState<ReturnRow[]>([]);
   const [replacements, setReplacements] = useState<ReplacementRow[]>([]);
@@ -34,6 +27,9 @@ export default function ReturnExchangePage({ sale, onBack }: { sale: ExchangeSal
   const [confirmed, setConfirmed] = useState(false);
   const [nextId, setNextId] = useState(1);
   const [viewOriginal, setViewOriginal] = useState(false);
+  const [focusedSearch, setFocusedSearch] = useState<"return" | "replacement" | null>(null);
+  const returnMatches = useMemo(() => { const q = returnSearch.trim().toLocaleLowerCase(); return q ? sale.items.map((item,index) => ({item,index})).filter(({item}) => item.name.toLocaleLowerCase().includes(q) || item.barcode?.toLowerCase().includes(q) || products.some(p => p.name === item.name && (p.sku.toLowerCase().includes(q) || p.barcode.includes(q) || p.sinhalaName?.toLocaleLowerCase().includes(q)))).slice(0,8) : []; },[returnSearch,sale.items]);
+  const replacementMatches = useMemo(() => { const q = replacementSearch.trim().toLocaleLowerCase(); return q ? products.filter(p => p.name.toLocaleLowerCase().includes(q) || p.sinhalaName?.toLocaleLowerCase().includes(q) || p.sku.toLowerCase().includes(q) || p.barcode.includes(q)).slice(0,8) : []; },[replacementSearch]);
   const originalSubtotal = sale.items.reduce((sum, item) => sum + item.price * item.qty, 0);
   const returnCredit = useMemo(() => returns.reduce((sum, row) => sum + sale.items[row.index].price * row.qty, 0), [returns, sale.items]);
   const replacementTotal = useMemo(() => replacements.reduce((sum, row) => sum + row.price * row.qty, 0), [replacements]);
@@ -44,29 +40,39 @@ export default function ReturnExchangePage({ sale, onBack }: { sale: ExchangeSal
     setReturns(prev => [...prev.filter(row => row.index !== index), ...(bounded ? [{ index, qty: bounded, reason: prev.find(row => row.index === index)?.reason ?? "Customer request", restock: prev.find(row => row.index === index)?.restock ?? true }] : [])]);
     setConfirmed(false);
   };
-  const addReturn = (query: string) => {
-    const q = query.trim().toLowerCase();
-    const index = sale.items.findIndex(item => item.name.toLowerCase().includes(q) || item.barcode?.toLowerCase() === q);
-    if (!q || index < 0) throw new Error("This item is not present on the selected original invoice.");
+  const addReturnIndex = (index: number) => {
     const current = selectedReturn(index)?.qty ?? 0;
     if (current >= sale.items[index].qty) throw new Error("All purchased units are already selected for return.");
     setReturnQty(index, current + 1);
     setReturnSearch("");
+    setFocusedSearch(null);
+    setMessage("");
+  };
+  const addReturn = (query: string) => {
+    const q = query.trim().toLocaleLowerCase();
+    const match = sale.items.findIndex(item => item.name.toLocaleLowerCase() === q || item.barcode?.toLowerCase() === q || products.some(p => p.name === item.name && (p.sku.toLowerCase() === q || p.barcode === q)));
+    if (!q || match < 0) {
+      if (returnMatches.length === 1) return addReturnIndex(returnMatches[0].index);
+      throw new Error(returnMatches.length > 1 ? "Choose the correct item from the matching invoice products." : "This product is not present on the original invoice.");
+    }
+    addReturnIndex(match);
+  };
+  const addReplacementProduct = (found: Product) => {
+    const existing = replacements.find(item => item.barcode === found.barcode);
+    if (found.stock <= (existing?.qty ?? 0)) throw new Error("No additional demonstration stock available for this product.");
+    setReplacements(prev => existing ? prev.map(item => item.id === existing.id ? { ...item, qty: item.qty + 1 } : item) : [...prev, { name:found.name, price:found.price, barcode:found.barcode, qty:1, id:nextId }]);
+    setNextId(v => v + 1);
+    setReplacementSearch("");
+    setFocusedSearch(null);
+    setConfirmed(false);
     setMessage("");
   };
   const addReplacement = (query: string) => {
-    const q = query.trim().toLowerCase();
-    const found = catalog.find(item => item.barcode?.toLowerCase() === q || item.name.toLowerCase() === q)
-      ?? catalog.find(item => item.name.toLowerCase().includes(q));
-    if (!q || !found) throw new Error("Product not found in the demonstration catalog. Search by product name or SKU.");
-    setReplacements(prev => {
-      const existing = prev.find(item => item.name === found.name);
-      return existing ? prev.map(item => item.id === existing.id ? { ...item, qty: item.qty + 1 } : item) : [...prev, { ...found, qty: 1, id: nextId }];
-    });
-    setNextId(v => v + 1);
-    setReplacementSearch("");
-    setConfirmed(false);
-    setMessage("");
+    const q = query.trim().toLocaleLowerCase();
+    const exact = products.find(item => item.barcode === q || item.sku.toLowerCase() === q || item.name.toLocaleLowerCase() === q || item.sinhalaName?.toLocaleLowerCase() === q);
+    const found = exact ?? (replacementMatches.length === 1 ? replacementMatches[0] : undefined);
+    if (!q || !found) throw new Error(replacementMatches.length > 1 ? "Choose a product from the matching catalog results." : "Product not found in the POS demonstration catalog.");
+    addReplacementProduct(found);
   };
   const runSearch = (kind: "return" | "replacement") => {
     try { kind === "return" ? addReturn(returnSearch) : addReplacement(replacementSearch); }
@@ -82,7 +88,7 @@ export default function ReturnExchangePage({ sale, onBack }: { sale: ExchangeSal
     setScanner(null);
   };
   const changeReplacementQty = (id: number, qty: number) => {
-    setReplacements(prev => prev.map(item => item.id === id ? { ...item, qty: Math.max(1, Math.floor(qty) || 1) } : item));
+    setReplacements(prev => prev.map(item => item.id === id ? { ...item, qty: Math.min(products.find(p => p.barcode === item.barcode)?.stock ?? Number.MAX_SAFE_INTEGER, Math.max(1, Math.floor(qty) || 1)) } : item));
     setConfirmed(false);
   };
   const confirm = () => {
@@ -105,8 +111,8 @@ export default function ReturnExchangePage({ sale, onBack }: { sale: ExchangeSal
     {message && <div className="rex-alert" role="status">{message}<button onClick={() => setMessage("")} aria-label="Dismiss"><Close fontSize="small" /></button></div>}
     <div className="rex-grid">
       <div className="rex-products">
-        <section className="rex-panel rex-return"><div className="rex-section-head"><h2>↩ Return Items</h2><div className="rex-search"><input ref={returnInputRef} aria-label="Search returned item" placeholder="Scan or type original item name / SKU" value={returnSearch} onChange={e => setReturnSearch(e.target.value)} onKeyDown={e => { if (e.key === "Enter") runSearch("return"); }} /><button onClick={() => setTouchTarget("return")} title="Open touch keyboard for returned item" aria-label="Open return item keyboard"><Keyboard fontSize="small" /></button><button onClick={() => setScanner("return")} title="Scan returned item"><QrCodeScanner fontSize="small" /> Scan</button></div></div><div className="rex-table-scroll"><table><thead><tr><th>Item</th><th>Return Qty</th><th>Unit Price</th><th>Return Value</th><th>Reason / Condition</th><th></th></tr></thead><tbody>{returns.length ? [...returns].sort((a,b) => a.index-b.index).map(row => { const item = sale.items[row.index]; return <tr key={row.index}><td>{item.name}</td><td><div className="rex-qty"><button onClick={() => setReturnQty(row.index, row.qty-1)}>−</button><input aria-label={"Return quantity for " + item.name} type="number" min={0} max={item.qty} value={row.qty} onChange={e => setReturnQty(row.index, Number(e.target.value))}/><button onClick={() => setReturnQty(row.index, row.qty+1)}>+</button></div></td><td>{money(item.price)}</td><td>{money(item.price*row.qty)}</td><td><select aria-label={"Reason for " + item.name} value={row.reason} onChange={e => setReturns(prev => prev.map(r => r.index===row.index?{...r,reason:e.target.value}:r))}><option>Customer request</option><option>Wrong item</option><option>Damaged</option><option>Defective</option><option>Other</option></select><label className="rex-restock"><input type="checkbox" checked={row.restock} onChange={e => setReturns(prev => prev.map(r => r.index===row.index?{...r,restock:e.target.checked}:r))}/> Restock</label></td><td><button className="rex-delete" onClick={() => setReturnQty(row.index,0)} aria-label={"Remove " + item.name}>×</button></td></tr>; }) : <tr><td colSpan={6} className="rex-empty">Scan or search an item from the original invoice to return it.</td></tr>}</tbody></table></div><div className="rex-total">Return Credit <strong>{money(returnCredit)}</strong></div></section>
-        <section className="rex-panel rex-replacement"><div className="rex-section-head"><h2>✚ Replacement Items</h2><div className="rex-search"><input ref={replacementInputRef} aria-label="Search replacement product" placeholder="Scan or type product name / SKU" value={replacementSearch} onChange={e => setReplacementSearch(e.target.value)} onKeyDown={e => { if (e.key === "Enter") runSearch("replacement"); }} /><button onClick={() => setTouchTarget("replacement")} title="Open touch keyboard for replacement item" aria-label="Open replacement item keyboard"><Keyboard fontSize="small" /></button><button onClick={() => setScanner("replacement")} title="Scan replacement product"><QrCodeScanner fontSize="small" /> Scan</button></div></div><div className="rex-table-scroll"><table><thead><tr><th>Product</th><th>Qty</th><th>Unit Price</th><th>Total</th><th></th></tr></thead><tbody>{replacements.length ? replacements.map(item => <tr key={item.id}><td>{item.name}<small className="rex-sku">{item.barcode}</small></td><td><div className="rex-qty"><button onClick={() => changeReplacementQty(item.id,item.qty-1)}>−</button><input aria-label={"Quantity for " + item.name} type="number" min={1} value={item.qty} onChange={e => changeReplacementQty(item.id,Number(e.target.value))}/><button onClick={() => changeReplacementQty(item.id,item.qty+1)}>+</button></div></td><td>{money(item.price)}</td><td>{money(item.price*item.qty)}</td><td><button className="rex-delete" onClick={() => {setReplacements(prev => prev.filter(r => r.id!==item.id));setConfirmed(false);}} aria-label={"Remove " + item.name}>×</button></td></tr>) : <tr><td colSpan={5} className="rex-empty">Scan or search replacement products, or leave empty for a refund-only transaction.</td></tr>}</tbody></table></div><div className="rex-total">Replacement Total <strong>{money(replacementTotal)}</strong></div></section>
+        <section className="rex-panel rex-return"><div className="rex-section-head"><h2>↩ Return Items</h2><div className="rex-search"><input ref={returnInputRef} onFocus={() => setFocusedSearch("return")} aria-label="Search returned item" placeholder="Scan or type original item name / SKU" value={returnSearch} onChange={e => setReturnSearch(e.target.value)} onKeyDown={e => { if (e.key === "Enter") runSearch("return"); }} /><button onClick={() => setTouchTarget("return")} title="Open touch keyboard for returned item" aria-label="Open return item keyboard"><Keyboard fontSize="small" /></button><button onClick={() => setScanner("return")} title="Scan returned item"><QrCodeScanner fontSize="small" /> Scan</button></div>{focusedSearch === "return" && returnSearch.trim() && <div className="rex-suggestions" role="listbox" aria-label="Matching original invoice items">{returnMatches.length ? returnMatches.map(({item,index}) => <button key={index} type="button" role="option" aria-selected={false} onClick={() => { try { addReturnIndex(index); } catch(error) { setMessage(error instanceof Error ? error.message : "Unable to return item."); } }}><span><strong>{item.name}</strong><small>Purchased: {item.qty} · Available to return: {item.qty - (selectedReturn(index)?.qty ?? 0)}</small></span><b>{money(item.price)}</b></button>) : <p>No matching items on this invoice.</p>}</div>}</div><div className="rex-table-scroll"><table><thead><tr><th>Item</th><th>Return Qty</th><th>Unit Price</th><th>Return Value</th><th>Reason / Condition</th><th></th></tr></thead><tbody>{returns.length ? [...returns].sort((a,b) => a.index-b.index).map(row => { const item = sale.items[row.index]; return <tr key={row.index}><td>{item.name}</td><td><div className="rex-qty"><button onClick={() => setReturnQty(row.index, row.qty-1)}>−</button><input aria-label={"Return quantity for " + item.name} type="number" min={0} max={item.qty} value={row.qty} onChange={e => setReturnQty(row.index, Number(e.target.value))}/><button onClick={() => setReturnQty(row.index, row.qty+1)}>+</button></div></td><td>{money(item.price)}</td><td>{money(item.price*row.qty)}</td><td><select aria-label={"Reason for " + item.name} value={row.reason} onChange={e => setReturns(prev => prev.map(r => r.index===row.index?{...r,reason:e.target.value}:r))}><option>Customer request</option><option>Wrong item</option><option>Damaged</option><option>Defective</option><option>Other</option></select><label className="rex-restock"><input type="checkbox" checked={row.restock} onChange={e => setReturns(prev => prev.map(r => r.index===row.index?{...r,restock:e.target.checked}:r))}/> Restock</label></td><td><button className="rex-delete" onClick={() => setReturnQty(row.index,0)} aria-label={"Remove " + item.name}>×</button></td></tr>; }) : <tr><td colSpan={6} className="rex-empty">Scan or search an item from the original invoice to return it.</td></tr>}</tbody></table></div><div className="rex-total">Return Credit <strong>{money(returnCredit)}</strong></div></section>
+        <section className="rex-panel rex-replacement"><div className="rex-section-head"><h2>✚ Replacement Items</h2><div className="rex-search"><input ref={replacementInputRef} onFocus={() => setFocusedSearch("replacement")} aria-label="Search replacement product" placeholder="Scan or type product name / SKU" value={replacementSearch} onChange={e => setReplacementSearch(e.target.value)} onKeyDown={e => { if (e.key === "Enter") runSearch("replacement"); }} /><button onClick={() => setTouchTarget("replacement")} title="Open touch keyboard for replacement item" aria-label="Open replacement item keyboard"><Keyboard fontSize="small" /></button><button onClick={() => setScanner("replacement")} title="Scan replacement product"><QrCodeScanner fontSize="small" /> Scan</button></div>{focusedSearch === "replacement" && replacementSearch.trim() && <div className="rex-suggestions" role="listbox" aria-label="Matching POS catalog products">{replacementMatches.length ? replacementMatches.map(item => <button key={item.id} type="button" role="option" aria-selected={false} disabled={item.stock <= (replacements.find(r => r.barcode === item.barcode)?.qty ?? 0)} onClick={() => { try { addReplacementProduct(item); } catch(error) { setMessage(error instanceof Error ? error.message : "Unable to add product."); } }}><span><strong>{item.emoji} {item.name}</strong><small>{item.sinhalaName ? item.sinhalaName+" · " : ""}{item.sku} · Stock: {item.stock} {item.unit}</small></span><b>{money(item.price)}</b></button>) : <p>No matching products in the POS catalog.</p>}</div>}</div><div className="rex-table-scroll"><table><thead><tr><th>Product</th><th>Qty</th><th>Unit Price</th><th>Total</th><th></th></tr></thead><tbody>{replacements.length ? replacements.map(item => <tr key={item.id}><td>{item.name}<small className="rex-sku">{item.barcode}</small></td><td><div className="rex-qty"><button onClick={() => changeReplacementQty(item.id,item.qty-1)}>−</button><input aria-label={"Quantity for " + item.name} type="number" min={1} value={item.qty} onChange={e => changeReplacementQty(item.id,Number(e.target.value))}/><button onClick={() => changeReplacementQty(item.id,item.qty+1)}>+</button></div></td><td>{money(item.price)}</td><td>{money(item.price*item.qty)}</td><td><button className="rex-delete" onClick={() => {setReplacements(prev => prev.filter(r => r.id!==item.id));setConfirmed(false);}} aria-label={"Remove " + item.name}>×</button></td></tr>) : <tr><td colSpan={5} className="rex-empty">Scan or search replacement products, or leave empty for a refund-only transaction.</td></tr>}</tbody></table></div><div className="rex-total">Replacement Total <strong>{money(replacementTotal)}</strong></div></section>
       </div>
       <section className="rex-panel rex-settlement"><h2>▦ Settlement Summary</h2><div className="rex-line"><span>Return Credit</span><strong>− {money(returnCredit)}</strong></div><div className="rex-line"><span>Replacement Total</span><strong>+ {money(replacementTotal)}</strong></div><div className="rex-difference"><small>{balance>0?"Customer Pays (Additional)":balance<0?"Refund to Customer":"Even Exchange"}</small><strong>{money(Math.abs(balance))}</strong></div><h3>{balance>0?"Payment Method":balance<0?"Refund Method":"Settlement"}</h3>{balance!==0 ? <div className="rex-methods">{(balance>0?["Cash","Card","QR Payment","Bank Transfer","Mixed Payment"]:["Cash","Original Payment Method","Bank Transfer","Store Credit"]).map(option => <button key={option} className={method===option?"active":""} onClick={() => setMethod(option)}>{option}</button>)}</div> : <p className="rex-muted">No money needs to change hands.</p>}<h3>Notes (Optional)</h3><textarea aria-label="Return notes" placeholder="Return or exchange notes..." value={notes} onChange={e => setNotes(e.target.value)}/><p className="rex-muted">Amounts are illustrative and exclude tax, discount, prior returns, and payment-provider adjustments until backend integration.</p></section>
       <section className="rex-panel rex-receipt"><h2>Adjusted Invoice</h2><div className="rex-receipt-paper"><div className="rex-receipt-static"><div className="rex-receipt-meta"><div>Original Invoice: {sale.invoice}</div><div>Customer: {sale.customer}</div></div></div><div className="rex-receipt-items"><table><thead><tr><th>Item</th><th>Qty</th><th>Amount</th></tr></thead><tbody>{sale.items.map((item,index) => { const returned=selectedReturn(index)?.qty ?? 0; return <tr key={index}><td>{item.name}{returned>0&&<small className="rex-returned-tag">RETURNED {returned} / {item.qty}</small>}</td><td>{item.qty}</td><td>{money(item.qty*item.price)}{returned>0&&<small className="rex-returned-tag rex-crossed">− {money(returned*item.price)}</small>}</td></tr>; })}{replacements.map(item => <tr className="rex-new" key={item.id}><td>+ {item.name}</td><td>{item.qty}</td><td>{money(item.qty*item.price)}</td></tr>)}</tbody></table></div><div className="rex-receipt-bottom"><div className="rex-line"><span>Original Subtotal</span><strong>{money(originalSubtotal)}</strong></div><div className="rex-line"><span>Returned Value</span><strong>− {money(returnCredit)}</strong></div><div className="rex-line"><span>New Items</span><strong>+ {money(replacementTotal)}</strong></div><div className="rex-adjusted">Adjusted Subtotal <strong>{money(originalSubtotal-returnCredit+replacementTotal)}</strong></div><div className="rex-receipt-due">{balance>0?"Additional Payment":balance<0?"Customer Refund":"No Balance Due"} <strong>{money(Math.abs(balance))}</strong></div><div className="rex-receipt-actions"><button className="rex-cancel" onClick={onBack}><Close fontSize="small"/> Cancel</button><button className="rex-confirm" onClick={confirm} disabled={!returns.length}><CheckCircle fontSize="small"/> {confirmed?"Demo Confirmed":"Confirm Return / Exchange"}</button></div></div></div></section>
