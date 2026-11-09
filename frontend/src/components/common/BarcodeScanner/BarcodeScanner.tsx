@@ -311,6 +311,10 @@ function BarcodeScanner({
             sx={{
               flex: 1,
               minWidth: 200,
+              ...(compact && {
+                "& .MuiOutlinedInput-root": { height: 46 },
+                "& .MuiOutlinedInput-input": { py: 0, height: "100%", boxSizing: "border-box" },
+              }),
             }}
             slotProps={{
               htmlInput: {
