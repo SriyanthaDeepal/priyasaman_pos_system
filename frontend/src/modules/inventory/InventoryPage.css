@@ -151,20 +151,38 @@
 .inv-keyboard-toggle{gap:5px}
 .inv-keyboard-toggle svg{font-size:18px}
 .inv-keyboard-toggle.selected{background:#c6f1d2}
-.inv-virtual-keyboard{flex-shrink:0;display:flex;flex-direction:column;gap:5px;padding:9px;margin:-2px 0 10px;border:1px solid #cbd9e6;border-radius:10px;background:#f2f6fa}
-.inv-keyboard-keys{display:flex;flex-direction:column;gap:4px}
-.inv-keyboard-row{display:flex;justify-content:center;gap:4px}
-.inv-keyboard-row button{flex:1;min-width:0;height:29px;padding:0 2px;background:white;border:1px solid #cbd5e1;border-radius:5px;font-size:11px;font-weight:700;cursor:pointer}
-.inv-keyboard-row button:hover,.inv-keyboard-actions button:hover{background:#e0f4e6}
-.inv-keyboard-actions{display:flex;gap:5px;justify-content:flex-end}
-.inv-keyboard-actions button{border:1px solid #cbd5e1;border-radius:6px;background:#fff;padding:5px 11px;font-size:11px;font-weight:700;cursor:pointer}
-.inv-keyboard-actions button:last-child{background:#e4fae9;border-color:#9ee6b1;color:#006c1b}
-@container (max-width:950px){
-  .inv-filter-row{gap:4px}
-  .inv-category-select{flex-basis:145px}
-  .inv-category-select span{display:none}
-  .inv-stock-filters{gap:3px}
-  .inv-stock-filters button{font-size:10px;padding:8px 4px}
-  .inv-search-row{gap:5px}
-  .inv-search-row .inv-soft-green{padding-inline:7px;font-size:11px}
+
+/* Use the existing POS Sinhala touch keyboard without changing product rows. */
+.inventory-overview-page .inv-catalog{position:relative}
+.inventory-overview-page .inv-pos-keyboard-overlay{
+  position:absolute;
+  z-index:15;
+  left:8px;
+  right:8px;
+  bottom:46px;
+  height:clamp(200px,43%,310px);
+  min-height:0;
+  pointer-events:none;
+}
+.inventory-overview-page .inv-pos-keyboard-overlay>.stk-panel{
+  position:relative;
+  inset:auto;
+  width:100%;
+  height:100%;
+  max-height:none;
+  overflow-y:auto;
+  pointer-events:auto;
+  border:1px solid #a6d5b0;
+  box-shadow:0 -5px 20px #09271325;
+}
+.inventory-overview-page .inv-heading{min-height:42px;margin-bottom:8px}
+.inventory-overview-page .inv-heading-icon svg{font-size:32px}
+.inventory-overview-page .inv-heading h1{font-size:clamp(19px,1.65vw,25px)}
+.inventory-overview-page .inv-heading p{font-size:11px}
+.inventory-overview-page .inv-kpis{margin-bottom:8px}
+.inventory-overview-page .inv-kpi{min-height:54px;max-height:66px;padding:7px 10px}
+.inventory-overview-page .inv-kpi>span{width:31px;height:31px;font-size:19px}
+.inventory-overview-page .inv-kpi strong{font-size:clamp(14px,1.1vw,19px)}
+@container (max-width:800px){
+  .inventory-overview-page .inv-pos-keyboard-overlay{height:clamp(180px,45%,270px)}
 }
