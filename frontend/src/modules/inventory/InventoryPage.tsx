@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
-import { Box, Button, Chip, IconButton, MenuItem, Select, TextField, Typography } from "@mui/material";
-import { Add, ArrowBack, ArrowForward, CheckCircle, DeleteOutline, Inventory2Outlined, LocalShippingOutlined, Search, SwapHoriz, Tune, WarningAmber } from "@mui/icons-material";
+import { Button, IconButton, MenuItem, Select } from "@mui/material";
+import { Add, ArrowBack, ArrowForward, CheckCircle, DeleteOutline, Inventory2Outlined, LocalShippingOutlined, Search, SwapHoriz, Tune } from "@mui/icons-material";
 import "./InventoryPage.css";
 
 export type InventoryView = "overview" | "adjustment" | "transfer";
