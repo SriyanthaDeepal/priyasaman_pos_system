@@ -21,7 +21,8 @@ export default function FeedbackSnackbar({
       onClose={(_, reason) => {
         if (reason !== "clickaway") onClose();
       }}
-      anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      sx={{ bottom: { xs: 20, sm: 24 }, right: { xs: 12, sm: 24 }, left: { xs: 12, sm: "auto" } }}
     >
       <Alert onClose={onClose} severity={severity} variant="filled" sx={{ width: "100%" }}>
         {message}
