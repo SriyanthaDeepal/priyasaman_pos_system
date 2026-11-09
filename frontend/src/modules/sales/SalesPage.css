@@ -176,3 +176,9 @@
 .sales-page .sales-date-menu-actions{display:flex;justify-content:flex-end;gap:8px}
 .sales-page .sales-date-menu-actions button{border:1px solid #cbd7e6;border-radius:9px;background:#f5f8fc;padding:8px 13px;font-size:12px;font-weight:750;cursor:pointer}
 .sales-page .sales-date-menu-actions button:last-child{background:#e1f8e9;border-color:#8bd3a5;color:#08732b}
+
+/* Four responsive date presets and distinct date/time input rows. */
+.sales-page .sales-date-presets{grid-template-columns:repeat(2,minmax(0,1fr))}
+.sales-page .sales-date-presets button{min-width:0}
+.sales-page .sales-date-menu{max-height:min(480px,75dvh);overflow-y:auto}
+.sales-page .sales-time-fields input[type="date"],.sales-page .sales-time-fields input[type="time"]{color-scheme:light}
