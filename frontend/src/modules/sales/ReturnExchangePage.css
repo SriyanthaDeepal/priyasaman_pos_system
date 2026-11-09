@@ -198,3 +198,44 @@
 .rex-page .rex-barcode svg{max-width:100%;height:auto}
 .rex-page .rex-receipt td .rex-returned-tag{margin-top:4px}
 .rex-page .rex-receipt td .rex-returned-tag.rex-crossed{text-decoration:line-through}
+
+/* Compact invoice toolbar, replacing the former demo badge. */
+.rex-page .rex-heading-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.rex-page .rex-heading-actions button,.rex-page .rex-view-invoice{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:39px;padding:8px 15px;border-radius:10px;border:1px solid #c8d7e5;background:#fff;font-weight:750;white-space:nowrap}
+.rex-page .rex-heading-actions .rex-top-scan{color:#076f2d;background:#e4fbe9;border-color:#75cc91}
+.rex-page .rex-heading-actions .rex-top-find{color:#153c65;background:#fff}
+.rex-page .rex-invoice-strip{grid-template-columns:minmax(155px,1.1fr) minmax(120px,.9fr) minmax(120px,1fr) minmax(95px,.7fr) minmax(120px,.9fr) auto;align-items:center;gap:clamp(8px,1.2vw,22px);padding:10px 13px;background:linear-gradient(95deg,#f0fff2 0%,#fff 25%,#fff 100%)}
+.rex-page .rex-invoice-strip>div{display:flex;align-items:center;gap:9px;min-width:0}
+.rex-page .rex-invoice-strip>div>svg{flex:0 0 auto;color:#2c4154}
+.rex-page .rex-invoice-strip>div>span{min-width:0;display:grid;gap:4px}
+.rex-page .rex-invoice-strip .rex-invoice-primary{background:#e4fae8;margin:-10px 0 -10px -13px;padding:11px 13px;border-radius:11px}
+.rex-page .rex-invoice-strip .rex-invoice-primary>svg{font-size:28px;color:#087a2d}
+.rex-page .rex-invoice-strip .rex-invoice-primary strong{font-size:19px;color:#087a2d}
+.rex-page .rex-invoice-strip small{font-size:10px}
+.rex-page .rex-invoice-strip strong{font-size:clamp(11px,.9vw,14px)}
+.rex-page .rex-invoice-strip .rex-payment-pill{display:inline-block;width:max-content;max-width:100%;padding:4px 7px;border-radius:6px;background:#d9f9e1;color:#08742c;font-size:12px}
+.rex-page .rex-view-invoice{font-size:11px;padding:8px 10px;background:#eff6ff;color:#173c6a}
+.rex-page .rex-steps{margin-top:3px;margin-bottom:9px}
+.rex-page .rex-heading{margin-bottom:9px}
+.rex-page .rex-heading p{font-size:12px}
+.rex-page .rex-receipt .rex-receipt-paper{max-width:none}
+@container (max-width:1250px){
+ .rex-page .rex-invoice-strip{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .rex-page .rex-invoice-strip .rex-invoice-primary{margin:0;padding:8px}
+ .rex-page .rex-invoice-strip .rex-view-invoice{justify-self:start}
+}
+@container (max-width:800px){
+ .rex-page .rex-heading{align-items:flex-start;flex-wrap:wrap}
+ .rex-page .rex-heading-actions{width:100%;justify-content:flex-start}
+ .rex-page .rex-invoice-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@container (max-width:480px){
+ .rex-page .rex-heading-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+ .rex-page .rex-heading-actions button{padding:8px 6px;font-size:11px}
+ .rex-page .rex-invoice-strip{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+ .rex-page .rex-invoice-strip .rex-invoice-primary{grid-column:1/-1}
+ .rex-page .rex-invoice-strip .rex-view-invoice{grid-column:1/-1;justify-self:stretch}
+}
+@media print{
+ .rex-page .rex-heading-actions,.rex-page .rex-view-invoice{display:none}
+}
