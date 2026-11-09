@@ -105,7 +105,7 @@ export default function ReturnExchangePage({ sale, onBack }: { sale: ExchangeSal
         <div><PersonOutlined fontSize="small"/><span><small>Customer</small><strong>{sale.customer}</strong></span></div>
         <div><Payments fontSize="small"/><span><small>Payment</small><strong className="rex-payment-pill">{sale.method}</strong></span></div>
         <div><span><small>Original Subtotal</small><strong>{money(originalSubtotal)}</strong></span></div>
-        <button className="rex-view-invoice" onClick={() => setViewOriginal(true)}><Visibility fontSize="small"/> View</button>
+        <button className="rex-view-invoice" onClick={() => { setTouchTarget(null); setViewOriginal(true); }}><Visibility fontSize="small"/> View</button>
       </section>
     </header>
     {message && <div className="rex-alert" role="status">{message}<button onClick={() => setMessage("")} aria-label="Dismiss"><Close fontSize="small" /></button></div>}
@@ -118,7 +118,30 @@ export default function ReturnExchangePage({ sale, onBack }: { sale: ExchangeSal
       <section className="rex-panel rex-receipt"><h2>Adjusted Invoice</h2><div className="rex-receipt-paper"><div className="rex-receipt-static"><div className="rex-receipt-meta"><div>Original Invoice: {sale.invoice}</div><div>Customer: {sale.customer}</div></div></div><div className="rex-receipt-items"><table><thead><tr><th>Item</th><th>Qty</th><th>Amount</th></tr></thead><tbody>{sale.items.map((item,index) => { const returned=selectedReturn(index)?.qty ?? 0; return <tr key={index}><td>{item.name}{returned>0&&<small className="rex-returned-tag">RETURNED {returned} / {item.qty}</small>}</td><td>{item.qty}</td><td>{money(item.qty*item.price)}{returned>0&&<small className="rex-returned-tag rex-crossed">− {money(returned*item.price)}</small>}</td></tr>; })}{replacements.map(item => <tr className="rex-new" key={item.id}><td>+ {item.name}</td><td>{item.qty}</td><td>{money(item.qty*item.price)}</td></tr>)}</tbody></table></div><div className="rex-receipt-bottom"><div className="rex-line"><span>Original Subtotal</span><strong>{money(originalSubtotal)}</strong></div><div className="rex-line"><span>Returned Value</span><strong>− {money(returnCredit)}</strong></div><div className="rex-line"><span>New Items</span><strong>+ {money(replacementTotal)}</strong></div><div className="rex-adjusted">Adjusted Subtotal <strong>{money(originalSubtotal-returnCredit+replacementTotal)}</strong></div><div className="rex-receipt-due">{balance>0?"Additional Payment":balance<0?"Customer Refund":"No Balance Due"} <strong>{money(Math.abs(balance))}</strong></div><div className="rex-receipt-actions"><button className="rex-cancel" onClick={onBack}><Close fontSize="small"/> Cancel</button><button className="rex-confirm" onClick={confirm} disabled={!returns.length}><CheckCircle fontSize="small"/> {confirmed?"Demo Confirmed":"Confirm Return / Exchange"}</button></div></div></div></section>
     </div>
     {touchTarget && <aside className="rex-keyboard-dock" aria-label={touchTarget === "return" ? "Return item touch keyboard" : "Replacement item touch keyboard"}><div className="rex-keyboard-dock-title"><strong>{touchTarget === "return" ? "Return item search" : "Replacement product search"}</strong><span>Choose a matching product from the list on the left.</span></div><SinhalaTouchKeyboard key={touchTarget} value={touchTarget === "return" ? returnSearch : replacementSearch} onChange={touchTarget === "return" ? setReturnSearch : setReplacementSearch} inputRef={touchTarget === "return" ? returnInputRef : replacementInputRef} onClose={() => submitTouchKeyboard(touchTarget)}/></aside>}
-    <Dialog open={viewOriginal} onClose={() => setViewOriginal(false)} fullWidth maxWidth="sm" aria-labelledby="rex-original-invoice-title"><DialogTitle id="rex-original-invoice-title" sx={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>Original Invoice — {sale.invoice}<IconButton onClick={() => setViewOriginal(false)} aria-label="Close original invoice"><Close/></IconButton></DialogTitle><DialogContent dividers><p><strong>Customer:</strong> {sale.customer} &nbsp; <strong>Cashier:</strong> {sale.cashier}</p><p><strong>Time:</strong> {sale.time} &nbsp; <strong>Payment:</strong> {sale.method}</p><div className="rex-table-scroll"><table><thead><tr><th>Product</th><th>Qty</th><th>Unit Price</th><th>Total</th></tr></thead><tbody>{sale.items.map((item,index)=><tr key={index}><td>{item.name}</td><td>{item.qty}</td><td>{money(item.price)}</td><td>{money(item.qty*item.price)}</td></tr>)}</tbody></table></div><div className="rex-total">Original Subtotal <strong>{money(originalSubtotal)}</strong></div><p className="rex-muted">This is a demonstration invoice summary; original sale tax and discounts are not recalculated here.</p></DialogContent></Dialog>
+    <Dialog open={viewOriginal} onClose={() => setViewOriginal(false)} fullWidth maxWidth="md" aria-labelledby="rex-original-invoice-title" slotProps={{paper:{sx:{borderRadius:3,overflow:"hidden",maxHeight:"min(85dvh,800px)"}}}}>
+      <DialogTitle id="rex-original-invoice-title" component="div" sx={{p:0}}>
+        <div className="rex-original-header">
+          <div className="rex-original-header-icon"><ReceiptLong /></div>
+          <div className="rex-original-header-text"><span>ORIGINAL SALES INVOICE</span><h2>{sale.invoice}</h2><p>Purchase details for this return or exchange</p></div>
+          <IconButton onClick={() => setViewOriginal(false)} aria-label="Close original invoice"><Close /></IconButton>
+        </div>
+      </DialogTitle>
+      <DialogContent dividers className="rex-original-content">
+        <div className="rex-original-info">
+          <div><small>Customer</small><strong>{sale.customer}</strong></div>
+          <div><small>Cashier</small><strong>{sale.cashier}</strong></div>
+          <div><small>Purchase Time</small><strong>{sale.time}</strong></div>
+          <div><small>Payment Method</small><strong className="rex-original-payment">{sale.method}</strong></div>
+        </div>
+        <div className="rex-original-products-heading"><ReceiptLong fontSize="small"/><strong>Purchased Items</strong><span>{sale.items.length} products</span></div>
+        <div className="rex-original-table-wrap"><table className="rex-original-table">
+          <thead><tr><th>Product</th><th>Qty</th><th>Unit Price</th><th>Line Total</th></tr></thead>
+          <tbody>{sale.items.map((item,index)=><tr key={index}><td><span className="rex-original-row-number">{index+1}</span><strong>{item.name}</strong></td><td>{item.qty}</td><td>{money(item.price)}</td><td>{money(item.qty*item.price)}</td></tr>)}</tbody>
+        </table></div>
+        <div className="rex-original-grand-total"><span>Original Subtotal</span><strong>{money(originalSubtotal)}</strong></div>
+        <p className="rex-original-disclaimer">Demonstration invoice summary. Original sale taxes and discounts are not recalculated here.</p>
+      </DialogContent>
+    </Dialog>
     <Dialog open={scanner!==null} onClose={() => setScanner(null)} fullWidth maxWidth="sm" slotProps={{paper:{sx:{borderRadius:2.5}}}}><DialogTitle sx={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>{scanner==="return"?"Scan Returned Item":"Scan Replacement Item"}<IconButton onClick={() => setScanner(null)} aria-label="Close scanner"><Close/></IconButton></DialogTitle><DialogContent dividers><BarcodeScanner label="Product barcode / SKU" placeholder="Scan or enter product barcode" submitLabel="Add Item" onScan={scan}/></DialogContent></Dialog>
   </div>;
 }
