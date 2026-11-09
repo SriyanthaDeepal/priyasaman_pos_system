@@ -190,3 +190,16 @@
 
 /* Separate KPI cards from the transactions panel at all viewport sizes. */
 .sales-page .sales-left>.sales-stats{margin-bottom:clamp(10px,1.1vw,14px)}
+
+/* Unified payment and status badges: matching height, typography, and icon alignment. */
+.sales-page .sales-pill,.sales-page .sales-status{
+  display:inline-flex;align-items:center;justify-content:center;gap:5px;
+  min-height:25px;min-width:0;box-sizing:border-box;
+  border-radius:7px;padding:4px 9px;font-size:12px;line-height:1.25;
+  font-weight:750;white-space:nowrap;
+}
+.sales-page .sales-pill svg,.sales-page .sales-status svg{font-size:15px;flex-shrink:0}
+.sales-page .method-cash{background:#d8ffe0;color:#087a22}
+.sales-page .method-card{background:#e1efff;color:#075fc7}
+.sales-page .method-qr-payment{background:#e4f5fa;color:#08768c}
+.sales-page .method-online-transfer{background:#eee7ff;color:#6634bd}
