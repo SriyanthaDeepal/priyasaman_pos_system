@@ -33,6 +33,7 @@ import {
 export interface BarcodeScannerProps {
   onScan: (barcode: string) => void | Promise<void>;
   label?: string;
+  submitLabel?: string;
   placeholder?: string;
   disabled?: boolean;
   autoFocus?: boolean;
@@ -53,6 +54,7 @@ const SUPPORTED_FORMATS = [
 function BarcodeScanner({
   onScan,
   label = "Scan Barcode",
+  submitLabel = "Add",
   placeholder = "Scan or enter barcode...",
   disabled = false,
   autoFocus = true,
@@ -331,7 +333,7 @@ function BarcodeScanner({
             }
             sx={{ height: 40 }}
           >
-            Add
+            {submitLabel}
           </Button>
 
           {enableCamera && (
