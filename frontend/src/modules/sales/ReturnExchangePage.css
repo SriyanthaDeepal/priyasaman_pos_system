@@ -490,3 +490,74 @@
  .rex-original-info{grid-template-columns:repeat(2,minmax(0,1fr))}
  .rex-original-grand-total strong{font-size:17px}
 }
+
+/* Keep every original-invoice detail on ONE horizontal line, even at narrow widths. */
+.rex-page .rex-heading .rex-invoice-strip{
+ display:grid;
+ grid-template-columns:minmax(130px,1.2fr) minmax(92px,.72fr) minmax(145px,1.2fr) minmax(115px,1fr) minmax(95px,.78fr) minmax(120px,.95fr);
+ grid-auto-flow:column;
+ gap:clamp(7px,.8vw,14px);
+ align-items:center;
+ min-width:0;
+ width:100%;
+ overflow-x:auto;
+ overflow-y:hidden;
+ scrollbar-width:thin;
+ padding:8px 10px;
+ margin:0;
+}
+.rex-page .rex-heading .rex-invoice-strip>div,
+.rex-page .rex-heading .rex-invoice-strip .rex-invoice-primary{
+ grid-column:auto;
+ min-width:0;
+ margin:0;
+ padding:5px 7px;
+ display:flex;
+ align-items:center;
+ gap:7px;
+ white-space:nowrap;
+}
+.rex-page .rex-heading .rex-invoice-strip>div span{display:flex;flex-direction:column;gap:3px;min-width:0}
+.rex-page .rex-heading .rex-invoice-strip small{font-size:10px;white-space:nowrap}
+.rex-page .rex-heading .rex-invoice-strip strong{font-size:clamp(10px,.72vw,12px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;overflow-wrap:normal}
+.rex-page .rex-heading .rex-invoice-strip .rex-invoice-primary{background:#e6faeb;border-radius:9px}
+.rex-page .rex-heading .rex-invoice-link{
+ display:inline-block;
+ padding:0;
+ border:0;
+ border-radius:3px;
+ background:none;
+ color:#087a2d;
+ font-size:clamp(12px,.96vw,16px);
+ font-weight:850;
+ text-align:left;
+ white-space:nowrap;
+ text-decoration:none;
+}
+.rex-page .rex-heading .rex-invoice-link:hover{text-decoration:underline}
+.rex-page .rex-heading .rex-invoice-link:focus-visible{outline:2px solid #087a2d;outline-offset:3px}
+@container(max-width:1050px){
+ .rex-page .rex-heading .rex-invoice-strip{grid-template-columns:145px 100px 155px 130px 110px 140px}
+}
+@container(max-width:760px){
+ .rex-page .rex-heading .rex-invoice-strip{grid-template-columns:145px 100px 155px 130px 110px 140px}
+}
+/* All language modes place their key groups directly ABOVE the pinned footer. */
+.rex-page .rex-keyboard-dock>.stk-panel{display:flex;flex-direction:column;justify-content:flex-end}
+.rex-page .rex-keyboard-dock .stk-sinhala-layout,
+.rex-page .rex-keyboard-dock .stk-english,
+.rex-page .rex-keyboard-dock>.stk-panel>.stk-grid{
+ flex:0 1 auto;
+ min-height:0;
+ margin-top:auto;
+ overflow-y:auto;
+ align-content:end;
+}
+.rex-page .rex-keyboard-dock .stk-sinhala-layout{align-items:end}
+.rex-page .rex-keyboard-dock .stk-left-pane,.rex-page .rex-keyboard-dock .stk-right-pane{min-height:0;overflow-y:auto}
+.rex-page .rex-keyboard-dock .stk-footer{flex:0 0 auto;margin-top:5px}
+.rex-page .rex-keyboard-dock>.stk-panel>.stk-grid{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:5px;width:100%}
+.rex-page .rex-keyboard-dock>.stk-panel>.stk-grid .stk-key{height:42px;min-height:36px}
+@media(max-width:760px){
+ .rex-page .rex-keyboard-dock>.stk-panel>.stk-grid{grid-template-columns:repeat(6,minmax(0,1fr))}
+}
