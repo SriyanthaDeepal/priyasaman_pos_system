@@ -337,6 +337,7 @@ function BarcodeScanner({
             sx={{
               height: compact ? 56 : 40,
               whiteSpace: "nowrap",
+              // Compact Scan Invoice actions use the POS green palette.
               ...(compact && {
                 bgcolor: "#007b15",
                 color: "#fff",
