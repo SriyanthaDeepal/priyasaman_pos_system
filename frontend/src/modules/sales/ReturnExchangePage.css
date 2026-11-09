@@ -275,3 +275,46 @@
  .rex-page .rex-heading .rex-invoice-strip .rex-view-invoice{grid-column:auto;justify-self:stretch}
  .rex-page .rex-heading-title h1{white-space:normal}
 }
+
+/* Final three-pane cashier workspace: aligned heights, fixed settlement and receipt actions. */
+.rex-page .rex-grid{grid-template-columns:minmax(0,1.56fr) minmax(0,.88fr) minmax(0,.95fr);align-items:stretch;min-height:0}
+.rex-page .rex-products{display:flex;flex-direction:column;min-height:0;overflow-y:auto;overflow-x:hidden;gap:12px}
+.rex-page .rex-products>.rex-panel{flex:0 0 auto}
+.rex-page .rex-settlement{height:100%;min-height:0;overflow-y:auto}
+.rex-page .rex-receipt{display:flex;flex-direction:column;height:100%;min-height:0;overflow:hidden}
+.rex-page .rex-receipt>h2{flex:0 0 auto}
+.rex-page .rex-receipt-paper{flex:1 1 0;display:flex;flex-direction:column;min-height:0;overflow:hidden;width:100%}
+.rex-page .rex-receipt-static{flex:0 0 auto}
+.rex-page .rex-receipt-items{flex:1 1 0;min-height:36px;overflow-y:auto;overflow-x:auto;scrollbar-width:thin}
+.rex-page .rex-receipt-items table{width:100%}
+.rex-page .rex-receipt-items thead{position:sticky;top:0;z-index:1}
+.rex-page .rex-receipt-bottom{flex:0 0 auto;border-top:1px solid #dbe5ef;background:#fff}
+.rex-page .rex-receipt-bottom .rex-line{padding:5px 0}
+.rex-page .rex-receipt-bottom .rex-adjusted,.rex-page .rex-receipt-bottom .rex-receipt-due{padding:8px;margin-top:6px}
+.rex-page .rex-receipt-bottom .rex-barcode{margin-top:5px}
+.rex-page .rex-receipt-bottom .rex-barcode svg{max-height:49px;width:auto;max-width:100%}
+.rex-page .rex-receipt-bottom .rex-receipt-foot{margin-top:3px}
+.rex-page .rex-receipt-actions{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,2fr);gap:7px;margin-top:9px}
+.rex-page .rex-receipt-actions button{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:39px;padding:8px;border-radius:9px;font-weight:800;white-space:normal;font-size:clamp(10px,.78vw,12px)}
+.rex-page .rex-receipt-actions .rex-confirm:disabled{opacity:.5;cursor:not-allowed}
+.rex-page .rex-heading{margin-bottom:11px}
+@container (max-width:1050px){
+ .rex-page .rex-grid{grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);align-items:stretch}
+ .rex-page .rex-products{overflow:visible}
+ .rex-page .rex-settlement{height:100%;overflow:visible}
+ .rex-page .rex-receipt{grid-column:1/-1;height:auto;min-height:400px;overflow:visible}
+ .rex-page .rex-receipt-paper{min-height:0}
+ .rex-page .rex-receipt-items{max-height:350px;min-height:130px}
+ .rex-page .rex-receipt-bottom{position:relative}
+}
+@container (max-width:760px){
+ .rex-page .rex-grid{grid-template-columns:minmax(0,1fr)}
+ .rex-page .rex-receipt{grid-column:auto;min-height:400px}
+ .rex-page .rex-settlement{height:auto}
+ .rex-page .rex-receipt-items{max-height:320px}
+}
+@media print{
+ .rex-page .rex-receipt{height:auto;overflow:visible}
+ .rex-page .rex-receipt-paper,.rex-page .rex-receipt-items{display:block;overflow:visible;max-height:none}
+ .rex-page .rex-receipt-actions{display:none!important}
+}
