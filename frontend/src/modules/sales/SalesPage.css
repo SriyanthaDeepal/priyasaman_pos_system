@@ -152,3 +152,27 @@
  .sales-page .sales-totals{gap:3px}
  .sales-page .sales-actions button{min-height:28px}
 }
+
+/* Custom accessible date/time filter; no native black select focus rectangle. */
+.sales-page .sales-heading{position:relative;z-index:5}
+.sales-page .sales-date-picker{position:relative;flex:0 0 auto}
+.sales-page .sales-date-trigger{height:var(--sales-control,36px);min-height:var(--sales-control,36px);display:flex;align-items:center;gap:7px;border:1px solid #cbd7e6;border-radius:12px;background:linear-gradient(#fff,#f5f8fc);color:#142b42;padding:5px 10px;font:inherit;font-size:var(--sales-text,12px);font-weight:750;cursor:pointer;box-shadow:0 3px 9px #1e293b0d;white-space:nowrap}
+.sales-page .sales-date-trigger svg{font-size:19px}
+.sales-page .sales-date-trigger svg:last-child{font-size:17px;transition:transform .18s}
+.sales-page .sales-date-trigger[aria-expanded="true"] svg:last-child{transform:rotate(180deg)}
+.sales-page .sales-date-trigger:hover{background:#edf8f1;border-color:#9dd9b3}
+.sales-page .sales-date-trigger:focus-visible,.sales-page .sales-date-menu button:focus-visible,.sales-page .sales-date-menu input:focus-visible{outline:2px solid #72bd92;outline-offset:2px}
+.sales-page .sales-date-menu{position:absolute;right:0;top:calc(100% + 7px);z-index:100;width:min(330px,calc(100vw - 30px));padding:14px;background:white;border:1px solid #d5e0ea;border-radius:14px;box-shadow:0 12px 35px #152c4640;color:#1d2b3e}
+.sales-page .sales-date-menu-title{font-size:14px;font-weight:800;margin-bottom:10px}
+.sales-page .sales-date-presets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.sales-page .sales-date-presets button{min-height:34px;border-radius:9px;background:#f6f8fb;border:1px solid #d8e0e8;color:#23374b;font-size:11px;font-weight:700;cursor:pointer}
+.sales-page .sales-date-presets button.selected{background:#ddf8e6;border-color:#75c995;color:#08712b}
+.sales-page .sales-time-title{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:750;margin:14px 0 8px}
+.sales-page .sales-time-title svg{font-size:18px;color:#14803d}
+.sales-page .sales-time-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.sales-page .sales-time-fields label{display:grid;gap:5px;font-size:11px;font-weight:700;color:#44556a}
+.sales-page .sales-time-fields input{min-width:0;width:100%;border:1px solid #d3deeb;border-radius:8px;padding:8px 6px;background:white;color:#1d2b3e;font:inherit;font-size:12px}
+.sales-page .sales-date-hint{font-size:10px;line-height:1.45;color:#637487;margin:11px 0}
+.sales-page .sales-date-menu-actions{display:flex;justify-content:flex-end;gap:8px}
+.sales-page .sales-date-menu-actions button{border:1px solid #cbd7e6;border-radius:9px;background:#f5f8fc;padding:8px 13px;font-size:12px;font-weight:750;cursor:pointer}
+.sales-page .sales-date-menu-actions button:last-child{background:#e1f8e9;border-color:#8bd3a5;color:#08732b}
