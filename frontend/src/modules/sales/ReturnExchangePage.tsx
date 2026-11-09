@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from "react";
-import { CheckCircle, Close, QrCodeScanner, Keyboard, ReceiptLong, CalendarMonth, PersonOutlined, Payments, Visibility } from "@mui/icons-material";
+import { CheckCircle, Close, QrCodeScanner, Keyboard, ReceiptLong, CalendarMonth, PersonOutlined, Payments } from "@mui/icons-material";
 import { Dialog, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import BarcodeScanner from "../../components/common/BarcodeScanner/BarcodeScanner";
 import SinhalaTouchKeyboard from "../pos/SinhalaTouchKeyboard";
@@ -100,12 +100,12 @@ export default function ReturnExchangePage({ sale, onBack }: { sale: ExchangeSal
     <header className="rex-heading">
       <div className="rex-heading-title"><div><h1>Return / Exchange</h1><p>Manage returns, replacements and refunds.</p></div></div>
       <section className="rex-invoice-strip" aria-label="Selected original invoice">
-        <div className="rex-invoice-primary"><ReceiptLong/><span><small>Invoice</small><strong>{sale.invoice}</strong></span></div>
+        <div className="rex-invoice-primary"><ReceiptLong/><span><small>Invoice</small><button type="button" className="rex-invoice-link" onClick={() => { setTouchTarget(null); setViewOriginal(true); }} title="View original invoice details" aria-label={`View original invoice ${sale.invoice}`}>{sale.invoice}</button></span></div>
         <div><CalendarMonth fontSize="small"/><span><small>Time</small><strong>{sale.time}</strong></span></div>
         <div><PersonOutlined fontSize="small"/><span><small>Customer</small><strong>{sale.customer}</strong></span></div>
+        <div><PersonOutlined fontSize="small"/><span><small>Cashier</small><strong>{sale.cashier}</strong></span></div>
         <div><Payments fontSize="small"/><span><small>Payment</small><strong className="rex-payment-pill">{sale.method}</strong></span></div>
         <div><span><small>Original Subtotal</small><strong>{money(originalSubtotal)}</strong></span></div>
-        <button className="rex-view-invoice" onClick={() => { setTouchTarget(null); setViewOriginal(true); }}><Visibility fontSize="small"/> View</button>
       </section>
     </header>
     {message && <div className="rex-alert" role="status">{message}<button onClick={() => setMessage("")} aria-label="Dismiss"><Close fontSize="small" /></button></div>}
