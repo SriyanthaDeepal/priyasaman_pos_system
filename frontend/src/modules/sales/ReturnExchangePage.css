@@ -639,3 +639,12 @@
 @media(max-width:1100px){.rex-page .rex-cash-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:760px){.rex-page .rex-cash-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:380px){.rex-page .rex-cash-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+/* Compact denomination keypad: smaller, content-sized buttons rather than wide tiles. */
+.rex-page .rex-cash-grid{display:flex;flex-wrap:wrap;justify-content:flex-start;align-content:flex-start;gap:6px}
+.rex-page .rex-cash-denom{flex:0 0 auto;min-width:0}
+.rex-page .rex-cash-add{width:auto;min-width:48px;min-height:29px;padding:4px 9px;border-radius:7px;font-size:11px;line-height:1.2}
+.rex-page .rex-cash-counter button{width:22px;height:21px}
+@media(max-width:1100px){.rex-page .rex-cash-grid{display:flex;flex-wrap:wrap}}
+@media(max-width:760px){.rex-page .rex-cash-grid{display:flex;flex-wrap:wrap}}
+@media(max-width:380px){.rex-page .rex-cash-grid{display:flex;flex-wrap:wrap}}
