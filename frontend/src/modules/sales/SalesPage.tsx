@@ -1,8 +1,9 @@
-import { Menu, MenuItem } from "@mui/material";
+import { Dialog, DialogContent, DialogTitle, IconButton, Menu, MenuItem } from "@mui/material";
 import { useMemo, useState } from "react";
-import { BarChart, CalendarMonth, AccessTime, KeyboardArrowDown, CheckCircle, Close, Description, Email, LocalPrintshop, PersonOutlined, PointOfSale, ReceiptLong, Replay, Search, Payments, CreditCard, AccountBalance, QrCode2, AccountBalanceWallet, SwapHoriz, CardGiftcard, FilterList } from "@mui/icons-material";
+import { BarChart, CalendarMonth, AccessTime, KeyboardArrowDown, CheckCircle, Close, Description, Email, LocalPrintshop, PersonOutlined, PointOfSale, ReceiptLong, Replay, Search, Payments, CreditCard, AccountBalance, QrCode2, AccountBalanceWallet, SwapHoriz, CardGiftcard, FilterList, QrCodeScanner } from "@mui/icons-material";
 import "./SalesPage.css";
 import BoundedTimePicker from "./BoundedTimePicker";
+import BarcodeScanner from "../../components/common/BarcodeScanner/BarcodeScanner";
 
 type SaleStatus = "Completed" | "Returned" | "Voided" | "Held";
 type Method = "Cash" | "Card" | "Online Transfer" | "QR Payment" | "Credit" | "Mixed Payment" | "Gift Voucher";
@@ -38,6 +39,7 @@ export default function SalesPage({onNewSale}:{onNewSale:()=>void}){
   const [perPage,setPerPage]=useState(8);
   const [selected,setSelected]=useState("INV-009842");
   const [notice,setNotice]=useState("");
+  const [scanOpen,setScanOpen]=useState(false);
   const [sales,setSales]=useState(demoSales);
   const toMinutes=(value:string)=>{ const [clock,period]=value.split(" "); const [hour,minute]=clock.split(":").map(Number); return (hour%12+(period==="PM"?12:0))*60+minute; };
   const filtered=useMemo(()=>sales.filter(s=>(date!=="custom"||((!dateFrom||"2026-11-03">=dateFrom)&&(!dateTo||"2026-11-03"<=dateTo)))&&(!timeFrom||toMinutes(s.time)>=Number(timeFrom.slice(0,2))*60+Number(timeFrom.slice(3)))&&(!timeTo||toMinutes(s.time)<=Number(timeTo.slice(0,2))*60+Number(timeTo.slice(3)))&&(s.invoice+" "+s.customer+" "+s.cashier).toLowerCase().includes(search.toLowerCase())&&(cashier==="All Cashiers"||s.cashier===cashier)&&(method==="All Payment Methods"||s.method===method)&&(status==="All Sales"||s.status===status)),[sales,search,cashier,method,status,date,dateFrom,dateTo,timeFrom,timeTo]);
@@ -46,6 +48,22 @@ export default function SalesPage({onNewSale}:{onNewSale:()=>void}){
   const active=sales.find(s=>s.invoice===selected)??null;
   const completed=sales.filter(s=>s.status==="Completed");
   const salesTotal=completed.reduce((sum,s)=>sum+total(s),0);
+  const findScannedInvoice=(barcode:string)=>{
+    const invoice=barcode.trim().toUpperCase();
+    const match=sales.find(s=>s.invoice.toUpperCase()===invoice);
+    if(!match) throw new Error("Invoice not found in the available demonstration sales. Check the barcode or invoice number.");
+    setSearch("");
+    setCashier("All Cashiers");
+    setMethod("All Payment Methods");
+    setStatus("All Sales");
+    setDate("today");
+    setTimeFrom("");
+    setTimeTo("");
+    setPage(Math.floor(sales.indexOf(match)/perPage)+1);
+    setSelected(match.invoice);
+    setScanOpen(false);
+    setNotice(match.invoice+" selected. Review Sale Details before starting a return or refund.");
+  };
   const notify=(action:string)=>setNotice(action+" is not connected to the backend yet. This page currently uses demonstration data.");
   const changeStatus=(next:SaleStatus)=>{if(!active)return;setSales(prev=>prev.map(s=>s.invoice===active.invoice?{...s,status:next}:s));setNotice(active.invoice+" marked "+next.toLowerCase()+" in this demo only. No backend records were changed.");};
   return <div className="sales-page">
@@ -58,7 +76,7 @@ export default function SalesPage({onNewSale}:{onNewSale:()=>void}){
         <div className="sales-stat orange"><Replay/><div><span>Returns / Refunds</span><strong>{sales.filter(s=>s.status==="Returned").length}</strong><small>Demo returns</small></div></div>
       </div>
       <section className="sales-panel sales-transactions"><h2><ReceiptLong/> Sales Transactions ({filtered.length})</h2>
-        <div className="sales-filters"><label className="sales-search"><Search/><input value={search} onChange={e=>{setSearch(e.target.value);setPage(1)}} placeholder="Search by invoice no, customer or cashier..." /></label><select aria-label="Cashier" value={cashier} onChange={e=>{setCashier(e.target.value);setPage(1)}}>{["All Cashiers","Admin User","Cashier 01","Cashier 02"].map(v=><option key={v}>{v}</option>)}</select></div>
+        <div className="sales-filters"><label className="sales-search"><Search/><input value={search} onChange={e=>{setSearch(e.target.value);setPage(1)}} placeholder="Search by invoice no, customer or cashier..." /></label><select aria-label="Cashier" value={cashier} onChange={e=>{setCashier(e.target.value);setPage(1)}}>{["All Cashiers","Admin User","Cashier 01","Cashier 02"].map(v=><option key={v}>{v}</option>)}</select><button type="button" className="sales-scan-invoice" onClick={()=>setScanOpen(true)}><QrCodeScanner/> Scan Invoice</button></div>
         <div className="sales-filter-actions">
           <div className="sales-tabs">{["All Sales","Completed","Held","Returned","Voided"].map(v=><button key={v} className={status===v?"active":""} onClick={()=>{setStatus(v);setPage(1)}}>{v}</button>)}</div>
           <button type="button" className={"sales-payment-trigger"+(method!=="All Payment Methods"?" selected":"")} aria-haspopup="menu" aria-expanded={Boolean(paymentAnchor)} aria-controls={paymentAnchor?"sales-payment-menu":undefined} onClick={e=>setPaymentAnchor(e.currentTarget)}><FilterList/>{method==="All Payment Methods"?"All Payments":method}<KeyboardArrowDown/></button>
@@ -73,6 +91,10 @@ export default function SalesPage({onNewSale}:{onNewSale:()=>void}){
     <aside className="sales-right"><section className="sales-panel sales-details"><div className="sales-details-title"><h2><Description/> Sale Details</h2>{active&&<span className={"sales-status status-"+active.status.toLowerCase()}>{active.status}</span>}</div>{active?<><div className="sales-meta"><span>Invoice No.</span><strong>{active.invoice}</strong><span>Date & Time</span><strong>Nov 03, 2026 {active.time}</strong><span>Cashier</span><strong>{active.cashier}</strong><span>Customer</span><strong>{active.customer}</strong><span>Payment</span><strong>{active.method}</strong></div><div className="sales-detail-table"><table><thead><tr><th>#</th><th>Item</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead><tbody>{active.items.map((item,i)=><tr key={i}><td>{i+1}</td><td>{item.name}</td><td>{item.qty}</td><td>{money(item.price)}</td><td>{money(item.qty*item.price)}</td></tr>)}</tbody></table></div><div className="sales-totals"><div><span>Subtotal</span><strong>{money(subtotal(active))}</strong></div><div><span>Discount</span><strong>{money(0)}</strong></div><div><span>Tax (demo 15%)</span><strong>{money(total(active)-subtotal(active))}</strong></div><div className="sales-grand"><strong>Total Amount</strong><strong>{money(total(active))}</strong></div><div><span>Amount Received</span><strong>{money(active.received)}</strong></div><div><span>Change Given</span><strong>{money(active.method==="Cash"?Math.max(0,active.received-total(active)):0)}</strong></div></div></>:<p>Select a transaction.</p>}</section>
       <div className="sales-actions"><button onClick={()=>notify("Print")}><LocalPrintshop/> Print (F2)</button><button onClick={()=>notify("PDF export")}><Description/> PDF</button><button onClick={()=>notify("Email receipt")}><Email/> Email</button><button onClick={()=>changeStatus("Returned")} disabled={!active||active.status!=="Completed"}><Replay/> Return / Refund</button><button onClick={()=>notify("Duplicate sale")}><Description/> Duplicate Sale</button><button className="danger" onClick={()=>changeStatus("Voided")} disabled={!active||active.status!=="Completed"}><Close/> Void Sale</button></div>
     </aside></div>
+    <Dialog open={scanOpen} onClose={()=>setScanOpen(false)} fullWidth maxWidth="sm" aria-labelledby="sales-scan-dialog-title" PaperProps={{sx:{borderRadius:2.5}}}>
+      <DialogTitle id="sales-scan-dialog-title" sx={{display:"flex",alignItems:"center",justifyContent:"space-between",fontWeight:750}}>Scan Invoice<IconButton aria-label="Close invoice scanner" onClick={()=>setScanOpen(false)}><Close/></IconButton></DialogTitle>
+      <DialogContent dividers sx={{pt:2}}><BarcodeScanner label="Invoice barcode" placeholder="Scan or enter invoice number (e.g. INV-009842)" submitLabel="Find Invoice" onScan={findScannedInvoice} maxLength={100}/></DialogContent>
+    </Dialog>
     {notice&&<div className="sales-notice" role="status"><span>{notice}</span><button onClick={()=>setNotice("")} aria-label="Dismiss"><Close/></button></div>}
   </div>;
 }
