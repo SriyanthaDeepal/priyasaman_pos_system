@@ -178,3 +178,21 @@
   .checkout-card.checkout-summary{justify-content:space-between}
   .checkout-card.checkout-summary .checkout-complete{margin-top:auto}
 }
+
+/* Anchor cash action pair to the bottom of the equal-height desktop payment card. */
+@media (min-width:1201px) and (min-height:621px){
+  .checkout-card.checkout-method{justify-content:flex-start}
+  .checkout-card.checkout-method > .checkout-cash:not(.checkout-card-payment):not(.checkout-mobile-payment){
+    flex:1 0 auto;
+    display:flex;
+    flex-direction:column;
+    min-height:min-content;
+  }
+  .checkout-card.checkout-method > .checkout-cash:not(.checkout-card-payment):not(.checkout-mobile-payment) > .checkout-quick{
+    display:grid;
+    flex:0 0 auto;
+  }
+  .checkout-card.checkout-method > .checkout-cash:not(.checkout-card-payment):not(.checkout-mobile-payment) > .MuiButton-root:first-of-type{
+    margin-top:auto;
+  }
+}
