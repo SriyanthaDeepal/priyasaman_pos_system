@@ -138,3 +138,33 @@
 .inventory-overview-page .inv-catalog .inv-status{padding:5px 11px;min-width:43px}
 .inventory-overview-page .inv-table-footer{flex-shrink:0}
 .inventory-page .inv-bottom-wave{display:none}
+
+/* Inventory filter controls and compact on-screen search keyboard. */
+.inv-filter-row{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0;margin-bottom:9px}
+.inv-category-select{display:flex;align-items:center;gap:7px;min-width:0;flex:0 1 205px;font-size:11px;font-weight:750;color:#334155}
+.inv-category-select select{min-width:0;width:100%;height:38px;padding:0 9px;border:1px solid #d2dce8;border-radius:9px;background:#fff;color:#1e293b;font:inherit;cursor:pointer}
+.inv-stock-filters{display:flex;align-items:center;justify-content:flex-end;gap:6px;min-width:0;flex:1}
+.inv-stock-filters button{min-width:0;white-space:nowrap;padding:9px clamp(5px,.7vw,12px);border-radius:9px;border:1px solid #dbe3ed;background:#f7f9fc;color:#334155;font-size:11px;font-weight:750;cursor:pointer}
+.inv-stock-filters button.selected.in-stock{background:#d7f9dc;border-color:#87dc9a;color:#056b1a}
+.inv-stock-filters button.selected.low-stock{background:#fff0c0;border-color:#f7cc6b;color:#8c5100}
+.inv-stock-filters button.selected.out-of-stock{background:#ffe0e3;border-color:#f4a2ac;color:#b21f2b}
+.inv-keyboard-toggle{gap:5px}
+.inv-keyboard-toggle svg{font-size:18px}
+.inv-keyboard-toggle.selected{background:#c6f1d2}
+.inv-virtual-keyboard{flex-shrink:0;display:flex;flex-direction:column;gap:5px;padding:9px;margin:-2px 0 10px;border:1px solid #cbd9e6;border-radius:10px;background:#f2f6fa}
+.inv-keyboard-keys{display:flex;flex-direction:column;gap:4px}
+.inv-keyboard-row{display:flex;justify-content:center;gap:4px}
+.inv-keyboard-row button{flex:1;min-width:0;height:29px;padding:0 2px;background:white;border:1px solid #cbd5e1;border-radius:5px;font-size:11px;font-weight:700;cursor:pointer}
+.inv-keyboard-row button:hover,.inv-keyboard-actions button:hover{background:#e0f4e6}
+.inv-keyboard-actions{display:flex;gap:5px;justify-content:flex-end}
+.inv-keyboard-actions button{border:1px solid #cbd5e1;border-radius:6px;background:#fff;padding:5px 11px;font-size:11px;font-weight:700;cursor:pointer}
+.inv-keyboard-actions button:last-child{background:#e4fae9;border-color:#9ee6b1;color:#006c1b}
+@container (max-width:950px){
+  .inv-filter-row{gap:4px}
+  .inv-category-select{flex-basis:145px}
+  .inv-category-select span{display:none}
+  .inv-stock-filters{gap:3px}
+  .inv-stock-filters button{font-size:10px;padding:8px 4px}
+  .inv-search-row{gap:5px}
+  .inv-search-row .inv-soft-green{padding-inline:7px;font-size:11px}
+}
