@@ -10,6 +10,7 @@ import type { SidebarPage } from "./Sidebar";
 import Header from "./Header";
 
 import POSPage from "../../modules/pos/POSPage";
+import SalesPage from "../../modules/sales/SalesPage";
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -52,6 +53,9 @@ export default function MainLayout({
 
       case "pos":
         return <POSPage />;
+
+      case "sales":
+        return <SalesPage onNewSale={() => handleNavigate("pos")} />;
 
       default:
         return children;
