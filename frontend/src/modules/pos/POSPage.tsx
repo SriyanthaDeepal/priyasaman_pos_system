@@ -37,7 +37,7 @@ import {
 
 import "./pos.css";
 import { products } from "./productCatalog";
-import type { Category, Product } from "./productCatalog";
+import type { Product } from "./productCatalog";
 import SinhalaTouchKeyboard from "./SinhalaTouchKeyboard";
 import PaymentCheckout from "./PaymentCheckout";
 import AppSnackbar from "../../components/common/AppSnackbar";
