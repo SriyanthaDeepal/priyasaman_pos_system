@@ -334,7 +334,17 @@ function BarcodeScanner({
                 <KeyboardOutlined />
               )
             }
-            sx={{ height: compact ? 56 : 40, whiteSpace: "nowrap" }}
+            sx={{
+              height: compact ? 56 : 40,
+              whiteSpace: "nowrap",
+              ...(compact && {
+                bgcolor: "#007b15",
+                color: "#fff",
+                fontWeight: 750,
+                "&:hover": { bgcolor: "#006312" },
+                "&.Mui-disabled": { bgcolor: "#cce6d1" },
+              }),
+            }}
           >
             {submitLabel}
           </Button>
@@ -350,7 +360,16 @@ function BarcodeScanner({
                 !cameraSupported
               }
               onClick={() => void startCamera()}
-              sx={{ height: compact ? 56 : 40, whiteSpace: "nowrap" }}
+              sx={{
+                height: compact ? 56 : 40,
+                whiteSpace: "nowrap",
+                ...(compact && {
+                  borderColor: "#007b15",
+                  color: "#007b15",
+                  fontWeight: 750,
+                  "&:hover": { borderColor: "#006312", bgcolor: "#eefaf0" },
+                }),
+              }}
             >
               Camera
             </Button>
