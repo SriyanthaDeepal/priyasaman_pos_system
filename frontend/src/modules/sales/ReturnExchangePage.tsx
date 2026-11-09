@@ -19,7 +19,7 @@ const catalog: ExchangeItem[] = [
   { name: "Black Tea 200 g", price: 640, qty: 1, barcode: "TEA-001" },
   { name: "Cooking Oil 1 L", price: 1800, qty: 1, barcode: "OIL-002" },
 ];
-export default function ReturnExchangePage({ sale, onBack, onFindInvoice }: { sale: ExchangeSale; onBack: () => void; onFindInvoice: () => void }) {
+export default function ReturnExchangePage({ sale, onBack }: { sale: ExchangeSale; onBack: () => void }) {
   const [returns, setReturns] = useState<ReturnRow[]>([]);
   const [replacements, setReplacements] = useState<ReplacementRow[]>([]);
   const [returnSearch, setReturnSearch] = useState("");
@@ -85,15 +85,17 @@ export default function ReturnExchangePage({ sale, onBack, onFindInvoice }: { sa
     setMessage("Demo preview confirmed. No refund, payment, stock change, or new invoice was saved to the backend.");
   };
   return <div className="rex-page">
-    <header className="rex-heading"><div><button className="rex-back" onClick={onBack} aria-label="Back to Sales Management"><ArrowBack /></button><div><h1>Return / Exchange</h1><p>Process product returns, exchanges and refunds with an adjusted invoice preview.</p></div></div><div className="rex-heading-actions"><button className="rex-top-scan" onClick={onFindInvoice}><QrCodeScanner fontSize="small"/> Scan Invoice</button><button className="rex-top-find" onClick={onFindInvoice}><Search fontSize="small"/> Find Invoice</button></div></header>
-    <section className="rex-invoice-strip">
-      <div className="rex-invoice-primary"><ReceiptLong/><span><small>Original Invoice</small><strong>{sale.invoice}</strong></span></div>
-      <div><CalendarMonth fontSize="small"/><span><small>Date &amp; Time</small><strong>{sale.time}</strong></span></div>
-      <div><PersonOutlined fontSize="small"/><span><small>Customer</small><strong>{sale.customer}</strong></span></div>
-      <div><Payments fontSize="small"/><span><small>Payment</small><strong className="rex-payment-pill">{sale.method}</strong></span></div>
-      <div><span><small>Original Total (Demo)</small><strong>{money(originalSubtotal)}</strong></span></div>
-      <button className="rex-view-invoice" onClick={() => setViewOriginal(true)}><Visibility fontSize="small"/> View Invoice</button>
-    </section>
+    <header className="rex-heading">
+      <div className="rex-heading-title"><button className="rex-back" onClick={onBack} aria-label="Back to Sales Management"><ArrowBack /></button><div><h1>Return / Exchange</h1><p>Manage returns, replacements and refunds.</p></div></div>
+      <section className="rex-invoice-strip" aria-label="Selected original invoice">
+        <div className="rex-invoice-primary"><ReceiptLong/><span><small>Invoice</small><strong>{sale.invoice}</strong></span></div>
+        <div><CalendarMonth fontSize="small"/><span><small>Time</small><strong>{sale.time}</strong></span></div>
+        <div><PersonOutlined fontSize="small"/><span><small>Customer</small><strong>{sale.customer}</strong></span></div>
+        <div><Payments fontSize="small"/><span><small>Payment</small><strong className="rex-payment-pill">{sale.method}</strong></span></div>
+        <div><span><small>Original Subtotal</small><strong>{money(originalSubtotal)}</strong></span></div>
+        <button className="rex-view-invoice" onClick={() => setViewOriginal(true)}><Visibility fontSize="small"/> View</button>
+      </section>
+    </header>
     <div className="rex-steps"><span className="current">1 &nbsp; Select Returned Items</span><span>2 &nbsp; Add Replacement Items</span><span>3 &nbsp; Settle & Confirm</span></div>
     {message && <div className="rex-alert" role="status">{message}<button onClick={() => setMessage("")} aria-label="Dismiss"><Close fontSize="small" /></button></div>}
     <div className="rex-grid">
