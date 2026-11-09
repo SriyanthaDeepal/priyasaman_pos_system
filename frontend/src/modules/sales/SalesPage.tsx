@@ -23,7 +23,7 @@ const demoSales: Sale[] = [
 const money=(n:number)=>"Rs. "+n.toLocaleString("en-LK",{minimumFractionDigits:2,maximumFractionDigits:2});
 const subtotal=(sale:Sale)=>sale.items.reduce((sum,item)=>sum+item.qty*item.price,0);
 const total=(sale:Sale)=>Math.round(subtotal(sale)*1.15*100)/100;
-export default function SalesPage({onNewSale,onReturnRefund,initialScanOpen=false}:{onNewSale:()=>void;initialScanOpen?:boolean;onReturnRefund:(sale: { invoice:string;customer:string;cashier:string;method:string;time:string;items:{name:string;qty:number;price:number}[];status:string })=>void}){
+export default function SalesPage({onNewSale,onReturnRefund,initialScanOpen=false,returnedInvoices=[]}:{onNewSale:()=>void;initialScanOpen?:boolean;returnedInvoices?:string[];onReturnRefund:(sale: { invoice:string;customer:string;cashier:string;method:string;time:string;items:{name:string;qty:number;price:number}[];status:string })=>void}){
   const [search,setSearch]=useState("");
   const [cashier,setCashier]=useState("All Cashiers");
   const [method,setMethod]=useState("All Payment Methods");
@@ -40,7 +40,7 @@ export default function SalesPage({onNewSale,onReturnRefund,initialScanOpen=fals
   const [selected,setSelected]=useState("INV-009842");
   const [notice,setNotice]=useState("");
   const [scanOpen,setScanOpen]=useState(initialScanOpen);
-  const [sales,setSales]=useState(demoSales);
+  const [sales,setSales]=useState(()=>demoSales.map(s=>returnedInvoices.includes(s.invoice)?{...s,status:"Returned" as SaleStatus}:s));
   const toMinutes=(value:string)=>{ const [clock,period]=value.split(" "); const [hour,minute]=clock.split(":").map(Number); return (hour%12+(period==="PM"?12:0))*60+minute; };
   const filtered=useMemo(()=>sales.filter(s=>(date!=="custom"||((!dateFrom||"2026-11-03">=dateFrom)&&(!dateTo||"2026-11-03"<=dateTo)))&&(!timeFrom||toMinutes(s.time)>=Number(timeFrom.slice(0,2))*60+Number(timeFrom.slice(3)))&&(!timeTo||toMinutes(s.time)<=Number(timeTo.slice(0,2))*60+Number(timeTo.slice(3)))&&(s.invoice+" "+s.customer+" "+s.cashier).toLowerCase().includes(search.toLowerCase())&&(cashier==="All Cashiers"||s.cashier===cashier)&&(method==="All Payment Methods"||s.method===method)&&(status==="All Sales"||s.status===status)),[sales,search,cashier,method,status,date,dateFrom,dateTo,timeFrom,timeTo]);
   const pages=Math.max(1,Math.ceil(filtered.length/perPage));
