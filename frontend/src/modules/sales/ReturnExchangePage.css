@@ -561,3 +561,61 @@
 @media(max-width:760px){
  .rex-page .rex-keyboard-dock>.stk-panel>.stk-grid{grid-template-columns:repeat(6,minmax(0,1fr))}
 }
+
+/* Stable search: suggestions float below the search row instead of resizing the two cards. */
+.rex-page .rex-products>.rex-panel{
+ position:relative;
+ overflow:visible;
+ isolation:isolate;
+}
+.rex-page .rex-products>.rex-panel:has(.rex-suggestions){z-index:5}
+.rex-page .rex-products>.rex-panel .rex-section-head{position:relative;z-index:2}
+.rex-page .rex-products>.rex-panel .rex-suggestions{
+ position:absolute;
+ z-index:8;
+ top:calc(12px + 40px);
+ left:12px;
+ right:12px;
+ margin:0;
+ max-height:150px;
+ overflow-y:auto;
+ overscroll-behavior:contain;
+ border-radius:9px;
+ box-shadow:0 8px 24px #183b3b30;
+}
+.rex-page .rex-products>.rex-panel .rex-suggestions button{
+ min-height:38px;
+ padding:6px 10px;
+ gap:8px;
+}
+.rex-page .rex-products>.rex-panel .rex-suggestions button span{gap:1px}
+.rex-page .rex-products>.rex-panel .rex-suggestions button strong{font-size:11px;line-height:1.25}
+.rex-page .rex-products>.rex-panel .rex-suggestions button small{font-size:10px;line-height:1.2}
+.rex-page .rex-products>.rex-panel .rex-suggestions button b{font-size:10px}
+.rex-page .rex-products>.rex-panel .rex-suggestions p{padding:9px}
+@media(max-width:760px){
+ .rex-page .rex-products>.rex-panel .rex-suggestions{max-height:145px}
+}
+/* Sinhala layout: consonant forms START at the top of the letter grid.
+   English and numeric layouts keep their keys bottom-aligned above the controls. */
+.rex-page .rex-keyboard-dock .stk-sinhala-layout{
+ align-items:start;
+ align-content:start;
+ margin-top:0;
+ flex:1 1 auto;
+ overflow-y:auto;
+}
+.rex-page .rex-keyboard-dock .stk-sinhala-layout .stk-left-pane,
+.rex-page .rex-keyboard-dock .stk-sinhala-layout .stk-right-pane{
+ align-self:start;
+ align-content:start;
+ margin-top:0;
+}
+.rex-page .rex-keyboard-dock .stk-sinhala-layout .stk-right-pane{
+ position:relative;
+ top:0;
+}
+.rex-page .rex-keyboard-dock>.stk-panel>.stk-grid,
+.rex-page .rex-keyboard-dock .stk-english{
+ margin-top:auto;
+}
