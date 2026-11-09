@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { ArrowBack, CheckCircle, Close, LocalPrintshop, QrCodeScanner, Search, ReceiptLong, CalendarMonth, PersonOutline, Payments, Visibility } from "@mui/icons-material";
+import { ArrowBack, CheckCircle, Close, LocalPrintshop, QrCodeScanner, Search, ReceiptLong, CalendarMonth, PersonOutlined, Payments, Visibility } from "@mui/icons-material";
 import { Dialog, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import BarcodeScanner from "../../components/common/BarcodeScanner/BarcodeScanner";
 import BarcodeDisplay from "../../components/common/BarcodeDisplay/BarcodeDisplay";
@@ -89,7 +89,7 @@ export default function ReturnExchangePage({ sale, onBack, onFindInvoice }: { sa
     <section className="rex-invoice-strip">
       <div className="rex-invoice-primary"><ReceiptLong/><span><small>Original Invoice</small><strong>{sale.invoice}</strong></span></div>
       <div><CalendarMonth fontSize="small"/><span><small>Date &amp; Time</small><strong>{sale.time}</strong></span></div>
-      <div><PersonOutline fontSize="small"/><span><small>Customer</small><strong>{sale.customer}</strong></span></div>
+      <div><PersonOutlined fontSize="small"/><span><small>Customer</small><strong>{sale.customer}</strong></span></div>
       <div><Payments fontSize="small"/><span><small>Payment</small><strong className="rex-payment-pill">{sale.method}</strong></span></div>
       <div><span><small>Original Total (Demo)</small><strong>{money(originalSubtotal)}</strong></span></div>
       <button className="rex-view-invoice" onClick={() => setViewOriginal(true)}><Visibility fontSize="small"/> View Invoice</button>
