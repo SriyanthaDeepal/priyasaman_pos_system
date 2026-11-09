@@ -40,6 +40,7 @@ export interface BarcodeScannerProps {
   enableCamera?: boolean;
   maxLength?: number;
   duplicateDelayMs?: number;
+  compact?: boolean;
 }
 
 const SUPPORTED_FORMATS = [
@@ -61,6 +62,7 @@ function BarcodeScanner({
   enableCamera = true,
   maxLength = 100,
   duplicateDelayMs = 1000,
+  compact = false,
 }: BarcodeScannerProps) {
   const [value, setValue] = useState("");
   const [error, setError] = useState("");
@@ -279,22 +281,23 @@ function BarcodeScanner({
       }}
     >
       <Paper
-        variant="outlined"
-        sx={{ p: 2, borderRadius: 2 }}
+        variant={compact ? "elevation" : "outlined"}
+        elevation={0}
+        sx={{ p: compact ? 0 : 2, borderRadius: 2, bgcolor: "transparent" }}
       >
         <Box
           component="form"
           onSubmit={handleSubmit}
           sx={{
             display: "flex",
-            gap: 1,
-            alignItems: "flex-start",
+            gap: compact ? 1.5 : 1,
+            alignItems: "center",
             flexWrap: "wrap",
           }}
         >
           <TextField
             inputRef={inputRef}
-            label={label}
+            label={compact ? undefined : label}
             placeholder={placeholder}
             value={value}
             onChange={(event) => {
@@ -304,7 +307,7 @@ function BarcodeScanner({
             onKeyDown={handleKeyDown}
             disabled={disabled || submitting}
             autoFocus={autoFocus}
-            size="small"
+            size={compact ? "medium" : "small"}
             sx={{
               flex: 1,
               minWidth: 200,
@@ -331,7 +334,7 @@ function BarcodeScanner({
                 <KeyboardOutlined />
               )
             }
-            sx={{ height: 40 }}
+            sx={{ height: compact ? 56 : 40, whiteSpace: "nowrap" }}
           >
             {submitLabel}
           </Button>
@@ -347,7 +350,7 @@ function BarcodeScanner({
                 !cameraSupported
               }
               onClick={() => void startCamera()}
-              sx={{ height: 40 }}
+              sx={{ height: compact ? 56 : 40, whiteSpace: "nowrap" }}
             >
               Camera
             </Button>
@@ -359,10 +362,10 @@ function BarcodeScanner({
           color="text.secondary"
           sx={{
             display: "block",
-            mt: 1,
+            mt: compact ? 1.5 : 1,
           }}
         >
-          Scan using USB/Bluetooth or enter the barcode manually.
+          {compact ? "Supports USB/Bluetooth scanners and manual entry. Press Enter to search." : "Scan using USB/Bluetooth or enter the barcode manually."}
         </Typography>
       </Paper>
 
