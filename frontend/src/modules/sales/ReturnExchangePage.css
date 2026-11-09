@@ -644,6 +644,6 @@
 
 /* Separate the search/scan toolbar vertically from each item table header. */
 @media screen {
-  .rex-page .rex-products .rex-section-head + .rex-table-scroll { margin-top:8px; }
+  .rex-page .rex-products > .rex-panel > .rex-section-head { padding-bottom:10px; }
 }
 
