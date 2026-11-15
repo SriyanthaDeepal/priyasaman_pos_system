@@ -48,7 +48,8 @@ export default function MainLayout({
      ========================================== */
 
   const handleNavigate = (page: SidebarPage) => {
-    setActivePage(page);
+    // Inventory opens Stock Overview by default, including its selected submenu state.
+    setActivePage(page === "inventory" ? "stock-overview" : page);
     setReturnInvoice(null);
     setInvoiceScanRequested(false);
     setMobileSidebarOpen(false);
