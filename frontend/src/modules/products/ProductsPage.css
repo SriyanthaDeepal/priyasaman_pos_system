@@ -90,3 +90,41 @@
  .products-editor textarea{min-height:48px}
  .products-editor-middle,.products-editor-right{gap:8px}
 }
+
+/* Equal-height desktop columns. All three tracks share one grid row.
+   The two stacked columns fill the Product Information card's height. */
+@container (min-width:1051px){
+ .products-editor{align-items:stretch}
+ .products-editor>.products-info{height:100%;box-sizing:border-box}
+ .products-editor-middle,.products-editor-right{
+   display:grid;
+   height:100%;
+   min-height:0;
+   align-content:stretch;
+   align-items:stretch;
+ }
+ .products-editor-middle{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,0.85fr) minmax(0,1.15fr)}
+ .products-editor-right{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1.55fr) minmax(0,.65fr)}
+ .products-editor-middle>.products-panel,.products-editor-right>.products-panel{
+   height:100%;
+   box-sizing:border-box;
+   min-height:0;
+ }
+ .products-editor-right .products-preview{flex:1;min-height:105px;height:auto;max-height:none}
+ .products-editor-right .products-barcode-print{flex:1;min-height:70px}
+ .products-editor .products-info textarea{flex:1;min-height:52px;max-height:none}
+}
+@container (min-width:691px) and (max-width:1050px){
+ .products-editor{align-items:stretch}
+ .products-editor>.products-info,.products-editor-middle{height:100%;box-sizing:border-box}
+ .products-editor-middle{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:1fr 1fr;align-items:stretch}
+ .products-editor-middle>.products-panel{height:100%;box-sizing:border-box}
+ .products-editor-right{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-column:1/-1;align-items:stretch}
+ .products-editor-right>.products-panel{height:100%;box-sizing:border-box}
+}
+@container (max-width:690px){
+ .products-editor{align-items:stretch}
+ .products-editor-middle,.products-editor-right{height:auto}
+ .products-editor-right{display:flex;flex-direction:column}
+ .products-editor-right>.products-panel{width:100%;box-sizing:border-box}
+}
