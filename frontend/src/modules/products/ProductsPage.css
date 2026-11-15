@@ -128,3 +128,52 @@
  .products-editor-right{display:flex;flex-direction:column}
  .products-editor-right>.products-panel{width:100%;box-sizing:border-box}
 }
+
+/* Fluid product editor: fill usable viewport height on roomy desktop screens.
+   Preserve matching column bottoms without fixed heights on compact displays. */
+@container (min-width:1051px){
+ .products-editor{
+   min-height:max(490px,calc(100dvh - 340px));
+   grid-template-columns:minmax(0,1.28fr) minmax(0,.86fr) minmax(0,1.08fr);
+   align-items:stretch;
+ }
+ .products-editor>.products-info,.products-editor-middle,.products-editor-right{
+   min-height:inherit;
+   height:auto;
+   align-self:stretch;
+ }
+ .products-editor-middle,.products-editor-right{
+   display:grid;
+   grid-template-columns:minmax(0,1fr);
+ }
+ .products-editor-middle{grid-template-rows:minmax(0,.82fr) minmax(0,1.18fr)}
+ .products-editor-right{grid-template-rows:minmax(0,1.45fr) minmax(0,.55fr)}
+ .products-editor-middle>.products-panel,.products-editor-right>.products-panel{
+   min-height:0;
+   height:100%;
+ }
+ .products-editor .products-info textarea{flex:1;min-height:55px;max-height:none}
+ .products-editor-right .products-preview{flex:1;min-height:150px;height:auto;max-height:none}
+ .products-editor-right .products-preview-placeholder{flex:1}
+ .products-editor-right .products-barcode-print{flex:1;min-height:75px}
+}
+@media (min-height:950px){
+ @container (min-width:1051px){
+  .products-editor{min-height:calc(100dvh - 305px)}
+ }
+}
+@media (max-height:690px){
+ @container (min-width:1051px){
+  .products-editor{min-height:0}
+  .products-editor>.products-info,.products-editor-middle,.products-editor-right{min-height:0}
+  .products-editor-right .products-preview{min-height:115px}
+ }
+}
+@container (min-width:691px) and (max-width:1050px){
+ .products-editor{min-height:0}
+ .products-editor>.products-info,.products-editor-middle,.products-editor-right{min-height:0}
+}
+@container (max-width:690px){
+ .products-editor{min-height:0}
+ .products-editor>.products-info,.products-editor-middle,.products-editor-right{min-height:0}
+}
