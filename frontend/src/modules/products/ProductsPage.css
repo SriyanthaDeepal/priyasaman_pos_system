@@ -41,33 +41,48 @@
 @media(max-width:800px){.products-editor{grid-template-columns:1fr}.products-editor-right{grid-column:auto;grid-template-columns:1fr}.products-editor-middle{display:grid;grid-template-columns:1fr 1fr}.products-editor .products-panel{padding:13px}}
 @media(max-width:550px){.products-editor-middle{grid-template-columns:1fr}.products-heading{flex-wrap:wrap}.products-bottom{align-items:stretch}.products-bottom-actions{width:100%}.products-bottom-actions button{flex:1}.products-page{padding:12px}.products-preview{height:190px}}
 
-/* Responsive sizing is based on the available content width, not the whole viewport.
-   Preserve the three-column desktop form and reduce card height on laptop screens. */
-.products-page{container-type:inline-size;box-sizing:border-box;width:100%;max-width:100%;min-width:0}
-.products-heading{margin-bottom:clamp(8px,1.4vh,15px);min-width:0}
+
+/* Unified responsive editor layout: replace conflicting viewport rules. */
+.products-page{container-type:inline-size;box-sizing:border-box;width:100%;max-width:100%;min-width:0;height:100%;min-height:0;display:flex;flex-direction:column;overflow-x:hidden;overflow-y:auto;scrollbar-width:none}
+.products-page::-webkit-scrollbar{display:none}
+.products-heading{flex:0 0 auto;margin-bottom:clamp(8px,1.4vh,15px);min-width:0}
 .products-heading h1{font-size:clamp(20px,2.1cqw,28px)}
 .products-heading p{font-size:clamp(11px,.95cqw,13px)}
-.products-editor{grid-template-columns:minmax(0,1.28fr) minmax(0,.86fr) minmax(0,1.08fr);gap:clamp(8px,1cqw,14px);align-items:stretch}
-.products-editor>.products-panel,.products-editor-middle,.products-editor-right{min-width:0;max-width:100%}
-.products-editor .products-panel{padding:clamp(9px,1cqw,15px);gap:clamp(5px,.62vh,9px)}
+.products-editor{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:minmax(0,1.28fr) minmax(0,.86fr) minmax(0,1.08fr);gap:clamp(8px,1cqw,14px);align-items:stretch}
+.products-editor>.products-panel,.products-editor-middle,.products-editor-right{min-width:0;max-width:100%;box-sizing:border-box}
+.products-editor .products-panel{padding:clamp(9px,1cqw,15px);gap:clamp(5px,.62vh,9px);box-sizing:border-box}
 .products-editor h2{padding:clamp(7px,.85vh,10px);font-size:clamp(13px,1.2cqw,17px);margin-bottom:2px}
 .products-editor label{font-size:clamp(11px,.94cqw,13px);gap:3px}
 .products-editor input,.products-editor select{height:clamp(33px,4.2vh,40px);font-size:clamp(11px,.95cqw,13px)}
 .products-editor textarea{min-height:52px;max-height:95px;font-size:12px}
-.products-editor-middle,.products-editor-right{gap:clamp(8px,1vh,14px)}
-.products-preview{height:clamp(145px,22vh,220px)}
+.products-editor-middle,.products-editor-right{display:grid;grid-template-columns:minmax(0,1fr);gap:clamp(8px,1vh,14px);align-content:stretch;min-height:0}
+.products-editor-middle{grid-template-rows:minmax(0,1fr) minmax(0,1fr)}
+.products-editor-right{grid-template-rows:minmax(0,1fr) auto}
+.products-editor-middle>.products-panel,.products-editor-right>.products-panel{min-width:0;min-height:0;height:100%;overflow:hidden}
+.products-editor-right>.products-panel:last-child{height:auto;min-height:115px}
+.products-editor-right .products-preview{flex:1 1 auto;min-height:120px;height:auto;max-height:none;overflow:hidden}
+.products-preview-placeholder{min-height:0}
 .products-preview-placeholder span{font-size:clamp(48px,6cqw,76px)}
 .products-thumbnails button{width:clamp(54px,5cqw,74px);height:clamp(49px,6.5vh,67px)}
-.products-barcode-print{min-height:75px}
-.products-bottom{margin-top:clamp(8px,1vh,14px)}
+.products-editor-right .products-barcode-print{flex:0 0 auto;min-height:0;display:flex;flex-wrap:nowrap;justify-content:space-between;align-items:center;gap:8px;width:100%;max-width:100%;overflow:hidden}
+.products-barcode-print svg{display:block;flex:0 1 auto;min-width:0;max-width:min(65%,240px);max-height:80px;width:auto;height:auto}
+.products-barcode-print .products-soft-green{flex:0 0 auto;max-width:40%;padding:7px 9px;white-space:normal;text-align:center}
+.products-bottom{flex:0 0 auto;margin:clamp(8px,1vh,14px) 0 0}
+.products-form-error{flex:0 0 auto}
 .products-heading .products-secondary{padding:8px 12px}
+@container (min-width:1051px){
+ .products-editor{flex:1 1 0%;min-height:450px}
+ .products-editor>.products-info{height:100%}
+ .products-editor .products-info textarea{flex:1;min-height:52px;max-height:none}
+}
 @container (max-width:1050px){
- .products-editor{grid-template-columns:minmax(0,1.12fr) minmax(0,.9fr)}
- .products-editor-right{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}
+ .products-editor{flex:0 0 auto;grid-template-columns:minmax(0,1.12fr) minmax(0,.9fr)}
+ .products-editor-right{grid-column:1/-1;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto;align-items:stretch}
+ .products-editor-right>.products-panel:last-child{height:100%}
 }
 @container (max-width:690px){
  .products-editor{grid-template-columns:minmax(0,1fr)}
- .products-editor-middle{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+ .products-editor-middle{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto}
  .products-editor-right{grid-column:auto;grid-template-columns:minmax(0,1fr)}
  .products-heading{flex-wrap:wrap}
  .products-heading h1{font-size:21px}
@@ -80,167 +95,15 @@
  .products-bottom-actions button{flex:1;min-width:0}
  .products-search-controls select{width:100%}
  .products-preview{height:170px}
+ .products-barcode-print{flex-wrap:wrap!important}
+ .products-barcode-print svg{max-width:100%}
+ .products-barcode-print .products-soft-green{max-width:100%}
 }
-@media(max-height:820px) and (min-width:1250px){
- .products-editor .products-panel{padding:9px 12px;gap:5px}
- .products-editor input,.products-editor select{height:34px}
- .products-editor h2{padding:7px 9px}
- .products-preview{height:160px}
- .products-thumbnails button{height:49px}
- .products-editor textarea{min-height:48px}
- .products-editor-middle,.products-editor-right{gap:8px}
-}
-
-/* Equal-height desktop columns. All three tracks share one grid row.
-   The two stacked columns fill the Product Information card's height. */
-@container (min-width:1051px){
- .products-editor{align-items:stretch}
- .products-editor>.products-info{height:100%;box-sizing:border-box}
- .products-editor-middle,.products-editor-right{
-   display:grid;
-   height:100%;
-   min-height:0;
-   align-content:stretch;
-   align-items:stretch;
- }
- .products-editor-middle{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,0.85fr) minmax(0,1.15fr)}
- .products-editor-right{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1.55fr) minmax(0,.65fr)}
- .products-editor-middle>.products-panel,.products-editor-right>.products-panel{
-   height:100%;
-   box-sizing:border-box;
-   min-height:0;
- }
- .products-editor-right .products-preview{flex:1;min-height:105px;height:auto;max-height:none}
- .products-editor-right .products-barcode-print{flex:1;min-height:70px}
- .products-editor .products-info textarea{flex:1;min-height:52px;max-height:none}
-}
-@container (min-width:691px) and (max-width:1050px){
- .products-editor{align-items:stretch}
- .products-editor>.products-info,.products-editor-middle{height:100%;box-sizing:border-box}
- .products-editor-middle{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:1fr 1fr;align-items:stretch}
- .products-editor-middle>.products-panel{height:100%;box-sizing:border-box}
- .products-editor-right{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-column:1/-1;align-items:stretch}
- .products-editor-right>.products-panel{height:100%;box-sizing:border-box}
-}
-@container (max-width:690px){
- .products-editor{align-items:stretch}
- .products-editor-middle,.products-editor-right{height:auto}
- .products-editor-right{display:flex;flex-direction:column}
- .products-editor-right>.products-panel{width:100%;box-sizing:border-box}
-}
-
-/* Fluid product editor: fill usable viewport height on roomy desktop screens.
-   Preserve matching column bottoms without fixed heights on compact displays. */
-@container (min-width:1051px){
- .products-editor{
-   min-height:max(490px,calc(100dvh - 340px));
-   grid-template-columns:minmax(0,1.28fr) minmax(0,.86fr) minmax(0,1.08fr);
-   align-items:stretch;
- }
- .products-editor>.products-info,.products-editor-middle,.products-editor-right{
-   min-height:inherit;
-   height:auto;
-   align-self:stretch;
- }
- .products-editor-middle,.products-editor-right{
-   display:grid;
-   grid-template-columns:minmax(0,1fr);
- }
- .products-editor-middle{grid-template-rows:minmax(0,.82fr) minmax(0,1.18fr)}
- .products-editor-right{grid-template-rows:minmax(0,1.45fr) minmax(0,.55fr)}
- .products-editor-middle>.products-panel,.products-editor-right>.products-panel{
-   min-height:0;
-   height:100%;
- }
- .products-editor .products-info textarea{flex:1;min-height:55px;max-height:none}
- .products-editor-right .products-preview{flex:1;min-height:150px;height:auto;max-height:none}
- .products-editor-right .products-preview-placeholder{flex:1}
- .products-editor-right .products-barcode-print{flex:1;min-height:75px}
-}
-@media (min-height:950px){
+@media(max-height:740px){
  @container (min-width:1051px){
-  .products-editor{min-height:calc(100dvh - 305px)}
+  .products-editor{flex:0 0 auto;min-height:450px}
+  .products-editor .products-panel{padding:9px 12px;gap:5px}
+  .products-editor input,.products-editor select{height:34px}
+  .products-editor h2{padding:7px 9px}
  }
-}
-@media (max-height:690px){
- @container (min-width:1051px){
-  .products-editor{min-height:0}
-  .products-editor>.products-info,.products-editor-middle,.products-editor-right{min-height:0}
-  .products-editor-right .products-preview{min-height:115px}
- }
-}
-@container (min-width:691px) and (max-width:1050px){
- .products-editor{min-height:0}
- .products-editor>.products-info,.products-editor-middle,.products-editor-right{min-height:0}
-}
-@container (max-width:690px){
- .products-editor{min-height:0}
- .products-editor>.products-info,.products-editor-middle,.products-editor-right{min-height:0}
-}
-
-/* Final viewport-aware layout: the page occupies the actual main content
-   viewport below the POS header. Width controls columns; height controls
-   card stretch. Avoid subtracting guessed header/footer pixel values. */
-.products-page{
-  height:100%;
-  min-height:0;
-  display:flex;
-  flex-direction:column;
-  box-sizing:border-box;
-  overflow-y:auto;
-  overflow-x:hidden;
-  scrollbar-width:none;
-}
-.products-page::-webkit-scrollbar{display:none}
-.products-page:has(.products-editor) .products-heading{flex:0 0 auto}
-.products-page:has(.products-editor) .products-editor{
-  flex:1 0 auto;
-  min-height:0;
-  height:auto;
-  align-items:stretch;
-}
-.products-page:has(.products-editor) .products-bottom{
-  flex:0 0 auto;
-  margin-top:10px;
-  margin-bottom:0;
-}
-.products-page:has(.products-editor) .products-form-error{flex:0 0 auto}
-@container (min-width:1051px){
-  .products-page:has(.products-editor) .products-editor{
-    flex:1 1 0%;
-    min-height:450px;
-    grid-template-columns:minmax(0,1.28fr) minmax(0,.86fr) minmax(0,1.08fr);
-  }
-  .products-page:has(.products-editor) .products-editor>.products-info,
-  .products-page:has(.products-editor) .products-editor-middle,
-  .products-page:has(.products-editor) .products-editor-right{
-    min-height:0;
-    height:100%;
-  }
-  .products-page:has(.products-editor) .products-editor-middle{
-    grid-template-rows:minmax(0,.82fr) minmax(0,1.18fr);
-  }
-  .products-page:has(.products-editor) .products-editor-right{
-    grid-template-rows:minmax(0,1.45fr) minmax(0,.55fr);
-  }
-}
-@container (min-width:691px) and (max-width:1050px){
-  .products-page:has(.products-editor) .products-editor{flex:0 0 auto;min-height:0}
-  .products-page:has(.products-editor) .products-editor>.products-info,
-  .products-page:has(.products-editor) .products-editor-middle,
-  .products-page:has(.products-editor) .products-editor-right{height:auto;min-height:0}
-}
-@container (max-width:690px){
-  .products-page:has(.products-editor) .products-editor{flex:0 0 auto;min-height:0}
-  .products-page:has(.products-editor) .products-editor>.products-info,
-  .products-page:has(.products-editor) .products-editor-middle,
-  .products-page:has(.products-editor) .products-editor-right{height:auto;min-height:0}
-}
-@media(max-height:700px){
-  @container (min-width:1051px){
-    .products-page:has(.products-editor) .products-editor{flex:0 0 auto;min-height:450px}
-    .products-page:has(.products-editor) .products-editor>.products-info,
-    .products-page:has(.products-editor) .products-editor-middle,
-    .products-page:has(.products-editor) .products-editor-right{height:auto}
-  }
 }
