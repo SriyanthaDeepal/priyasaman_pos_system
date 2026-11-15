@@ -177,3 +177,70 @@
  .products-editor{min-height:0}
  .products-editor>.products-info,.products-editor-middle,.products-editor-right{min-height:0}
 }
+
+/* Final viewport-aware layout: the page occupies the actual main content
+   viewport below the POS header. Width controls columns; height controls
+   card stretch. Avoid subtracting guessed header/footer pixel values. */
+.products-page{
+  height:100%;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+  box-sizing:border-box;
+  overflow-y:auto;
+  overflow-x:hidden;
+  scrollbar-width:none;
+}
+.products-page::-webkit-scrollbar{display:none}
+.products-page:has(.products-editor) .products-heading{flex:0 0 auto}
+.products-page:has(.products-editor) .products-editor{
+  flex:1 0 auto;
+  min-height:0;
+  height:auto;
+  align-items:stretch;
+}
+.products-page:has(.products-editor) .products-bottom{
+  flex:0 0 auto;
+  margin-top:10px;
+  margin-bottom:0;
+}
+.products-page:has(.products-editor) .products-form-error{flex:0 0 auto}
+@container (min-width:1051px){
+  .products-page:has(.products-editor) .products-editor{
+    flex:1 1 0%;
+    min-height:450px;
+    grid-template-columns:minmax(0,1.28fr) minmax(0,.86fr) minmax(0,1.08fr);
+  }
+  .products-page:has(.products-editor) .products-editor>.products-info,
+  .products-page:has(.products-editor) .products-editor-middle,
+  .products-page:has(.products-editor) .products-editor-right{
+    min-height:0;
+    height:100%;
+  }
+  .products-page:has(.products-editor) .products-editor-middle{
+    grid-template-rows:minmax(0,.82fr) minmax(0,1.18fr);
+  }
+  .products-page:has(.products-editor) .products-editor-right{
+    grid-template-rows:minmax(0,1.45fr) minmax(0,.55fr);
+  }
+}
+@container (min-width:691px) and (max-width:1050px){
+  .products-page:has(.products-editor) .products-editor{flex:0 0 auto;min-height:0}
+  .products-page:has(.products-editor) .products-editor>.products-info,
+  .products-page:has(.products-editor) .products-editor-middle,
+  .products-page:has(.products-editor) .products-editor-right{height:auto;min-height:0}
+}
+@container (max-width:690px){
+  .products-page:has(.products-editor) .products-editor{flex:0 0 auto;min-height:0}
+  .products-page:has(.products-editor) .products-editor>.products-info,
+  .products-page:has(.products-editor) .products-editor-middle,
+  .products-page:has(.products-editor) .products-editor-right{height:auto;min-height:0}
+}
+@media(max-height:700px){
+  @container (min-width:1051px){
+    .products-page:has(.products-editor) .products-editor{flex:0 0 auto;min-height:450px}
+    .products-page:has(.products-editor) .products-editor>.products-info,
+    .products-page:has(.products-editor) .products-editor-middle,
+    .products-page:has(.products-editor) .products-editor-right{height:auto}
+  }
+}
