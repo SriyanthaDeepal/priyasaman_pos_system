@@ -57,14 +57,14 @@
 .products-editor textarea{min-height:52px;max-height:95px;font-size:12px}
 .products-editor-middle,.products-editor-right{display:grid;grid-template-columns:minmax(0,1fr);gap:clamp(8px,1vh,14px);align-content:stretch;min-height:0}
 .products-editor-middle{grid-template-rows:minmax(0,1fr) minmax(0,1fr)}
-.products-editor-right{grid-template-rows:minmax(0,1fr) auto}
+.products-editor-right{grid-template-rows:minmax(0,3fr) minmax(0,1fr)}
 .products-editor-middle>.products-panel,.products-editor-right>.products-panel{min-width:0;min-height:0;height:100%;overflow:hidden}
-.products-editor-right>.products-panel:last-child{height:auto;min-height:115px}
-.products-editor-right .products-preview{flex:1 1 auto;min-height:120px;height:auto;max-height:none;overflow:hidden}
+.products-editor-right>.products-panel:last-child{height:100%;min-height:0}
+.products-editor-right .products-preview{flex:1 1 auto;min-height:0;height:auto;max-height:none;overflow:hidden}
 .products-preview-placeholder{min-height:0}
 .products-preview-placeholder span{font-size:clamp(48px,6cqw,76px)}
 .products-thumbnails button{width:clamp(54px,5cqw,74px);height:clamp(49px,6.5vh,67px)}
-.products-editor-right .products-barcode-print{flex:0 0 auto;min-height:0;display:flex;flex-wrap:nowrap;justify-content:space-between;align-items:center;gap:8px;width:100%;max-width:100%;overflow:hidden}
+.products-editor-right .products-barcode-print{flex:1 1 auto;min-height:0;display:flex;flex-wrap:nowrap;justify-content:space-between;align-items:center;gap:8px;width:100%;max-width:100%;overflow:hidden}
 .products-barcode-print svg{display:block;flex:0 1 auto;min-width:0;max-width:min(65%,240px);max-height:80px;width:auto;height:auto}
 .products-barcode-print .products-soft-green{flex:0 0 auto;max-width:40%;padding:7px 9px;white-space:normal;text-align:center}
 .products-bottom{flex:0 0 auto;margin:clamp(8px,1vh,14px) 0 0}
@@ -83,7 +83,7 @@
 @container (max-width:690px){
  .products-editor{grid-template-columns:minmax(0,1fr)}
  .products-editor-middle{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto}
- .products-editor-right{grid-column:auto;grid-template-columns:minmax(0,1fr)}
+ .products-editor-right{grid-column:auto;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto}
  .products-heading{flex-wrap:wrap}
  .products-heading h1{font-size:21px}
 }
@@ -106,4 +106,15 @@
   .products-editor input,.products-editor select{height:34px}
   .products-editor h2{padding:7px 9px}
  }
+}
+
+/* Keep the right-hand cards in the requested 75/25 proportion on desktop.
+   Preserve all image controls and helper text within the upper card. */
+@container (min-width:1051px){
+ .products-editor-right{grid-template-rows:minmax(0,3fr) minmax(0,1fr)}
+ .products-editor-right>.products-panel{overflow:hidden;min-height:0}
+ .products-editor-right .products-preview{min-height:0;flex:1 1 0%}
+ .products-editor-right .products-thumbnails{flex:0 0 auto}
+ .products-editor-right .products-note{flex:0 0 auto;overflow-wrap:anywhere}
+ .products-editor-right .products-barcode-print{flex:1 1 auto;min-height:0}
 }
