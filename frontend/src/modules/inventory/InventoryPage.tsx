@@ -7,7 +7,7 @@ import { Add, ArrowBack, ArrowForward, CheckCircle, DeleteOutlined, Inventory2Ou
 import "./InventoryPage.css";
 
 export type InventoryView = "overview" | "adjustment" | "transfer";
-export type InventoryProduct = { id: string; name: string; category: string; barcode: string; unit: string; stock: number; buy: number; sell: number; reorder: number; emoji: string };
+export type InventoryProduct = { id: string; name: string; category: string; barcode: string; unit: string; stock: number; buy: number; sell: number; reorder: number; emoji: string; brand?: string; description?: string; maxStock?: number; active?: boolean; images?: string[] };
 export const initialInventory: InventoryProduct[] = [
   {id:"PRD-00127",name:"Basmati Rice 5 kg",category:"Groceries",barcode:"8901234567890",unit:"Bag",stock:72,buy:4500,sell:4900,reorder:20,emoji:"🍚"},
   {id:"PRD-00456",name:"Sunflower Oil 1 L",category:"Groceries",barcode:"8901234567891",unit:"Bottle",stock:48,buy:1300,sell:1450,reorder:20,emoji:"🧴"},
