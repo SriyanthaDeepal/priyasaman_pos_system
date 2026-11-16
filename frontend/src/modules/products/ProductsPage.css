@@ -332,3 +332,13 @@
   .products-barcode-entry input{flex-basis:100%}
   .products-editor-right .products-preview{height:190px;min-height:190px}
 }
+
+/* Editor column order: information | variant/pricing, stock, suppliers | images, barcode. */
+.products-editor-left>.products-panel:last-child,
+.products-editor-middle>.products-panel:last-child{flex:0 0 auto}
+.products-editor-middle{display:flex;flex-direction:column;justify-content:flex-start;align-self:start;height:auto;min-height:0}
+.products-editor-middle>.products-panel{flex:0 0 auto;height:auto;min-height:0;overflow:visible}
+@container (min-width:1051px){
+ .products-editor-middle{height:auto}
+ .products-editor-middle>.products-panel:last-child{flex:0 0 auto}
+}
