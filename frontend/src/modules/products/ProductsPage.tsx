@@ -112,6 +112,9 @@ export default function ProductsPage({products,setProducts,onNotice}:Props) {
         <label>Brand<input value={editing.brand||""} onChange={e=>update("brand",e.target.value)} placeholder="Brand name (optional)"/></label>
         <label>Description (Optional)<textarea rows={3} maxLength={250} value={editing.description||""} onChange={e=>update("description",e.target.value)} placeholder="Describe this product..."/></label><span className="products-char-count">{(editing.description||"").length} / 250</span>
       </section>
+
+    </div>
+    <div className="products-editor-middle">
       <section className="products-panel"><h2><LayersOutlined/> Variant &amp; Pricing</h2>
         <label>Selected Variant<select value={editing.id} onChange={e=>switchVariant(e.target.value)}>{[...variants,editing].map(v=><option value={v.id} key={v.id}>{v.variantName||"Default"} · {v.id}</option>)}</select></label>
         <label>Variant Name / Size<input value={editing.variantName||""} onChange={e=>update("variantName",e.target.value)} placeholder="e.g. 500 ml, 1 L, Large"/></label>
@@ -120,8 +123,6 @@ export default function ProductsPage({products,setProducts,onNotice}:Props) {
         <div className="products-margin">Profit Margin <strong>{editing.sell>0?(((editing.sell-editing.buy)/editing.sell)*100).toFixed(2):"0.00"}%</strong></div>
         <button type="button" className="products-outline-action" onClick={addVariant}><Add/> Add Variant</button>
       </section>
-    </div>
-    <div className="products-editor-middle">
       <section className="products-panel"><h2>Stock &amp; Reorder</h2>
         <label>Current Stock *<div className="products-unit-input"><input type="number" min="0" value={editing.stock} onChange={e=>update("stock",Number(e.target.value))}/><span>{editing.unit}</span></div></label>
         <label>Reorder Level *<div className="products-unit-input"><input type="number" min="0" value={editing.reorder} onChange={e=>update("reorder",Number(e.target.value))}/><span>{editing.unit}</span></div></label>
