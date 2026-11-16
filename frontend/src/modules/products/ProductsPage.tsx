@@ -27,14 +27,14 @@ export default function ProductsPage({products,setProducts,onNotice}:Props) {
   const [formError,setFormError]=useState("");
   const fileRef=useRef<HTMLInputElement|null>(null);
   const supplierNames=useMemo(()=>Array.from(new Set(products.flatMap(p=>(p.supplierOffers||[]).map(o=>o.supplier.trim())).filter(Boolean))).sort((a,b)=>a.localeCompare(b)),[products]);
-  const selectedSupplier=editing?.supplierOffers?.find(o=>o.preferred)?.supplier||editing?.supplierOffers?.[0]?.supplier||"";
+  const selectedSupplier=editing?.supplierOffers?.find(o=>o.preferred)?.supplier||"";
   const selectSupplier=(name:string)=>{
     setEditing(p=>{
       if(!p)return p;
       const current=p.supplierOffers||[];
-      if(!name)return {...p,supplierOffers:[]};
+      if(!name)return {...p,supplierOffers:current.map(o=>({...o,preferred:false}))};
       const existing=current.find(o=>o.supplier===name);
-      return {...p,supplierOffers:[{id:existing?.id||offerId(),supplier:name,cost:existing?.cost??p.buy,preferred:true,supplierSku:existing?.supplierSku||""}]};
+      return {...p,supplierOffers:existing?current.map(o=>({...o,preferred:o.supplier===name})):[...current.map(o=>({...o,preferred:false})),{id:offerId(),supplier:name,cost:p.buy,preferred:true,supplierSku:""}]};
     });
   };
   const filtered=useMemo(()=>products.filter(p=>(category==="All Products"||p.category===category)&&[p.name,p.id,p.barcode,p.category,p.brand].join(" ").toLowerCase().includes(search.trim().toLowerCase())),[products,search,category]);
