@@ -342,3 +342,76 @@
  .products-editor-middle{height:auto}
  .products-editor-middle>.products-panel:last-child{flex:0 0 auto}
 }
+
+
+/* Compact desktop editor: show all seven cards at normal browser zoom.
+   Keep natural scrolling as a fallback for small displays or many suppliers. */
+@media (min-width:1100px) and (max-height:1000px){
+  .products-page{padding:clamp(8px,1vh,12px) clamp(10px,1vw,16px)}
+  .products-heading{margin-bottom:8px;gap:8px}
+  .products-heading h1{font-size:clamp(20px,1.8vw,25px);line-height:1.15}
+  .products-heading p{margin-top:1px;font-size:12px}
+  .products-heading-title>svg{font-size:29px!important}
+  .products-header-actions{gap:6px}
+  .products-header-actions .products-primary,
+  .products-header-actions .products-secondary{padding:6px 9px;font-size:11px;min-height:32px}
+  .products-editor{gap:10px;min-height:0;height:auto;align-items:start}
+  .products-editor-left,.products-editor-middle,.products-editor-right{
+    height:auto;min-height:0;gap:9px;align-self:start
+  }
+  .products-editor .products-panel{
+    flex:0 0 auto;height:auto;min-height:0;overflow:visible;
+    padding:10px 12px;gap:6px;border-radius:12px
+  }
+  .products-editor h2{
+    margin:0 0 2px;padding:7px 9px;min-height:32px;
+    font-size:14px;line-height:1.2
+  }
+  .products-editor h2 svg{font-size:19px}
+  .products-editor label{font-size:12px;gap:3px;line-height:1.25}
+  .products-editor input,.products-editor select{
+    height:32px;padding:0 9px;font-size:12px;border-radius:7px
+  }
+  .products-editor textarea,
+  .products-editor-left .products-info textarea{
+    height:48px;min-height:48px;max-height:72px;
+    padding:7px 9px;font-size:12px
+  }
+  .products-char-count{font-size:10px;margin-top:-3px}
+  .products-field-pair{gap:7px}
+  .products-margin{padding:9px 11px;font-size:12px}
+  .products-outline-action{min-height:30px;font-size:12px}
+  .products-unit-input span{padding:0 9px;font-size:11px}
+  .products-preview,.products-editor-right .products-preview{
+    height:clamp(130px,18vh,175px);min-height:130px;max-height:175px;
+    padding:7px
+  }
+  .products-preview-placeholder{gap:2px}
+  .products-preview-placeholder span{font-size:clamp(44px,7vh,65px)}
+  .products-preview-placeholder strong{font-size:13px}
+  .products-preview-placeholder small{font-size:11px}
+  .products-thumbnails{gap:6px}
+  .products-thumbnails button{width:58px;height:48px}
+  .products-note{font-size:11px;line-height:1.3}
+  .products-barcode-entry{gap:6px}
+  .products-barcode-entry input{height:32px}
+  .products-soft-green{padding:6px 8px;font-size:11px}
+  .products-editor-right .products-barcode-print{
+    min-height:54px;gap:8px;justify-content:center
+  }
+  .products-barcode-print svg{max-height:65px}
+  .products-supplier-item{padding:4px 0}
+}
+/* Allow 3 columns when the workspace (after sidebar) is wide enough.
+   Previous width-based rules still stack cards on narrow windows. */
+@container (min-width:1101px){
+  .products-editor{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .products-editor-right{
+    grid-column:auto;display:flex;flex-direction:column;
+    grid-template-columns:none;grid-template-rows:none;height:auto
+  }
+  .products-editor-left,.products-editor-middle{height:auto}
+  .products-editor-left>.products-panel,
+  .products-editor-middle>.products-panel,
+  .products-editor-right>.products-panel{height:auto;min-height:0;flex:0 0 auto;overflow:visible}
+}
