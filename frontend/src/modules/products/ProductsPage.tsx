@@ -113,14 +113,16 @@ export default function ProductsPage({products,setProducts,onNotice}:Props) {
         <label>Description (Optional)<textarea rows={3} maxLength={250} value={editing.description||""} onChange={e=>update("description",e.target.value)} placeholder="Describe this product..."/></label><span className="products-char-count">{(editing.description||"").length} / 250</span>
       </section>
 
+      <section className="products-panel products-pricing"><h2>Pricing</h2>
+        <div className="products-field-pair"><label>Buying Price (Rs.) *<input type="number" min="0" step="0.01" value={editing.buy} onChange={e=>update("buy",Number(e.target.value))}/></label><label>Selling Price (Rs.) *<input type="number" min="0" step="0.01" value={editing.sell} onChange={e=>update("sell",Number(e.target.value))}/></label></div>
+        <div className="products-margin">Profit Margin <strong>{editing.sell>0?(((editing.sell-editing.buy)/editing.sell)*100).toFixed(2):"0.00"}%</strong></div>
+      </section>
     </div>
     <div className="products-editor-middle">
-      <section className="products-panel"><h2><LayersOutlined/> Variant &amp; Pricing</h2>
+      <section className="products-panel"><h2><LayersOutlined/> Variants</h2>
         <label>Selected Variant<select value={editing.id} onChange={e=>switchVariant(e.target.value)}>{[...variants,editing].map(v=><option value={v.id} key={v.id}>{v.variantName||"Default"} · {v.id}</option>)}</select></label>
         <label>Variant Name / Size<input value={editing.variantName||""} onChange={e=>update("variantName",e.target.value)} placeholder="e.g. 500 ml, 1 L, Large"/></label>
         <div className="products-field-pair"><label>Unit *<select value={editing.unit} onChange={e=>update("unit",e.target.value)}>{units.map(c=><option key={c}>{c}</option>)}</select></label><label>SKU (Auto)<input value={editing.id} readOnly title="Automatically assigned product code"/></label></div>
-        <div className="products-field-pair"><label>Buying Price (Rs.) *<input type="number" min="0" step="0.01" value={editing.buy} onChange={e=>update("buy",Number(e.target.value))}/></label><label>Selling Price (Rs.) *<input type="number" min="0" step="0.01" value={editing.sell} onChange={e=>update("sell",Number(e.target.value))}/></label></div>
-        <div className="products-margin">Profit Margin <strong>{editing.sell>0?(((editing.sell-editing.buy)/editing.sell)*100).toFixed(2):"0.00"}%</strong></div>
         <button type="button" className="products-outline-action" onClick={addVariant}><Add/> Add Variant</button>
       </section>
       <section className="products-panel"><h2>Stock &amp; Reorder</h2>
