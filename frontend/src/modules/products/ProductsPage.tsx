@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { ChangeEvent, Dispatch, SetStateAction } from "react";
-import { Add, ArrowBack, CameraAltOutlined, DeleteOutlined, EditOutlined, ImageOutlined, InfoOutlined, Inventory2Outlined, LocalPrintshopOutlined, QrCodeScannerOutlined, Search, SaveOutlined } from "@mui/icons-material";
+import { Add, ArrowBack, CameraAltOutlined, DeleteOutlined, EditOutlined, ImageOutlined, InfoOutlined, Inventory2Outlined, LocalPrintshopOutlined, QrCodeScannerOutlined, Search, SaveOutlined, LocalShippingOutlined, LayersOutlined } from "@mui/icons-material";
 import { Dialog, DialogContent, DialogTitle, IconButton, Switch } from "@mui/material";
 import BarcodeDisplay from "../../components/common/BarcodeDisplay/BarcodeDisplay";
 import BarcodeScanner from "../../components/common/BarcodeScanner/BarcodeScanner";
@@ -12,27 +12,69 @@ const money = (n:number) => "Rs. "+n.toLocaleString("en-LK",{minimumFractionDigi
 const blank:InventoryProduct = {id:"",name:"",category:"Groceries",barcode:"",unit:"Pack",stock:0,buy:0,sell:0,reorder:10,emoji:"📦",brand:"",description:"",maxStock:0,active:true,images:[]};
 const categories=["Groceries","Beverages","Household","Personal Care","Snacks","Others"];
 const units=["Bag","Bottle","Pack","Piece","Box","Kg","Litre","Gram","Carton","Dozen"];
-const nextSku=(products:InventoryProduct[])=>"PRD-"+String(Math.max(0,...products.map(p=>Number(p.id.match(/^PRD-(\\d+)$/)?.[1]||0)))+1).padStart(5,"0");
+const nextSku=(products:InventoryProduct[],reserved:string[]=[])=>"PRD-"+String(Math.max(0,...[...products.map(p=>p.id),...reserved].map(id=>Number(id.replace(/^PRD-/,""))||0))+1).padStart(5,"0");
+type SupplierOffer=NonNullable<InventoryProduct["supplierOffers"]>[number];
+const offerId=()=>Math.random().toString(36).slice(2,10);
+
 
 export default function ProductsPage({products,setProducts,onNotice}:Props) {
   const [search,setSearch]=useState("");
   const [category,setCategory]=useState("All Products");
   const [editing,setEditing]=useState<InventoryProduct|null>(null);
   const [originalId,setOriginalId]=useState<string|null>(null);
+  const [variants,setVariants]=useState<InventoryProduct[]>([]);
+  const [supplierOpen,setSupplierOpen]=useState(false);
+  const [supplierName,setSupplierName]=useState("");
+  const [supplierCost,setSupplierCost]=useState("0");
+  const [supplierSku,setSupplierSku]=useState("");
   const [selectedImage,setSelectedImage]=useState(0);
   const [scannerOpen,setScannerOpen]=useState(false);
   const [formError,setFormError]=useState("");
   const fileRef=useRef<HTMLInputElement|null>(null);
   const filtered=useMemo(()=>products.filter(p=>(category==="All Products"||p.category===category)&&[p.name,p.id,p.barcode,p.category,p.brand].join(" ").toLowerCase().includes(search.trim().toLowerCase())),[products,search,category]);
-  const openEditor=(p?:InventoryProduct)=>{setOriginalId(p?.id??null);setEditing(p?{...p,images:[...(p.images||[])]}:{...blank,id:nextSku(products)});setSelectedImage(0);setFormError("");};
+  const openEditor=(p?:InventoryProduct)=>{
+    const family=p?.familyId||p?.id;
+    const siblings=p?products.filter(x=>(x.familyId||x.id)===family):[];
+    const draft=p?{...p,images:[...(p.images||[])],supplierOffers:(p.supplierOffers||[]).map(x=>({...x}))}:{...blank,id:nextSku(products),variantName:"Default",familyId:"",supplierOffers:[]};
+    setOriginalId(p?.id??null);setVariants(siblings.filter(x=>x.id!==p?.id).map(x=>({...x,supplierOffers:(x.supplierOffers||[]).map(o=>({...o}))})));
+    setEditing(draft);setSelectedImage(0);setFormError("");
+  };
   const update=<K extends keyof InventoryProduct>(field:K,value:InventoryProduct[K])=>setEditing(p=>p?{...p,[field]:value}:p);
+  const switchVariant=(id:string)=>{
+    if(!editing||id===editing.id)return;
+    const next=variants.find(v=>v.id===id);if(!next)return;
+    setVariants(old=>[...old.filter(v=>v.id!==id),editing]);
+    setEditing({...next});setSelectedImage(0);setFormError("");
+  };
+  const addVariant=()=>{
+    if(!editing)return;
+    const id=nextSku(products,[editing.id,...variants.map(v=>v.id)]);
+    const family=editing.familyId||originalId||editing.id;
+    setVariants(old=>[...old,editing]);
+    setEditing({...editing,id,familyId:family,variantName:"New Variant",barcode:"",stock:0,reorder:10,maxStock:0,supplierOffers:[],images:[...(editing.images||[])]});
+    setSelectedImage(0);setFormError("");
+  };
+  const addSupplier=()=>{
+    if(!editing||!supplierName.trim()||!Number.isFinite(Number(supplierCost))||Number(supplierCost)<0){setFormError("Enter a supplier name and valid non-negative buying price.");return;}
+    const name=supplierName.trim();
+    if((editing.supplierOffers||[]).some(o=>o.supplier.toLowerCase()===name.toLowerCase())){setFormError("This supplier is already linked to the selected variant.");return;}
+    const offers=editing.supplierOffers||[];
+    update("supplierOffers",[...offers,{id:offerId(),supplier:name,cost:Number(supplierCost),preferred:offers.length===0,supplierSku:supplierSku.trim()}]);
+    setSupplierOpen(false);setSupplierName("");setSupplierCost("0");setSupplierSku("");setFormError("");
+  };
   const save=()=>{
     if(!editing)return;
-    if(!editing.name.trim()||!editing.id.trim()||!editing.category||!editing.unit||![editing.buy,editing.sell,editing.stock,editing.reorder].every(n=>Number.isFinite(n)&&n>=0)||editing.maxStock!==undefined&&(!Number.isFinite(editing.maxStock)||editing.maxStock<0)){setFormError("Complete the required fields using valid non-negative numbers.");return;}
-    if(products.some(p=>p.id===editing.id&&p.id!==originalId)){setFormError("This product SKU already exists.");return;}
-    if(editing.barcode&&products.some(p=>p.barcode===editing.barcode&&p.id!==originalId)){setFormError("This barcode is already assigned to another product.");return;}
-    setProducts(old=>originalId?old.map(p=>p.id===originalId?editing:p):[...old,editing]);
-    setEditing(null);setFormError("");onNotice(originalId?"Product updated.":"Product added.");
+    const all=[...variants,editing];
+    if(all.some(p=>!p.name.trim()||!p.id.trim()||!p.category||!p.unit||![p.buy,p.sell,p.stock,p.reorder].every(n=>Number.isFinite(n)&&n>=0)||p.maxStock!==undefined&&(!Number.isFinite(p.maxStock)||p.maxStock<0))){setFormError("Complete all required fields with valid non-negative numbers.");return;}
+    const ids=all.map(p=>p.id),codes=all.map(p=>p.barcode.trim()).filter(Boolean);
+    if(new Set(ids).size!==ids.length||new Set(codes).size!==codes.length){setFormError("Each variant must have a unique SKU and barcode.");return;}
+    const family=editing.familyId||originalId||all[0].id;
+    const previous=products.filter(p=>(p.familyId||p.id)===family);
+    if(all.some(p=>products.some(existing=>existing.id===p.id&&!previous.some(old=>old.id===existing.id)))){setFormError("A product SKU already exists.");return;}
+    if(all.some(p=>p.barcode&&products.some(existing=>existing.barcode===p.barcode&&!previous.some(old=>old.id===existing.id)))){setFormError("A barcode is already assigned to another product.");return;}
+    const saved=all.map(p=>({...p,familyId:family,name:editing.name,category:editing.category,brand:editing.brand,description:editing.description,active:editing.active}));
+    setProducts(old=>[...old.filter(p=>!previous.some(x=>x.id===p.id)),...saved]);
+    setEditing(null);setVariants([]);setFormError("");onNotice(originalId?"Product variants updated.":"Product and variants added.");
   };
   const uploadImages=(event:ChangeEvent<HTMLInputElement>)=>{
     const files=Array.from(event.target.files||[]).filter(f=>f.type.startsWith("image/"));
@@ -59,13 +101,40 @@ export default function ProductsPage({products,setProducts,onNotice}:Props) {
   };
   useEffect(()=>{if(!editing)return;const listener=(e:KeyboardEvent)=>{if(e.key==="F10"){e.preventDefault();save();}};window.addEventListener("keydown",listener);return()=>window.removeEventListener("keydown",listener);});
   return <div className="products-page">
-    <header className="products-heading"><div className="products-heading-title"><Inventory2Outlined sx={{color:"#f58a00",fontSize:36}}/><div><h1>{editing?"Add / Edit Product":"Products"}</h1><p>{editing?"Create a new product or update an existing product.":"Find, review, add and edit products in your inventory."}</p></div></div><div className="products-header-actions">{editing?<><label className="products-header-active"><Switch checked={editing.active!==false} onChange={e=>update("active",e.target.checked)} color="success" size="small"/> Active</label><button className="products-secondary" onClick={()=>setEditing(null)}><ArrowBack/> Back to Products</button><button className="products-secondary" onClick={()=>setEditing(null)}>Cancel</button><button className="products-primary" onClick={save}><SaveOutlined/> Save Product (F10)</button></>:<button className="products-primary" onClick={()=>openEditor()}><Add/> Add Product</button>}</div></header>
+    <header className="products-heading"><div className="products-heading-title"><Inventory2Outlined sx={{color:"#f58a00",fontSize:36}}/><div><h1>{editing?"Add / Edit Product":"Products"}</h1><p>{editing?"Product details, variants, suppliers and barcode management.":"Find, review, add and edit products in your inventory."}</p></div></div><div className="products-header-actions">{editing?<><label className="products-header-active"><Switch checked={editing.active!==false} onChange={e=>update("active",e.target.checked)} color="success" size="small"/> Active</label><button className="products-secondary" onClick={()=>setEditing(null)}><ArrowBack/> Back to Products</button><button className="products-secondary" onClick={()=>setEditing(null)}>Cancel</button><button className="products-primary" onClick={save}><SaveOutlined/> Save Product (F10)</button></>:<button className="products-primary" onClick={()=>openEditor()}><Add/> Add Product</button>}</div></header>
     {!editing?<section className="products-panel">
       <div className="products-search-controls"><label className="products-search"><Search/><input aria-label="Search existing products" placeholder="Search existing products by name, SKU or barcode..." value={search} onChange={e=>setSearch(e.target.value)}/></label><select aria-label="Filter product category" value={category} onChange={e=>setCategory(e.target.value)}>{["All Products",...new Set(products.map(p=>p.category))].map(c=><option key={c}>{c}</option>)}</select></div>
       <div className="products-table-wrap"><table><thead><tr><th>Product</th><th>SKU / Barcode</th><th>Category</th><th>Stock</th><th>Buying Price</th><th>Selling Price</th><th>Status</th><th>Action</th></tr></thead><tbody>{filtered.map(p=><tr key={p.id}><td><span className="products-product">{p.images?.[0]?<img src={p.images[0]} alt="" />:<span>{p.emoji}</span>}<strong>{p.name}</strong></span></td><td><strong>{p.id}</strong><small>{p.barcode||"No barcode"}</small></td><td>{p.category}</td><td>{p.stock} {p.unit}</td><td>{money(p.buy)}</td><td>{money(p.sell)}</td><td><span className={"products-status "+(!p.active?"out":p.stock===0?"out":p.stock<=p.reorder?"low":"in")}>{!p.active?"Inactive":p.stock===0?"Out of Stock":p.stock<=p.reorder?"Low Stock":"In Stock"}</span></td><td><button className="products-edit" onClick={()=>openEditor(p)} aria-label={"Edit "+p.name}><EditOutlined fontSize="small"/> Edit</button></td></tr>)}</tbody></table>{filtered.length===0&&<p className="products-empty">No products match your search.</p>}</div><footer className="products-count">Showing {filtered.length} of {products.length} products</footer>
     </section>:<><div className="products-editor">
-      <div className="products-editor-left"><section className="products-panel products-info"><h2><InfoOutlined/> Product Information</h2><label>Product Name *<input value={editing.name} onChange={e=>update("name",e.target.value)} placeholder="Product name"/></label><label>SKU / Product Code *<input value={editing.id} onChange={e=>update("id",e.target.value)} placeholder="PRD-00001"/></label><label>Barcode<div className="products-inline-input"><input value={editing.barcode} onChange={e=>update("barcode",e.target.value)} placeholder="Scan or enter barcode"/><button type="button" className="products-soft-green" onClick={()=>setScannerOpen(true)}><QrCodeScannerOutlined/> Scan</button></div></label><label>Category *<select value={editing.category} onChange={e=>update("category",e.target.value)}>{categories.map(c=><option key={c}>{c}</option>)}</select></label><label>Brand<input value={editing.brand||""} onChange={e=>update("brand",e.target.value)} placeholder="Brand name (optional)"/></label><label>Unit *<select value={editing.unit} onChange={e=>update("unit",e.target.value)}>{units.map(c=><option key={c}>{c}</option>)}</select></label><label>Description (Optional)<textarea rows={3} maxLength={250} value={editing.description||""} onChange={e=>update("description",e.target.value)} placeholder="Describe this product..."/></label><span className="products-char-count">{(editing.description||"").length} / 250</span></section><section className="products-panel"><h2>Pricing</h2><label>Buying Price (Rs.) *<input type="number" min="0" step="0.01" value={editing.buy} onChange={e=>update("buy",Number(e.target.value))}/></label><label>Selling Price (Rs.) *<input type="number" min="0" step="0.01" value={editing.sell} onChange={e=>update("sell",Number(e.target.value))}/></label><div className="products-margin">Profit Margin <strong>{editing.sell>0?(((editing.sell-editing.buy)/editing.sell)*100).toFixed(2):"0.00"}%</strong></div></section></div><div className="products-editor-middle"><section className="products-panel"><h2>Stock &amp; Reorder</h2><label>Current Stock *<div className="products-unit-input"><input type="number" min="0" value={editing.stock} onChange={e=>update("stock",Number(e.target.value))}/><span>{editing.unit}</span></div></label><label>Reorder Level *<div className="products-unit-input"><input type="number" min="0" value={editing.reorder} onChange={e=>update("reorder",Number(e.target.value))}/><span>{editing.unit}</span></div></label><label>Maximum Stock (Optional)<div className="products-unit-input"><input type="number" min="0" value={editing.maxStock||0} onChange={e=>update("maxStock",Number(e.target.value))}/><span>{editing.unit}</span></div></label></section></div><div className="products-editor-right"><section className="products-panel"><h2><ImageOutlined/> Product Image</h2><div className="products-preview">{editing.images?.length?<img src={editing.images[Math.min(selectedImage,editing.images.length-1)]} alt={editing.name||"Product preview"}/>:<div className="products-preview-placeholder"><span>{editing.emoji}</span><strong>{editing.name||"New Product"}</strong><small>No image uploaded</small></div>}{editing.images?.length?<div className="products-image-actions"><button type="button" title="Replace image" aria-label="Replace selected image" onClick={()=>fileRef.current?.click()}><EditOutlined/></button><button type="button" title="Remove image" aria-label="Remove selected image" onClick={()=>removeImage(selectedImage)}><DeleteOutlined/></button></div>:null}</div><div className="products-thumbnails">{(editing.images||[]).map((src,i)=><button type="button" className={selectedImage===i?"active":""} key={i} onClick={()=>setSelectedImage(i)}><img src={src} alt={"Product image "+(i+1)}/></button>)}{(editing.images||[]).length<5&&<button type="button" className="products-add-image" onClick={()=>fileRef.current?.click()}><Add/> Add Image</button>}</div><input ref={fileRef} type="file" accept="image/*" multiple hidden onChange={uploadImages}/><p className="products-note">Upload up to 5 images (maximum 2 MB each). Images are held in frontend state until backend storage is connected.</p></section><section className="products-panel"><h2><QrCodeScannerOutlined/> Barcode (for Printing)</h2><div className="products-barcode-print">{editing.barcode.trim()?<BarcodeDisplay value={editing.barcode.trim()} format="CODE128" height={55} width={1.5} fontSize={13} showDownload={false}/>:<p className="products-note">Enter a barcode to preview and print it.</p>}<button type="button" className="products-soft-green" disabled={!editing.barcode.trim()} onClick={printBarcode}><LocalPrintshopOutlined/> Print Barcode</button></div></section></div>
+      <div className="products-editor-left">
+      <section className="products-panel products-info"><h2><InfoOutlined/> Product Information</h2>
+        <label>Product Name *<input value={editing.name} onChange={e=>update("name",e.target.value)} placeholder="Product name"/></label>
+        <label>Category *<select value={editing.category} onChange={e=>update("category",e.target.value)}>{categories.map(c=><option key={c}>{c}</option>)}</select></label>
+        <label>Brand<input value={editing.brand||""} onChange={e=>update("brand",e.target.value)} placeholder="Brand name (optional)"/></label>
+        <label>Description (Optional)<textarea rows={3} maxLength={250} value={editing.description||""} onChange={e=>update("description",e.target.value)} placeholder="Describe this product..."/></label><span className="products-char-count">{(editing.description||"").length} / 250</span>
+      </section>
+      <section className="products-panel"><h2><LayersOutlined/> Variant &amp; Pricing</h2>
+        <label>Selected Variant<select value={editing.id} onChange={e=>switchVariant(e.target.value)}>{[...variants,editing].map(v=><option value={v.id} key={v.id}>{v.variantName||"Default"} · {v.id}</option>)}</select></label>
+        <label>Variant Name / Size<input value={editing.variantName||""} onChange={e=>update("variantName",e.target.value)} placeholder="e.g. 500 ml, 1 L, Large"/></label>
+        <div className="products-field-pair"><label>Unit *<select value={editing.unit} onChange={e=>update("unit",e.target.value)}>{units.map(c=><option key={c}>{c}</option>)}</select></label><label>SKU (Auto)<input value={editing.id} readOnly title="Automatically assigned product code"/></label></div>
+        <div className="products-field-pair"><label>Buying Price (Rs.) *<input type="number" min="0" step="0.01" value={editing.buy} onChange={e=>update("buy",Number(e.target.value))}/></label><label>Selling Price (Rs.) *<input type="number" min="0" step="0.01" value={editing.sell} onChange={e=>update("sell",Number(e.target.value))}/></label></div>
+        <div className="products-margin">Profit Margin <strong>{editing.sell>0?(((editing.sell-editing.buy)/editing.sell)*100).toFixed(2):"0.00"}%</strong></div>
+        <button type="button" className="products-outline-action" onClick={addVariant}><Add/> Add Variant</button>
+      </section>
+    </div>
+    <div className="products-editor-middle">
+      <section className="products-panel"><h2>Stock &amp; Reorder</h2>
+        <label>Current Stock *<div className="products-unit-input"><input type="number" min="0" value={editing.stock} onChange={e=>update("stock",Number(e.target.value))}/><span>{editing.unit}</span></div></label>
+        <label>Reorder Level *<div className="products-unit-input"><input type="number" min="0" value={editing.reorder} onChange={e=>update("reorder",Number(e.target.value))}/><span>{editing.unit}</span></div></label>
+        <label>Maximum Stock (Optional)<div className="products-unit-input"><input type="number" min="0" value={editing.maxStock||0} onChange={e=>update("maxStock",Number(e.target.value))}/><span>{editing.unit}</span></div></label>
+      </section>
+      <section className="products-panel products-suppliers"><h2><LocalShippingOutlined/> Suppliers</h2>
+        {(editing.supplierOffers||[]).length===0?<p className="products-note">No suppliers linked to this variant yet.</p>:(editing.supplierOffers||[]).map(offer=><div className="products-supplier-item" key={offer.id}><div><strong>{offer.supplier}</strong><small>{money(offer.cost)} {offer.preferred?"· Preferred": "· Alternative"}</small></div><div className="products-supplier-actions"><button type="button" title="Set preferred supplier" aria-label={"Prefer "+offer.supplier} disabled={offer.preferred} onClick={()=>update("supplierOffers",(editing.supplierOffers||[]).map(o=>({...o,preferred:o.id===offer.id})))}>{offer.preferred?"✓":"☆"}</button><button type="button" title="Remove supplier" aria-label={"Remove "+offer.supplier} onClick={()=>{const rest=(editing.supplierOffers||[]).filter(o=>o.id!==offer.id);update("supplierOffers",rest.map((o,i)=>({...o,preferred:rest.some(x=>x.preferred)?o.preferred:i===0})));}}>×</button></div></div>)}
+        <button type="button" className="products-outline-action" onClick={()=>{setSupplierName("");setSupplierCost(String(editing.buy));setSupplierSku("");setSupplierOpen(true);}}><Add/> Add Supplier</button>
+      </section>
+    </div><div className="products-editor-right"><section className="products-panel"><h2><ImageOutlined/> Product Image</h2><div className="products-preview">{editing.images?.length?<img src={editing.images[Math.min(selectedImage,editing.images.length-1)]} alt={editing.name||"Product preview"}/>:<div className="products-preview-placeholder"><span>{editing.emoji}</span><strong>{editing.name||"New Product"}</strong><small>No image uploaded</small></div>}{editing.images?.length?<div className="products-image-actions"><button type="button" title="Replace image" aria-label="Replace selected image" onClick={()=>fileRef.current?.click()}><EditOutlined/></button><button type="button" title="Remove image" aria-label="Remove selected image" onClick={()=>removeImage(selectedImage)}><DeleteOutlined/></button></div>:null}</div><div className="products-thumbnails">{(editing.images||[]).map((src,i)=><button type="button" className={selectedImage===i?"active":""} key={i} onClick={()=>setSelectedImage(i)}><img src={src} alt={"Product image "+(i+1)}/></button>)}{(editing.images||[]).length<5&&<button type="button" className="products-add-image" onClick={()=>fileRef.current?.click()}><Add/> Add Image</button>}</div><input ref={fileRef} type="file" accept="image/*" multiple hidden onChange={uploadImages}/><p className="products-note">Upload up to 5 images (maximum 2 MB each). Images are held in frontend state until backend storage is connected.</p></section><section className="products-panel"><h2><QrCodeScannerOutlined/> Barcode (for Printing)</h2><div className="products-barcode-entry"><input aria-label="Barcode" value={editing.barcode} onChange={e=>update("barcode",e.target.value)} placeholder="Scan or generate barcode"/><button type="button" className="products-soft-green" onClick={()=>setScannerOpen(true)}><QrCodeScannerOutlined/> Scan</button><button type="button" className="products-soft-green" onClick={()=>update("barcode",editing.id)}><Add/> Generate</button></div><div className="products-barcode-print">{editing.barcode.trim()?<BarcodeDisplay value={editing.barcode.trim()} format="CODE128" height={55} width={1.5} fontSize={13} showDownload={false}/>:<p className="products-note">Enter a barcode to preview and print it.</p>}<button type="button" className="products-soft-green" disabled={!editing.barcode.trim()} onClick={printBarcode}><LocalPrintshopOutlined/> Print Barcode</button></div></section></div>
     </div>{formError&&<p className="products-form-error" role="alert">{formError}</p>}</>}
+    <Dialog open={supplierOpen} onClose={()=>setSupplierOpen(false)} maxWidth="xs" fullWidth><DialogTitle>Add Supplier for {editing?.variantName||"Variant"}</DialogTitle><DialogContent><div className="products-supplier-dialog"><label>Supplier Name *<input value={supplierName} onChange={e=>setSupplierName(e.target.value)} placeholder="Distributor name"/></label><label>Buying Price (Rs.) *<input type="number" min="0" step="0.01" value={supplierCost} onChange={e=>setSupplierCost(e.target.value)}/></label><label>Supplier Product Code<input value={supplierSku} onChange={e=>setSupplierSku(e.target.value)} placeholder="Optional"/></label><div className="products-dialog-actions"><button className="products-secondary" onClick={()=>setSupplierOpen(false)}>Cancel</button><button className="products-primary" onClick={addSupplier}>Add Supplier</button></div></div></DialogContent></Dialog>
     <Dialog open={scannerOpen} onClose={()=>setScannerOpen(false)} maxWidth="sm" fullWidth><DialogTitle sx={{display:"flex",alignItems:"center",justifyContent:"space-between"}}><span><CameraAltOutlined sx={{verticalAlign:"middle",mr:1}}/>Scan Product Barcode</span><IconButton onClick={()=>setScannerOpen(false)} aria-label="Close scanner">×</IconButton></DialogTitle><DialogContent><BarcodeScanner compact submitLabel="Use Barcode" onScan={code=>{update("barcode",code);setScannerOpen(false);}}/></DialogContent></Dialog>
   </div>;
 }
