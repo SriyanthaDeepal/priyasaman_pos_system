@@ -560,3 +560,46 @@
   .products-editor input,.products-editor select{height:32px}
   .products-preview,.products-editor-right .products-preview{height:clamp(110px,16vh,160px);min-height:110px}
 }
+
+
+/* Final viewport-fill correction.
+   The old calc(100dvh - 270px) left unused space because header height,
+   browser chrome and viewport sizes vary. Fill the actual parent instead. */
+.products-page--editing{
+  height:auto;
+  min-height:100%;
+  display:flex;
+  flex-direction:column;
+  overflow:visible;
+}
+.products-page--editing .products-heading{flex:0 0 auto}
+.products-page--editing .products-editor{
+  flex:1 0 auto;
+  min-height:0;
+  height:auto;
+  align-items:stretch;
+}
+.products-page--editing .products-editor-left,
+.products-page--editing .products-editor-middle,
+.products-page--editing .products-editor-right{
+  height:100%;
+  align-self:stretch;
+}
+.products-page--editing .products-editor-left>.products-panel:last-child,
+.products-page--editing .products-editor-middle>.products-panel:last-child,
+.products-page--editing .products-editor-right>.products-panel:last-child{
+  flex-grow:1;
+}
+@container (min-width:1101px){
+  .products-page--editing .products-editor{min-height:0}
+}
+@media (max-height:720px){
+  .products-page--editing .products-editor{min-height:0}
+}
+/* Keep natural heights when columns stack; don't force giant empty cards. */
+@container (max-width:1100px){
+  .products-page--editing .products-editor{flex:0 0 auto;min-height:0}
+  .products-page--editing .products-editor-left,
+  .products-page--editing .products-editor-middle,
+  .products-page--editing .products-editor-right{height:auto}
+}
