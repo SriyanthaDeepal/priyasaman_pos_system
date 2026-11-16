@@ -13,7 +13,6 @@ const blank:InventoryProduct = {id:"",name:"",category:"Groceries",barcode:"",un
 const categories=["Groceries","Beverages","Household","Personal Care","Snacks","Others"];
 const units=["Bag","Bottle","Pack","Piece","Box","Kg","Litre","Gram","Carton","Dozen"];
 const nextSku=(products:InventoryProduct[],reserved:string[]=[])=>"PRD-"+String(Math.max(0,...[...products.map(p=>p.id),...reserved].map(id=>Number(id.replace(/^PRD-/,""))||0))+1).padStart(5,"0");
-type SupplierOffer=NonNullable<InventoryProduct["supplierOffers"]>[number];
 const offerId=()=>Math.random().toString(36).slice(2,10);
 
 
