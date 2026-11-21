@@ -16,6 +16,7 @@ import POSPage from "../../modules/pos/POSPage";
 import ProductsPage from "../../modules/products/ProductsPage";
 import PurchasesPage from "../../modules/purchases/PurchasesPage";
 import SuppliersPage from "../../modules/suppliers/SuppliersPage";
+import CustomersPage from "../../modules/customers/CustomersPage";
 import SalesPage from "../../modules/sales/SalesPage";
 import ReturnExchangePage from "../../modules/sales/ReturnExchangePage";
 import type { ExchangeSale } from "../../modules/sales/ReturnExchangePage";
@@ -81,6 +82,9 @@ export default function MainLayout({
 
       case "suppliers":
         return <SuppliersPage onNotice={setFeedback} />;
+
+      case "customers":
+        return <CustomersPage onNotice={setFeedback} />;
 
       case "purchases":
         return <PurchasesPage products={inventoryProducts} onNotice={setFeedback} />;
