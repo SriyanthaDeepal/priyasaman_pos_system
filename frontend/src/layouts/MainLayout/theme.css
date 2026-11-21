@@ -1,11 +1,31 @@
-/* Shared POS theme tokens: all overrides are scoped to the application root. */
-.pos-themed-root:not(.pos-theme-original) .ps-sidebar{background:linear-gradient(160deg,color-mix(in srgb,var(--pos-primary) 75%,black),var(--pos-primary) 65%,color-mix(in srgb,var(--pos-primary) 78%,white))!important}
-.pos-themed-root:not(.pos-theme-original) .ps-sidebar-nav-row-active,.pos-themed-root:not(.pos-theme-original) .ps-sidebar-item-active.MuiListItemButton-root,.pos-themed-root:not(.pos-theme-original) .ps-sidebar-subitem-active.MuiListItemButton-root{background:var(--pos-accent)!important}
+/* Custom themes retain the original Priyasaman visual language:
+   deep multi-stop sidebar, warm orange-style accent gradient, pale header. */
+.pos-themed-root:not(.pos-theme-original) .ps-sidebar {
+  background:
+    radial-gradient(ellipse at 90% 85%, color-mix(in srgb,var(--pos-primary) 66%,white) 32%,transparent 55%),
+    linear-gradient(165deg,
+      color-mix(in srgb,var(--pos-primary) 74%,black) 0%,
+      var(--pos-primary) 42%,
+      color-mix(in srgb,var(--pos-primary) 80%,white) 72%,
+      color-mix(in srgb,var(--pos-primary) 93%,black) 100%) !important;
+}
+.pos-themed-root:not(.pos-theme-original) .ps-sidebar-nav-row-active,
+.pos-themed-root:not(.pos-theme-original) .ps-sidebar-item-active.MuiListItemButton-root.Mui-selected,
+.pos-themed-root:not(.pos-theme-original) .ps-sidebar-subitem-active.MuiListItemButton-root,
+.pos-themed-root:not(.pos-theme-original) .ps-sidebar-subitem-active.MuiListItemButton-root.Mui-selected {
+  background:linear-gradient(180deg,
+    color-mix(in srgb,var(--pos-accent) 82%,white) 0%,
+    var(--pos-accent) 55%,
+    color-mix(in srgb,var(--pos-accent) 83%,black) 100%) !important;
+}
+.pos-themed-root:not(.pos-theme-original) .ps-sidebar-nav-row-active .ps-sidebar-item-active.MuiListItemButton-root{background:transparent!important}
 .pos-themed-root:not(.pos-theme-original) .ps-sidebar-brand-icon{color:var(--pos-accent)}
-.pos-themed-root:not(.pos-theme-original) .ps-sidebar-brand-curve{border-bottom-color:var(--pos-accent)}
-.pos-themed-root:not(.pos-theme-original) .ps-sidebar-item:focus-visible,.pos-themed-root:not(.pos-theme-original) .ps-sidebar-subitem:focus-visible{outline-color:var(--pos-accent)}
+.pos-themed-root:not(.pos-theme-original) .ps-sidebar-brand-curve{border-bottom-color:color-mix(in srgb,var(--pos-primary) 65%,white)}
+.pos-themed-root:not(.pos-theme-original) .ps-sidebar-item:focus-visible,
+.pos-themed-root:not(.pos-theme-original) .ps-sidebar-subitem:focus-visible{outline-color:var(--pos-accent)}
 .pos-themed-root:not(.pos-theme-original) .pos-themed-header.MuiAppBar-root{background-color:var(--pos-header)!important}
-.pos-themed-root:not(.pos-theme-original) button:not(.MuiButtonBase-root):not(.st-preset):not(.st-reset):not(.st-nav-item):not(.st-preview-main button):not(.st-save){accent-color:var(--pos-button)}
 .pos-themed-root:not(.pos-theme-original) .MuiButton-containedPrimary{background-color:var(--pos-button)!important}
 .pos-themed-root:not(.pos-theme-original) .MuiButton-outlinedPrimary{color:var(--pos-primary)!important;border-color:var(--pos-primary)!important}
-.pos-themed-root:not(.pos-theme-original) .MuiCheckbox-colorPrimary.Mui-checked,.pos-themed-root:not(.pos-theme-original) .MuiRadio-colorPrimary.Mui-checked,.pos-themed-root:not(.pos-theme-original) .MuiSwitch-colorPrimary.Mui-checked{color:var(--pos-primary)}
+.pos-themed-root:not(.pos-theme-original) .MuiCheckbox-colorPrimary.Mui-checked,
+.pos-themed-root:not(.pos-theme-original) .MuiRadio-colorPrimary.Mui-checked,
+.pos-themed-root:not(.pos-theme-original) .MuiSwitch-colorPrimary.Mui-checked{color:var(--pos-primary)}
