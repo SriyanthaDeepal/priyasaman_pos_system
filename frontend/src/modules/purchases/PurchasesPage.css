@@ -322,3 +322,66 @@
  .pur-receipt-side-wrap{overflow:visible}
  .pur-receipt-side{overflow:visible}
 }
+
+/* Receipt right column: fluid height, compact summary, unobtrusive scrolling.
+   Override legacy fixed-height rules without affecting other purchase dialogs. */
+.pur-overlay .pur-receipt-modal{
+  height:calc(100dvh - clamp(12px,2.4vw,36px));
+  max-height:calc(100dvh - clamp(12px,2.4vw,36px));
+}
+.pur-receipt-modal .pur-modal-body{display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.pur-receipt-modal .pur-receipt-layout{
+  flex:1 1 auto;
+  height:100%;
+  min-height:0;
+  align-items:stretch;
+  grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);
+}
+.pur-receipt-modal .pur-receipt-side-wrap{
+  min-height:0;
+  min-width:0;
+  overflow:hidden;
+}
+.pur-receipt-modal .pur-receipt-side{
+  flex:1 1 auto;
+  min-height:0;
+  height:100%;
+  overflow-x:hidden;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  scrollbar-width:none;
+  padding-right:2px;
+  gap:clamp(8px,.8vw,12px);
+}
+.pur-receipt-modal .pur-receipt-side::-webkit-scrollbar{display:none}
+.pur-receipt-modal .pur-receipt-side section{
+  flex:0 0 auto;
+  padding:clamp(10px,1vw,14px);
+}
+.pur-receipt-modal .pur-receipt-side h3{margin:0 0 8px;font-size:clamp(15px,1vw,17px)}
+.pur-receipt-modal .pur-receipt-side .pur-receipt-payment-grid{
+  gap:clamp(7px,.65vw,10px);
+  margin:8px 0;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+}
+.pur-receipt-modal .pur-receipt-side .pur-receipt-summary{
+  gap:clamp(5px,.5vw,8px);
+  margin:10px 0 0;
+  font-size:clamp(12px,.85vw,14px);
+}
+.pur-receipt-modal .pur-receipt-side input:not([type=checkbox]),
+.pur-receipt-modal .pur-receipt-side select{height:clamp(34px,2.5vw,40px)}
+.pur-receipt-modal .pur-receipt-side label{gap:5px}
+.pur-receipt-modal footer{position:relative;z-index:1;background:#fff}
+@media(max-width:1050px){
+ .pur-receipt-modal .pur-receipt-layout{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}
+ .pur-receipt-modal .pur-receipt-side .pur-receipt-payment-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:760px){
+ .pur-receipt-modal .pur-modal-body{overflow-y:auto;overflow-x:hidden;scrollbar-width:none}
+ .pur-receipt-modal .pur-modal-body::-webkit-scrollbar{display:none}
+ .pur-receipt-modal .pur-receipt-layout{display:flex;flex-direction:column;height:auto;overflow:visible;flex:none}
+ .pur-receipt-modal .pur-receipt-items-panel{flex:none;min-height:clamp(220px,35dvh,380px)}
+ .pur-receipt-modal .pur-receipt-side-wrap{flex:none;overflow:visible}
+ .pur-receipt-modal .pur-receipt-side{height:auto;overflow:visible}
+}
