@@ -977,3 +977,49 @@
   flex:0 0 auto;
   margin-top:8px;
 }
+
+
+/* Compact embedded keyboard: remove unused vertical space between the
+   character grid and action row. Preserve scrolling for small viewports. */
+.products-page--listing .products-keyboard-container{
+  flex:0 0 auto;
+  height:auto;
+  min-height:0;
+  max-height:min(46%,320px);
+  overflow-y:auto;
+  overflow-x:hidden;
+  margin-bottom:8px;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+}
+.products-page--listing .products-keyboard-container::-webkit-scrollbar{display:none}
+.products-page--listing .products-keyboard-container>.stk-panel{
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  align-content:initial;
+  align-items:stretch;
+  gap:5px;
+  height:auto;
+  min-height:0;
+  max-height:none;
+  overflow:visible;
+  padding:7px;
+}
+.products-page--listing .products-keyboard-container .stk-sinhala-layout{
+  flex:0 0 auto;
+  align-items:start;
+  gap:7px;
+}
+.products-page--listing .products-keyboard-container .stk-footer{
+  flex:0 0 auto;
+  margin-top:0;
+  padding-top:0;
+  gap:5px;
+}
+.products-page--listing .products-keyboard-container .stk-close{
+  flex:0 0 auto;
+}
+@media(max-height:700px){
+  .products-page--listing .products-keyboard-container{max-height:40%}
+}
