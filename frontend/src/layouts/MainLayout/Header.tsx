@@ -201,6 +201,7 @@ function Header({ onMenuClick }: HeaderProps) {
 
   return (
     <AppBar
+      className="pos-themed-header"
       position="static"
       elevation={0}
       color="inherit"
