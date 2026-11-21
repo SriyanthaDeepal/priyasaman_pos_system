@@ -41,9 +41,9 @@ export default function MainLayout({
       // Restore the original POS palette once after the theme migration.
       // Subsequent user selections remain saved normally.
       const versionKey = "priyasaman-pos-theme-version";
-      if (window.localStorage.getItem(versionKey) !== "original-v2") {
+      if (window.localStorage.getItem(versionKey) !== "original-v3") {
         window.localStorage.removeItem("priyasaman-pos-theme");
-        window.localStorage.setItem(versionKey, "original-v2");
+        window.localStorage.setItem(versionKey, "original-v3");
         return defaultPOSTheme;
       }
       const saved = window.localStorage.getItem("priyasaman-pos-theme");
