@@ -12,7 +12,7 @@ import "./ProductsPage.css";
 type Props = { products: InventoryProduct[]; setProducts: Dispatch<SetStateAction<InventoryProduct[]>>; onNotice: (message: string) => void };
 const money = (n:number) => "Rs. "+n.toLocaleString("en-LK",{minimumFractionDigits:2,maximumFractionDigits:2});
 const blank:InventoryProduct = {id:"",name:"",category:"Groceries",barcode:"",unit:"Pack",stock:0,buy:0,sell:0,reorder:10,emoji:"📦",brand:"",description:"",maxStock:0,active:true,images:[]};
-const isValidEan13=(value:string):boolean=>{if(!isValidEan13(value))return false;let sum=0;for(let i=0;i<12;i++)sum+=Number(value[i])*(i%2===0?1:3);return (10-sum%10)%10===Number(value[12]);};
+const isValidEan13=(value:string):boolean=>{if(!/^\d{13}$/.test(value))return false;let sum=0;for(let i=0;i<12;i++)sum+=Number(value[i])*(i%2===0?1:3);return (10-sum%10)%10===Number(value[12]);};
 const makeInternalEan13=(used:Set<string>):string=>{for(let attempt=0;attempt<1000;attempt++){const bytes=new Uint32Array(1);crypto.getRandomValues(bytes);const first12="20"+String(bytes[0]).padStart(10,"0").slice(-10);let sum=0;for(let i=0;i<12;i++)sum+=Number(first12[i])*(i%2===0?1:3);const code=first12+String((10-sum%10)%10);if(!used.has(code))return code;}throw new Error("Unable to generate a unique barcode.");};
 const categories=["Groceries","Beverages","Household","Personal Care","Snacks","Others"];
 const units=["Bag","Bottle","Pack","Piece","Box","Kg","Litre","Gram","Carton","Dozen"];
