@@ -1,5 +1,8 @@
 
 import { useState } from "react";
+import SettingsPage, { defaultPOSTheme } from "../../modules/settings/SettingsPage";
+import type { POSTheme } from "../../modules/settings/SettingsPage";
+import "./theme.css";
 import InventoryPage, { initialInventory } from "../../modules/inventory/InventoryPage";
 import type { InventoryProduct, InventoryView } from "../../modules/inventory/InventoryPage";
 import type { ReactNode } from "react";
@@ -33,6 +36,23 @@ export default function MainLayout({
      ACTIVE PAGE
      ========================================== */
 
+  const [theme, setTheme] = useState<POSTheme>(() => {
+    try {
+      const saved = window.localStorage.getItem("priyasaman-pos-theme");
+      if (saved) {
+        const parsed: unknown = JSON.parse(saved);
+        if (parsed && typeof parsed === "object" && "primary" in parsed && "accent" in parsed) {
+          const value = parsed as POSTheme;
+          if (/^#[0-9a-fA-F]{6}$/.test(value.primary) && /^#[0-9a-fA-F]{6}$/.test(value.accent)) return value;
+        }
+      }
+    } catch { /* Use default theme when local storage is unavailable. */ }
+    return defaultPOSTheme;
+  });
+  const saveTheme = (value: POSTheme) => {
+    setTheme(value);
+    try { window.localStorage.setItem("priyasaman-pos-theme", JSON.stringify(value)); } catch { /* Continue with in-memory theme. */ }
+  };
   const [inventoryProducts, setInventoryProducts] = useState<InventoryProduct[]>(initialInventory);
   const [activePage, setActivePage] =
     useState<SidebarPage>("dashboard");
@@ -87,6 +107,9 @@ export default function MainLayout({
       case "customers":
         return <CustomersPage onNotice={setFeedback} />;
 
+      case "settings":
+        return <SettingsPage theme={theme} onSave={saveTheme} />;
+
       case "reports":
         return <ReportsPage onNotice={setFeedback} />;
 
@@ -103,6 +126,14 @@ export default function MainLayout({
 
   return (
     <Box
+      className="pos-themed-root"
+      style={{
+        ["--pos-primary" as string]: theme.primary,
+        ["--pos-accent" as string]: theme.accent,
+        ["--pos-button" as string]: theme.button ?? theme.primary,
+        ["--pos-header" as string]: theme.header ?? `color-mix(in srgb, ${theme.primary} 11%, white)`,
+        ["--pos-soft" as string]: `color-mix(in srgb, ${theme.primary} 8%, white)`,
+      }}
       sx={{
         display: "flex",
         width: "100%",
