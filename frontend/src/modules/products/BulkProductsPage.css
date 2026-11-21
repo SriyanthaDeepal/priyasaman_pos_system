@@ -90,3 +90,90 @@
  font-weight:700;
 }
 .bulk-table-scroll tr.bulk-invalid td.bulk-missing-cell{background:#ffe2e2}
+
+
+/* Adaptive bulk products workspace: desktop monitors, laptops and tablets.
+   Keep the full product dataset accessible by horizontal table scrolling. */
+.bulk-page{
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  min-height:0;
+  box-sizing:border-box;
+  container-type:inline-size;
+  gap:clamp(6px,1vh,12px);
+  padding:clamp(8px,1vw,18px);
+}
+.bulk-header{min-width:0;column-gap:12px;row-gap:8px}
+.bulk-header>div:first-child{flex:1 1 250px;min-width:0}
+.bulk-header .bulk-actions{display:flex;flex:0 1 auto;flex-wrap:wrap;justify-content:flex-end}
+.bulk-header h1{font-size:clamp(19px,1.6vw,27px);line-height:1.2}
+.bulk-progress{min-width:0;gap:clamp(3px,.6vw,8px)}
+.bulk-progress span{min-width:0;padding:clamp(6px,.7vw,10px) 4px;overflow-wrap:anywhere}
+.bulk-workspace{min-width:0;min-height:0;padding:clamp(7px,.8vw,12px)}
+.bulk-toolbar{display:flex;align-items:center;gap:7px}
+.bulk-toolbar>input:not([type=file]){flex:1 1 220px;min-width:140px}
+.bulk-toolbar button{flex:0 0 auto}
+.bulk-table-scroll{width:100%;max-width:100%;overflow-x:auto;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#b9c9d3 transparent}
+.bulk-table-scroll::-webkit-scrollbar{display:block;width:7px;height:8px}
+.bulk-table-scroll::-webkit-scrollbar-thumb{background:#b9c9d3;border-radius:6px}
+.bulk-table-scroll table{width:max-content;min-width:100%;font-size:clamp(11px,.72vw,12px)}
+.bulk-table-scroll th,.bulk-table-scroll td{padding:clamp(7px,.65vw,11px) clamp(6px,.5vw,9px)}
+.bulk-table-scroll th:nth-last-child(2),.bulk-table-scroll td:nth-last-child(2){min-width:170px;max-width:300px;white-space:normal;overflow-wrap:anywhere}
+.bulk-table-scroll th:last-child,.bulk-table-scroll td:last-child{position:sticky;right:0;background:#fff;box-shadow:-1px 0 #e2e8f0;z-index:1}
+.bulk-table-scroll thead th:last-child{background:#eef2f6;z-index:3}
+.bulk-table-scroll tr.bulk-invalid td:last-child{background:#fff1f1}
+.bulk-footer{min-width:0;gap:8px}
+.bulk-footer>.bulk-actions{display:flex;justify-content:flex-end;flex-wrap:wrap;min-width:0}
+.bulk-overlay{padding:0;box-sizing:border-box}
+.bulk-wizard{width:clamp(390px,37vw,610px);max-width:100%;min-width:0;box-sizing:border-box}
+.bulk-wizard header,.bulk-wizard footer{gap:8px;padding:clamp(10px,1.1vw,18px)}
+.bulk-wizard header>div{min-width:0}
+.bulk-wizard header h2{font-size:clamp(18px,1.35vw,22px);overflow-wrap:anywhere}
+.bulk-wizard-body{padding:clamp(12px,1.3vw,22px);overscroll-behavior:contain;scrollbar-width:thin}
+.bulk-step-track{margin:10px 0 clamp(14px,2vh,32px)}
+.bulk-question{min-width:0}
+.bulk-input-row{min-width:0;flex-wrap:wrap}
+.bulk-input-row input{flex:1 1 170px}
+.bulk-input-row button{flex:0 0 auto}
+.bulk-wizard footer>div{display:flex;flex-wrap:wrap;justify-content:flex-end}
+.bulk-wizard .bulk-keyboard .stk-sinhala-layout{min-width:0}
+.bulk-wizard .bulk-keyboard .stk-letter-grid,
+.bulk-wizard .bulk-keyboard .stk-form-grid{min-width:0}
+.bulk-wizard .bulk-keyboard .stk-key{min-width:0}
+.bulk-barcode-preview{max-width:100%;overflow-x:auto}
+
+@container (max-width:1000px){
+ .bulk-header .bulk-actions{justify-content:flex-start}
+ .bulk-header{align-items:flex-start}
+ .bulk-toolbar>input:not([type=file]){flex-basis:100%}
+ .bulk-toolbar{justify-content:flex-start}
+ .bulk-footer{align-items:flex-start}
+}
+@container (max-width:650px){
+ .bulk-header>div:first-child{flex-basis:100%}
+ .bulk-header .bulk-actions{width:100%;justify-content:flex-start}
+ .bulk-header .bulk-actions button{flex:1 1 auto}
+ .bulk-progress span{font-size:10px;line-height:1.2}
+ .bulk-toolbar button{flex:1 1 auto}
+ .bulk-footer>.bulk-actions{width:100%;justify-content:stretch}
+ .bulk-footer>.bulk-actions button{flex:1 1 auto}
+ .bulk-table-scroll table{font-size:11px}
+}
+@media (max-width:900px){
+ .bulk-wizard{width:min(540px,75vw)}
+}
+@media (max-width:650px){
+ .bulk-wizard{width:min(100%,520px)}
+}
+@media (max-height:720px){
+ .bulk-page{gap:6px;padding:8px}
+ .bulk-header h1{margin:1px 0}
+ .bulk-progress span{padding:6px 4px}
+ .bulk-workspace{padding:8px}
+ .bulk-toolbar{margin-bottom:6px}
+ .bulk-footer{padding-top:7px}
+ .bulk-wizard header,.bulk-wizard footer{padding:9px 14px}
+ .bulk-wizard-body{padding:12px 14px}
+ .bulk-step-track{margin:8px 0 14px}
+}
