@@ -181,3 +181,32 @@
 @media(max-width:650px){
  .pur-entry-main .pur-request-list .pur-request-line{grid-template-columns:minmax(0,1fr) minmax(125px,155px) 40px}
 }
+
+
+/* Receiving goods and supplier bill dialog */
+.pur-receipt-modal{width:min(1450px,calc(100vw - 36px));max-width:none;height:min(850px,calc(100dvh - 42px));display:flex;flex-direction:column;overflow:hidden}
+.pur-receipt-modal .pur-modal-body{flex:1 1 auto;min-height:0;overflow-y:auto;padding:20px 24px;scrollbar-width:none}
+.pur-receipt-modal .pur-modal-body::-webkit-scrollbar,.pur-receipt-table-wrap::-webkit-scrollbar{display:none}
+.pur-receipt-modal header,.pur-receipt-modal footer{flex:0 0 auto}
+.pur-receipt-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:16px}
+.pur-receipt-head label{flex:0 1 370px}
+.pur-receipt-head p{flex:1;color:#617087;font-size:13px;line-height:1.5;margin:0}
+.pur-receipt-modal label{display:flex;flex-direction:column;gap:7px;font-size:13px;font-weight:600;color:#18263c}
+.pur-receipt-modal input:not([type=checkbox]),.pur-receipt-modal select{box-sizing:border-box;width:100%;height:40px;border:1px solid #cfdae9;border-radius:8px;background:#fff;padding:8px 10px;color:#142238;font:inherit;min-width:0}
+.pur-receipt-table-wrap{overflow:auto;max-height:40%;scrollbar-width:none;border:1px solid #dce6ee;border-radius:10px}
+.pur-receipt-table{width:100%;border-collapse:collapse;min-width:850px;font-size:13px}
+.pur-receipt-table th{position:sticky;top:0;background:#edf2f6;text-align:left;padding:12px 10px;white-space:nowrap;z-index:1}
+.pur-receipt-table td{border-top:1px solid #e5eaf0;padding:9px 10px;vertical-align:middle}
+.pur-receipt-table td:first-child{text-align:center}
+.pur-receipt-table input[type=checkbox]{width:19px;height:19px;accent-color:#008528;cursor:pointer}
+.pur-receipt-table td input[type=number]{width:110px}
+.pur-receipt-bottom{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;margin-top:18px}
+.pur-receipt-bottom section{border:1px solid #dce6ee;border-radius:12px;padding:16px;min-width:0}
+.pur-receipt-bottom h3{margin:0 0 14px;color:#075c26;font-size:17px}
+.pur-receipt-bottom small{display:block;margin-top:10px;color:#68788d;line-height:1.5}
+.pur-receipt-payment-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin:12px 0}
+.pur-receipt-summary{display:grid;grid-template-columns:1fr auto;gap:10px;margin:14px 0 0;font-size:14px}
+.pur-receipt-summary dt{color:#57677d}.pur-receipt-summary dd{margin:0;text-align:right;font-variant-numeric:tabular-nums}
+.pur-receipt-summary dt:last-of-type,.pur-receipt-summary dd:last-of-type{color:#00732a;background:#e5f9e9;padding:10px;border-radius:6px}
+.pur-receipt-error{color:#bd2020;background:#fff0f0;border:1px solid #f4b9b9;border-radius:8px;padding:10px;margin:14px 0 0}
+@media(max-width:850px){.pur-receipt-bottom{grid-template-columns:1fr}.pur-receipt-head{flex-direction:column;align-items:stretch}.pur-receipt-head label{flex:auto}.pur-receipt-table-wrap{max-height:36dvh}}
