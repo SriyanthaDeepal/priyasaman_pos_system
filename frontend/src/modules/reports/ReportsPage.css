@@ -19,3 +19,14 @@
 .rpt-kpis:not(.rpt-audit-kpis){grid-template-columns:repeat(4,minmax(0,1fr))}
 @media(max-width:1350px){.rpt-kpis:not(.rpt-audit-kpis){grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:580px){.rpt-kpis:not(.rpt-audit-kpis){grid-template-columns:minmax(0,1fr)}}
+
+/* Compact, adaptive report KPI cards */
+.rpt-kpis:not(.rpt-audit-kpis) .rpt-kpi{min-height:0;padding:clamp(10px,1vw,15px);gap:clamp(8px,.9vw,12px);grid-template-columns:clamp(32px,2.6vw,42px) minmax(0,1fr)}
+.rpt-kpis:not(.rpt-audit-kpis) .rpt-kpi-icon{width:clamp(32px,2.6vw,42px);font-size:clamp(24px,2vw,32px)}
+.rpt-kpis:not(.rpt-audit-kpis) .rpt-kpi strong{margin:3px 0;font-size:clamp(16px,1.3vw,22px);overflow-wrap:anywhere}
+.rpt-kpis:not(.rpt-audit-kpis) .rpt-kpi>div{align-self:center}
+.rpt-kpis:not(.rpt-audit-kpis) .rpt-kpi.amber .rpt-kpi-icon{color:#e08a00}
+.rpt-kpis:not(.rpt-audit-kpis) .rpt-kpi.pink .rpt-kpi-icon{color:#e52e55}
+.rpt-kpis:not(.rpt-audit-kpis) .rpt-kpi.blue .rpt-kpi-icon{color:#087ce0}
+@media(max-width:850px){.rpt-kpis:not(.rpt-audit-kpis){grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.rpt-kpis:not(.rpt-audit-kpis){grid-template-columns:minmax(0,1fr)}}
