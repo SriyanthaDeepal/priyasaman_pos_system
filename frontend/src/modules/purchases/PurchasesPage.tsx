@@ -54,7 +54,7 @@ export default function PurchasesPage({ products, onNotice }: Props) {
   const [receiptError, setReceiptError] = useState("");
   const openReceiving = () => {
     if (!selected || selected.status === "Completed" || selected.status === "Cancelled") return;
-    setReceiptLines(selected.lines.map(l => ({ ...l, receivedQty: l.receivedQty ?? 0, sellingPrice: l.sellingPrice ?? products.find(p => p.id === l.productId)?.sell ?? 0 })));
+    setReceiptLines(selected.lines.map(l => ({ ...l, receivedQty: l.receivedQty ?? 0, returnQty: 0, sellingPrice: l.sellingPrice ?? products.find(p => p.id === l.productId)?.sell ?? 0 })));
     setReceiptDiscount(selected.discount); setReceiptTax(selected.tax);
     setReceiptAmounts({cash:0,cheque:0,bank:0}); setReceiptMethod("Cash"); setChequeDate(""); setReceiptInvoice(selected.invoiceNumber ?? ""); setReceiptError(""); setReceiving(true);
   };
@@ -72,7 +72,7 @@ export default function PurchasesPage({ products, onNotice }: Props) {
     if (![receiptDiscount,receiptTax].every(v=>Number.isFinite(v)&&v>=0)) {setReceiptError("Enter valid discount and tax amounts.");return;}
     if ([receiptAmounts.cash,receiptAmounts.cheque,receiptAmounts.bank].some(v=>!Number.isFinite(v)||v<0) || receiptPaid+receiptPendingCheques>receiptTotal-receiptPreviouslyPaid+0.001) {setReceiptError("Payment amounts must be valid and cannot exceed the outstanding balance.");return;}
     if (receiptAmounts.cheque>0&&!chequeDate) {setReceiptError("Enter the cheque date.");return;}
-    const allReceived=receiptLines.every(l=>(l.receivedQty??0)+(l.returnQty??0)>=l.qty);
+    const allReceived=receiptLines.every(l=>(l.receivedQty??0)>=l.qty && (l.returnQty??0)===0);
     const nextPayments=[...(selected.payments??[]),...([["Cash",receiptAmounts.cash],["Cheque",receiptAmounts.cheque],["Bank Transfer",receiptAmounts.bank]] as const).filter(([,amount])=>amount>0).map(([method,amount])=>({method,amount,chequeDate:method==="Cheque"?chequeDate:undefined,status:method==="Cheque"?"Pending" as const:"Cleared" as const}))];
     setOrders(old=>old.map(o=>o.id===selected.id?{...o,lines:receiptLines,discount:receiptDiscount,tax:receiptTax,invoiceNumber:receiptInvoice,paidAmount:receiptPreviouslyPaid+receiptAmounts.cash+receiptAmounts.bank,payments:nextPayments,status:allReceived?"Completed":"Partially Received",payment:receiptBalance<0.005?"Paid":receiptPreviouslyPaid+receiptAmounts.cash+receiptAmounts.bank>0?"Partial":"Pending"}:o));
     setReceiving(false);onNotice("Receipt saved for this demo session. Inventory and supplier ledger are not yet connected.");
