@@ -143,3 +143,56 @@
  .sup-content{grid-template-columns:minmax(0,1fr)}
 }
 @container (max-width:400px){.sup-kpis{grid-template-columns:minmax(0,1fr)}}
+
+
+/* Keep both supplier workspace cards equal height without fixed pixel heights.
+   At narrow container widths the cards stack and size naturally. */
+.sup-content{
+  display:grid;
+  grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);
+  align-items:stretch;
+  grid-auto-rows:auto;
+  flex:0 0 auto;
+}
+.sup-list-panel{
+  display:flex;
+  flex-direction:column;
+  height:100%;
+  min-height:0;
+}
+.sup-list-panel .sup-table-scroll{
+  flex:1 1 auto;
+  max-height:none;
+  min-height:0;
+  overflow:auto;
+}
+.sup-list-panel .sup-pagination{
+  margin-top:auto;
+  flex-shrink:0;
+}
+.sup-detail-panel{
+  height:100%;
+  min-height:0;
+  max-height:none;
+  overflow:visible;
+}
+@container (max-width:1180px){
+  .sup-content{
+    grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);
+    align-items:stretch;
+  }
+}
+@container (max-width:980px){
+  .sup-content{
+    grid-template-columns:minmax(0,1fr);
+    align-items:start;
+  }
+  .sup-list-panel,.sup-detail-panel{
+    height:auto;
+    min-height:0;
+  }
+  .sup-list-panel .sup-table-scroll{
+    flex:0 1 auto;
+    max-height:min(48dvh,480px);
+  }
+}
