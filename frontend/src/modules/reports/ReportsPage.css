@@ -14,3 +14,8 @@
 @media(max-width:1500px){.rpt-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:1050px){.rpt-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:580px){.rpt-kpis{grid-template-columns:minmax(0,1fr)}}
+
+/* Four balanced sales KPI cards; audit and other report cards retain auto-fit layouts. */
+.rpt-kpis:not(.rpt-audit-kpis){grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:1350px){.rpt-kpis:not(.rpt-audit-kpis){grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:580px){.rpt-kpis:not(.rpt-audit-kpis){grid-template-columns:minmax(0,1fr)}}
