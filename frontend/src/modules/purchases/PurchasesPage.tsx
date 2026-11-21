@@ -8,8 +8,8 @@ import "./PurchasesPage.css";
 
 type Status = "Pending" | "Partially Received" | "Completed" | "Cancelled";
 type Payment = "Pending" | "Partial" | "Paid";
-type PurchaseLine = { productId: string; name: string; qty: number; unitPrice: number };
-type Purchase = { id: string; supplier: string; date: string; expected: string; status: Status; payment: Payment; lines: PurchaseLine[]; discount: number; tax: number };
+type PurchaseLine = { productId: string; name: string; qty: number; unitPrice: number; receivedQty?: number; sellingPrice?: number };
+type Purchase = { id: string; supplier: string; date: string; expected: string; status: Status; payment: Payment; lines: PurchaseLine[]; discount: number; tax: number; paidAmount?: number; invoiceNumber?: string; payments?: {method:string;amount:number;chequeDate?:string}[] };
 type Props = { products: InventoryProduct[]; onNotice: (message: string) => void };
 const formatMoney = (n: number) => "Rs. " + n.toLocaleString("en-LK", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const subtotal = (p: Purchase) => p.lines.reduce((sum, line) => sum + line.qty * line.unitPrice, 0);
@@ -37,6 +37,38 @@ export default function PurchasesPage({ products, onNotice }: Props) {
   const [draft, setDraft] = useState(newDraft);
   const [addProduct, setAddProduct] = useState("");
   const [paymentView, setPaymentView] = useState(false);
+  const [receiving, setReceiving] = useState(false);
+  const [receiptLines, setReceiptLines] = useState<PurchaseLine[]>([]);
+  const [receiptMethod, setReceiptMethod] = useState("Cash");
+  const [receiptAmounts, setReceiptAmounts] = useState({ cash: 0, cheque: 0, bank: 0 });
+  const [chequeDate, setChequeDate] = useState("");
+  const [receiptDiscount, setReceiptDiscount] = useState(0);
+  const [receiptTax, setReceiptTax] = useState(0);
+  const [receiptInvoice, setReceiptInvoice] = useState("");
+  const [receiptError, setReceiptError] = useState("");
+  const openReceiving = () => {
+    if (!selected || selected.status === "Completed" || selected.status === "Cancelled") return;
+    setReceiptLines(selected.lines.map(l => ({ ...l, receivedQty: l.receivedQty ?? 0, sellingPrice: l.sellingPrice ?? products.find(p => p.id === l.productId)?.sell ?? 0 })));
+    setReceiptDiscount(selected.discount); setReceiptTax(selected.tax);
+    setReceiptAmounts({cash:0,cheque:0,bank:0}); setReceiptMethod("Cash"); setChequeDate(""); setReceiptInvoice(selected.invoiceNumber ?? ""); setReceiptError(""); setReceiving(true);
+  };
+  const receiptSubtotal = receiptLines.reduce((n,l)=>n+l.qty*l.unitPrice,0);
+  const receiptTotal = Math.max(0,receiptSubtotal-receiptDiscount+receiptTax);
+  const receiptPaid = receiptAmounts.cash + receiptAmounts.cheque + receiptAmounts.bank;
+  const receiptPreviouslyPaid = selected?.paidAmount ?? 0;
+  const receiptBalance = Math.max(0,receiptTotal-receiptPreviouslyPaid-receiptPaid);
+  const saveReceipt = () => {
+    if (!selected) return;
+    if (receiptLines.some(l=>!Number.isFinite(l.unitPrice)||l.unitPrice<0||!Number.isFinite(l.sellingPrice)||(l.sellingPrice??0)<0||!Number.isInteger(l.receivedQty)||(l.receivedQty??0)<0||(l.receivedQty??0)>l.qty)) {setReceiptError("Enter valid prices and received quantities (not greater than ordered).");return;}
+    if (!receiptLines.some(l=>(l.receivedQty??0)>0)) {setReceiptError("Tick at least one received item and enter its received quantity.");return;}
+    if (![receiptDiscount,receiptTax].every(v=>Number.isFinite(v)&&v>=0)) {setReceiptError("Enter valid discount and tax amounts.");return;}
+    if ([receiptAmounts.cash,receiptAmounts.cheque,receiptAmounts.bank].some(v=>!Number.isFinite(v)||v<0) || receiptPaid>receiptTotal-receiptPreviouslyPaid+0.001) {setReceiptError("Payment amounts must be valid and cannot exceed the outstanding balance.");return;}
+    if (receiptAmounts.cheque>0&&!chequeDate) {setReceiptError("Enter the cheque date.");return;}
+    const allReceived=receiptLines.every(l=>(l.receivedQty??0)>=l.qty);
+    const nextPayments=[...(selected.payments??[]),...([["Cash",receiptAmounts.cash],["Cheque",receiptAmounts.cheque],["Bank Transfer",receiptAmounts.bank]] as const).filter(([,amount])=>amount>0).map(([method,amount])=>({method,amount,chequeDate:method==="Cheque"?chequeDate:undefined}))];
+    setOrders(old=>old.map(o=>o.id===selected.id?{...o,lines:receiptLines,discount:receiptDiscount,tax:receiptTax,invoiceNumber:receiptInvoice,paidAmount:receiptPreviouslyPaid+receiptPaid,payments:nextPayments,status:allReceived?"Completed":"Partially Received",payment:receiptBalance<0.005?"Paid":receiptPreviouslyPaid+receiptPaid>0?"Partial":"Pending"}:o));
+    setReceiving(false);onNotice("Receipt saved for this demo session. Inventory and supplier ledger are not yet connected.");
+  };
   const [keyboardOpen, setKeyboardOpen] = useState(false);
   const [scannerOpen, setScannerOpen] = useState(false);
   const [productSearch, setProductSearch] = useState("");
@@ -60,7 +92,7 @@ export default function PurchasesPage({ products, onNotice }: Props) {
   };
   const print = () => { window.print(); };
   const exportPdf = () => { onNotice("PDF export will be connected when the purchase document workflow is implemented."); };
-  const receive = () => { onNotice("Receiving stock requires a confirmed goods-received workflow. Inventory has not been changed."); };
+  const receive = openReceiving;
   return <div className="pur-page">
     <div className="pur-heading"><div><div className="pur-title"><LocalShippingOutlined /><div><h1>Purchases Management</h1><p>Create, manage and track purchase orders from suppliers.</p></div></div></div><div className="pur-heading-actions"><button onClick={() => setPaymentView(true)}><PaymentsOutlined /> Supplier Payments</button><button className="pur-primary" onClick={() => setEditorOpen(true)}><Add /> New Purchase (F2)</button></div></div>
     <div className="pur-kpis">
