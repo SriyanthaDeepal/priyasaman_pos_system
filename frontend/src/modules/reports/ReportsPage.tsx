@@ -1,3 +1,4 @@
+// Reports module build-refresh marker: verified TSX/CSS separation.
 import { useMemo, useState } from "react";
 import { ShoppingCartOutlined, PaidOutlined, PercentOutlined, TrendingUpOutlined, FactCheckOutlined, WarningAmberOutlined, HighlightOffOutlined, InventoryOutlined } from "@mui/icons-material";
 import "./ReportsPage.css";
