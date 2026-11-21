@@ -15,6 +15,7 @@ import FeedbackSnackbar from "../../components/common/FeedbackSnackbar";
 import POSPage from "../../modules/pos/POSPage";
 import ProductsPage from "../../modules/products/ProductsPage";
 import PurchasesPage from "../../modules/purchases/PurchasesPage";
+import SuppliersPage from "../../modules/suppliers/SuppliersPage";
 import SalesPage from "../../modules/sales/SalesPage";
 import ReturnExchangePage from "../../modules/sales/ReturnExchangePage";
 import type { ExchangeSale } from "../../modules/sales/ReturnExchangePage";
@@ -77,6 +78,9 @@ export default function MainLayout({
 
       case "products":
         return <ProductsPage products={inventoryProducts} setProducts={setInventoryProducts} onNotice={setFeedback} />;
+
+      case "suppliers":
+        return <SuppliersPage onNotice={setFeedback} />;
 
       case "purchases":
         return <PurchasesPage products={inventoryProducts} onNotice={setFeedback} />;
