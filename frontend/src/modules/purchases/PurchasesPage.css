@@ -553,3 +553,137 @@
  .pur-receipt-modal .pur-receipt-invoice label{flex-wrap:wrap;white-space:normal}
  .pur-receipt-modal .pur-receipt-invoice label input{max-width:none}
 }
+
+/* Responsive receiving workspace: fluid shell, independent scroll regions,
+   and a stacked layout before either column becomes cramped. */
+.pur-overlay:has(.pur-receipt-modal){
+  padding:clamp(6px,1vw,16px);
+}
+.pur-overlay .pur-receipt-modal{
+  width:100%;
+  max-width:1800px;
+  height:calc(100dvh - 2 * clamp(6px,1vw,16px));
+  max-height:1100px;
+  min-height:0;
+}
+.pur-receipt-modal .pur-modal-body{
+  min-height:0;
+  padding:clamp(7px,.8vw,13px);
+}
+.pur-receipt-modal .pur-receipt-layout{
+  grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);
+  gap:clamp(8px,1vw,16px);
+  min-height:0;
+}
+.pur-receipt-modal .pur-receipt-items-panel,
+.pur-receipt-modal .pur-receipt-side-wrap{
+  min-width:0;
+  min-height:0;
+}
+.pur-receipt-modal .pur-receipt-table-wrap{
+  overflow:auto;
+  min-width:0;
+  overscroll-behavior:contain;
+}
+.pur-receipt-modal .pur-receipt-table{
+  min-width:680px;
+  width:100%;
+}
+.pur-receipt-modal .pur-receipt-side{
+  min-height:0;
+  overflow-y:auto;
+  overflow-x:hidden;
+  overscroll-behavior:contain;
+}
+.pur-receipt-modal .pur-receipt-side section{
+  min-width:0;
+}
+.pur-receipt-modal .pur-receipt-side .pur-receipt-summary{
+  grid-template-columns:minmax(0,1fr) auto;
+}
+.pur-receipt-modal .pur-receipt-side .pur-receipt-summary dd{
+  min-width:0;
+  overflow-wrap:anywhere;
+  text-align:right;
+}
+.pur-receipt-modal .pur-receipt-invoice label{
+  flex-wrap:wrap;
+}
+.pur-receipt-modal .pur-receipt-invoice label input{
+  min-width:0;
+}
+@media(max-width:1180px){
+  .pur-receipt-modal .pur-receipt-layout{
+    grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);
+  }
+  .pur-receipt-modal .pur-receipt-side .pur-receipt-payment-grid{
+    grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));
+  }
+}
+@media(max-width:900px){
+  .pur-receipt-modal .pur-modal-body{
+    display:block;
+    overflow-x:hidden;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    scrollbar-width:none;
+  }
+  .pur-receipt-modal .pur-modal-body::-webkit-scrollbar{display:none}
+  .pur-receipt-modal .pur-receipt-layout{
+    display:flex;
+    flex-direction:column;
+    height:auto;
+    min-height:0;
+    overflow:visible;
+    align-items:stretch;
+  }
+  .pur-receipt-modal .pur-receipt-items-panel,
+  .pur-receipt-modal .pur-receipt-side-wrap{
+    flex:0 0 auto;
+    min-height:0;
+    overflow:visible;
+  }
+  .pur-receipt-modal .pur-receipt-table-wrap{
+    flex:none;
+    max-height:clamp(180px,34dvh,400px);
+    overflow:auto;
+  }
+  .pur-receipt-modal .pur-receipt-side{
+    flex:none;
+    height:auto;
+    overflow:visible;
+  }
+  .pur-receipt-modal .pur-receipt-side .pur-receipt-payment-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
+@media(max-width:540px){
+  .pur-receipt-modal header,.pur-receipt-modal footer{
+    padding:8px 10px;
+  }
+  .pur-receipt-modal header h2{
+    font-size:clamp(16px,4.3vw,20px);
+  }
+  .pur-receipt-modal footer{
+    flex-wrap:wrap;
+    gap:6px;
+  }
+  .pur-receipt-modal footer button{
+    min-width:0;
+    padding:8px 10px;
+  }
+  .pur-receipt-modal .pur-receipt-side .pur-receipt-payment-grid{
+    grid-template-columns:1fr;
+  }
+  .pur-receipt-modal .pur-receipt-invoice label{
+    white-space:normal;
+  }
+  .pur-receipt-modal .pur-receipt-invoice label input{
+    flex:1 1 100%;
+    max-width:none;
+  }
+}
+@media(max-height:540px) and (min-width:901px){
+  .pur-receipt-modal header,.pur-receipt-modal footer{padding-block:6px}
+  .pur-receipt-modal .pur-modal-body{padding-block:5px}
+}
