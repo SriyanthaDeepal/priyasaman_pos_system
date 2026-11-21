@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Add, DownloadOutlined, UploadOutlined, GroupsOutlined, ShoppingCartOutlined, AccessTimeOutlined, PaidOutlined, WarningAmberOutlined, Search, LocalOfferOutlined, EditOutlined, DeleteOutlined, PersonOutlined, PhoneOutlined, EmailOutlined, PlaceOutlined, BarChartOutlined, ReceiptLongOutlined, CreditCardOutlined, ArrowBackIosNew, ArrowForwardIos, Close } from "@mui/icons-material";
+import { Add, DownloadOutlined, UploadOutlined, GroupsOutlined, ShoppingCartOutlined, AccessTimeOutlined, PaidOutlined, WarningAmberOutlined, Search,  EditOutlined, DeleteOutlined, PersonOutlined, PhoneOutlined, EmailOutlined, PlaceOutlined, BarChartOutlined, ReceiptLongOutlined, CreditCardOutlined, ArrowBackIosNew, ArrowForwardIos, Close } from "@mui/icons-material";
 import "./SuppliersPage.css";
 
 type Supplier = {id:string;name:string;category:string;contact:string;phone:string;email:string;address:string;active:boolean};
