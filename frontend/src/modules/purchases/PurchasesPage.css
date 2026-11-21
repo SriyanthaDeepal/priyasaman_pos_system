@@ -210,3 +210,31 @@
 .pur-receipt-summary dt:last-of-type,.pur-receipt-summary dd:last-of-type{color:#00732a;background:#e5f9e9;padding:10px;border-radius:6px}
 .pur-receipt-error{color:#bd2020;background:#fff0f0;border:1px solid #f4b9b9;border-radius:8px;padding:10px;margin:14px 0 0}
 @media(max-width:850px){.pur-receipt-bottom{grid-template-columns:1fr}.pur-receipt-head{flex-direction:column;align-items:stretch}.pur-receipt-head label{flex:auto}.pur-receipt-table-wrap{max-height:36dvh}}
+
+/* Receiving layout: compact one-line items at left, invoice and payment at right */
+.pur-receipt-modal .pur-modal-body{display:flex;flex-direction:column;overflow:hidden;min-height:0;padding:14px 16px}
+.pur-receipt-layout{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(320px,1fr);gap:14px;flex:1;min-height:0}
+.pur-receipt-items-panel{display:flex;flex-direction:column;min-width:0;min-height:0}
+.pur-receipt-head{align-items:center;gap:12px;margin-bottom:10px}
+.pur-receipt-head label{flex:0 1 290px}
+.pur-receipt-head p{font-size:12px}
+.pur-receipt-table-wrap{flex:1;min-height:0;max-height:none;overflow:auto}
+.pur-receipt-table{min-width:690px;width:100%;table-layout:fixed;font-size:12px}
+.pur-receipt-table th,.pur-receipt-table td{padding:7px 5px;line-height:1.3}
+.pur-receipt-table th:nth-child(1){width:8%}
+.pur-receipt-table th:nth-child(2){width:23%}
+.pur-receipt-table th:nth-child(3){width:9%}
+.pur-receipt-table th:nth-child(4){width:14%}
+.pur-receipt-table th:nth-child(5){width:15%}
+.pur-receipt-table th:nth-child(6){width:16%}
+.pur-receipt-table th:nth-child(7){width:15%}
+.pur-receipt-table td:nth-child(2){overflow-wrap:anywhere}
+.pur-receipt-table td:nth-child(3),.pur-receipt-table td:nth-child(7){white-space:nowrap}
+.pur-receipt-table td input[type=number]{width:100%;min-width:0;height:34px;padding:5px 6px}
+.pur-receipt-side{display:flex;flex-direction:column;gap:12px;min-width:0;min-height:0;overflow:auto;scrollbar-width:none}
+.pur-receipt-side::-webkit-scrollbar{display:none}
+.pur-receipt-side section{border:1px solid #dce6ee;border-radius:12px;padding:14px;min-width:0}
+.pur-receipt-side h3{margin:0 0 12px;color:#075c26;font-size:17px}
+.pur-receipt-side small{display:block;margin-top:10px;color:#68788d;line-height:1.5}
+@media(max-width:1050px){.pur-receipt-layout{grid-template-columns:minmax(0,1.45fr) minmax(290px,1fr)}.pur-receipt-head{flex-direction:column;align-items:stretch}.pur-receipt-head label{flex:auto}}
+@media(max-width:760px){.pur-receipt-modal .pur-modal-body{overflow:auto}.pur-receipt-layout{display:flex;flex-direction:column;min-height:600px}.pur-receipt-items-panel{min-height:300px}.pur-receipt-side{overflow:visible}.pur-receipt-table-wrap{min-height:240px}}
