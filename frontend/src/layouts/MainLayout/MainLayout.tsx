@@ -150,7 +150,7 @@ export default function MainLayout({
             boxShadow: "none",
             bgcolor: "#fbfcfe",
             overflowX: "hidden",
-            overflowY: "auto",
+            overflowY: activePage === "products" ? "hidden" : "auto",
           }}
         >
           {renderPage()}
