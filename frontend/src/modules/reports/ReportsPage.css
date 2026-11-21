@@ -57,3 +57,78 @@
 .rpt-kpis.rpt-audit-kpis .rpt-kpi.green .rpt-kpi-icon{color:#008b35}
 @media(max-width:1350px){.rpt-kpis.rpt-audit-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:580px){.rpt-kpis.rpt-audit-kpis{grid-template-columns:minmax(0,1fr)}}
+
+
+/* Responsive report shell: measure available content width, not browser viewport. */
+.rpt-page{container-type:inline-size;width:100%;max-width:100%;min-width:0;overflow-x:clip}
+.rpt-page :is(.rpt-heading,.rpt-heading-name,.rpt-actions,.rpt-tabs,.rpt-kpis,.rpt-charts,.rpt-bottom,.rpt-card,.rpt-category,.rpt-financial-layout,.rpt-financial-detail,.rpt-card-title,.rpt-filters){min-width:0;max-width:100%}
+.rpt-heading-name{flex:1 1 290px}
+.rpt-heading-name>div{min-width:0}
+.rpt-heading-name p{overflow-wrap:anywhere}
+.rpt-actions{flex:0 1 auto;justify-content:flex-end}
+.rpt-actions select{max-width:min(100%,350px);text-overflow:ellipsis}
+.rpt-tabs{grid-template-columns:repeat(7,minmax(0,1fr))}
+.rpt-tabs button{white-space:normal;overflow-wrap:anywhere;line-height:1.25;min-height:46px}
+.rpt-tabs button span{flex:none}
+.rpt-kpis,.rpt-kpis:not(.rpt-audit-kpis),.rpt-kpis.rpt-audit-kpis{grid-template-columns:repeat(4,minmax(0,1fr))}
+.rpt-kpi,.rpt-kpis:not(.rpt-audit-kpis) .rpt-kpi,.rpt-kpis.rpt-audit-kpis .rpt-kpi{min-width:0;min-height:76px;grid-template-columns:clamp(30px,3cqw,42px) minmax(0,1fr)}
+.rpt-kpi strong,.rpt-kpis:not(.rpt-audit-kpis) .rpt-kpi strong,.rpt-kpis.rpt-audit-kpis .rpt-kpi strong{overflow-wrap:anywhere;word-break:normal}
+.rpt-charts{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) minmax(0,1fr)}
+.rpt-trend svg{display:block;width:100%;height:auto;max-height:none}
+.rpt-category{min-height:0;align-items:center}
+.rpt-donut{width:clamp(110px,13cqw,190px);max-width:48%;min-width:0}
+.rpt-donut span{overflow-wrap:anywhere}
+.rpt-legend>div{min-width:0;flex-wrap:wrap;overflow-wrap:anywhere}
+.rpt-legend b{margin-left:auto}
+.rpt-card-title{flex-wrap:wrap}
+.rpt-page .rpt-table-scroll{max-width:100%;min-width:0;overflow-x:auto;overscroll-behavior-x:contain}
+.rpt-table-scroll table{min-width:580px}
+.rpt-audit .rpt-table-scroll table{min-width:720px}
+.rpt-page table{max-width:100%}
+.rpt-filters{display:grid;grid-template-columns:minmax(0,2fr) repeat(2,minmax(0,1fr))}
+.rpt-filters input,.rpt-filters select{width:100%;min-width:0}
+.rpt-financial-layout{grid-template-columns:minmax(0,0.85fr) minmax(0,2fr)}
+.rpt-financial-choices button{white-space:normal;overflow-wrap:anywhere}
+.rpt-financial-detail p{overflow-wrap:anywhere}
+.rpt-disclaimer{overflow-wrap:anywhere}
+@container (max-width:1250px){
+ .rpt-tabs{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .rpt-charts{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .rpt-trend{grid-column:1/-1}
+ .rpt-category{justify-content:center}
+}
+@container (max-width:900px){
+ .rpt-heading{align-items:flex-start}
+ .rpt-actions{flex:1 1 100%;justify-content:flex-start}
+ .rpt-kpis,.rpt-kpis:not(.rpt-audit-kpis),.rpt-kpis.rpt-audit-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .rpt-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .rpt-financial-layout{grid-template-columns:minmax(0,1fr)}
+ .rpt-financial-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@container (max-width:650px){
+ .rpt-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .rpt-charts,.rpt-bottom{grid-template-columns:minmax(0,1fr)}
+ .rpt-trend{grid-column:auto}
+ .rpt-category{flex-wrap:wrap;justify-content:center}
+ .rpt-donut{width:min(190px,55%);max-width:55%}
+ .rpt-legend{flex:1 1 160px}
+ .rpt-filters{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .rpt-filters input{grid-column:1/-1}
+ .rpt-actions select{flex:1 1 100%;max-width:100%}
+}
+@container (max-width:420px){
+ .rpt-kpis,.rpt-kpis:not(.rpt-audit-kpis),.rpt-kpis.rpt-audit-kpis{grid-template-columns:minmax(0,1fr)}
+ .rpt-tabs{grid-template-columns:minmax(0,1fr)}
+ .rpt-actions button{flex:1 1 auto}
+ .rpt-financial-choices{grid-template-columns:minmax(0,1fr)}
+ .rpt-filters{grid-template-columns:minmax(0,1fr)}
+ .rpt-filters input{grid-column:auto}
+ .rpt-category{flex-direction:column}
+ .rpt-donut{max-width:190px;width:70%}
+ .rpt-legend{width:100%;flex:auto}
+}
+@media print{
+ .rpt-page{container-type:normal;overflow:visible}
+ .rpt-table-scroll{overflow:visible!important}
+ .rpt-table-scroll table{min-width:0}
+}
