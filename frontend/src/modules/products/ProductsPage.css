@@ -886,3 +886,50 @@
     max-height:43%;
   }
 }
+
+
+/* Use the real main-content height supplied by MainLayout.
+   No guessed header offsets or viewport subtraction. */
+.products-page--listing{
+  height:100%;
+  min-height:0;
+  max-height:100%;
+  overflow:hidden;
+}
+.products-page--listing>.products-list-panel{
+  flex:1 1 0;
+  min-height:0;
+  overflow:hidden;
+}
+.products-page--listing .products-table-wrap{
+  flex:1 1 0;
+  min-height:0;
+  overflow:auto;
+  overscroll-behavior:contain;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+}
+.products-page--listing .products-table-wrap::-webkit-scrollbar{display:none}
+.products-page--listing .products-keyboard-container{
+  flex:0 1 auto;
+  height:clamp(140px,35%,330px);
+  max-height:45%;
+  min-height:0;
+  overflow:hidden;
+}
+.products-page--listing .products-keyboard-container>.stk-panel{
+  height:100%;
+  min-height:0;
+  overflow-y:auto;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+}
+.products-page--listing .products-keyboard-container>.stk-panel::-webkit-scrollbar{display:none}
+@media(max-height:680px){
+  .products-page--listing{height:100%;min-height:0}
+  .products-page--listing .products-keyboard-container{height:34%;max-height:42%}
+}
+@media(max-width:720px){
+  .products-page--listing{height:100%;min-height:0}
+  .products-page--listing .products-keyboard-container{height:35%;max-height:45%}
+}
