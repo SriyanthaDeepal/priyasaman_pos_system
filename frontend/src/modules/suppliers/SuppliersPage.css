@@ -196,3 +196,65 @@
     max-height:min(48dvh,480px);
   }
 }
+
+
+/* Height-aware supplier workspace. The available application content area,
+   rather than a fixed pixel value, determines the cards' shared height. */
+.sup-page{
+  height:100%;
+  min-height:0;
+  overflow:hidden;
+}
+.sup-content{
+  flex:1 1 0;
+  min-height:0;
+  grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);
+  align-items:stretch;
+}
+.sup-list-panel,.sup-detail-panel{
+  height:100%;
+  min-height:0;
+  max-height:100%;
+}
+.sup-list-panel .sup-table-scroll{
+  flex:1 1 0;
+  min-height:0;
+  max-height:none;
+  overflow:auto;
+}
+.sup-detail-panel{
+  overflow-y:auto;
+  overflow-x:hidden;
+}
+.sup-list-panel .sup-pagination{
+  margin-top:auto;
+  flex-shrink:0;
+}
+@container (max-width:1180px){
+  .sup-content{grid-template-columns:minmax(0,1.45fr) minmax(0,1fr)}
+}
+@container (max-width:980px){
+  .sup-page{overflow-y:auto;overflow-x:hidden}
+  .sup-content{
+    flex:0 0 auto;
+    grid-template-columns:minmax(0,1fr);
+    align-items:start;
+  }
+  .sup-list-panel,.sup-detail-panel{
+    height:auto;
+    max-height:none;
+  }
+  .sup-list-panel .sup-table-scroll{
+    flex:0 1 auto;
+    max-height:min(45dvh,480px);
+  }
+  .sup-detail-panel{overflow:visible}
+}
+/* Short landscape displays need page scrolling instead of compressed cards. */
+@media (max-height:650px){
+  .sup-page{overflow-y:auto;overflow-x:hidden}
+  .sup-content{flex:0 0 auto;min-height:0}
+  .sup-list-panel,.sup-detail-panel{height:auto;max-height:none}
+  .sup-list-panel .sup-table-scroll{flex:0 1 auto;max-height:45dvh}
+  .sup-detail-panel{overflow:visible}
+}
