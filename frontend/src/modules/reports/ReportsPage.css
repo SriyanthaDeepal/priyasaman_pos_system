@@ -30,3 +30,16 @@
 .rpt-kpis:not(.rpt-audit-kpis) .rpt-kpi.blue .rpt-kpi-icon{color:#087ce0}
 @media(max-width:850px){.rpt-kpis:not(.rpt-audit-kpis){grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:480px){.rpt-kpis:not(.rpt-audit-kpis){grid-template-columns:minmax(0,1fr)}}
+
+
+/* Financial statements: responsive selector and detail panel */
+.rpt-financial{min-height:0}
+.rpt-financial-layout{display:grid;grid-template-columns:minmax(190px,0.85fr) minmax(0,2fr);gap:clamp(10px,1.2vw,20px);margin-top:16px}
+.rpt-financial-choices{display:flex;flex-direction:column;gap:8px;min-width:0}
+.rpt-financial-choices button{text-align:left;border:1px solid #dce5ed;background:#fff;border-radius:9px;padding:12px;color:#19324c;font-weight:650;cursor:pointer}
+.rpt-financial-choices button.selected{background:#e7f8e9;border-color:#0a862c;color:#006b24}
+.rpt-financial-detail{min-width:0;border:1px solid #e0e9ef;border-radius:10px;padding:clamp(12px,1.4vw,22px)}
+.rpt-financial-detail h3{margin:0 0 10px;color:#073d23}
+.rpt-financial-detail p{line-height:1.6}
+.rpt-financial-detail button{border:0;border-radius:8px;background:#006d17;color:white;padding:11px 18px;font-weight:700;cursor:pointer}
+@media(max-width:800px){.rpt-financial-layout{grid-template-columns:minmax(0,1fr)}.rpt-financial-choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr))}}
