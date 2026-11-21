@@ -81,3 +81,12 @@
   .bulk-wizard .bulk-keyboard .stk-letter-grid .stk-key,
   .bulk-wizard .bulk-keyboard .stk-form-grid .stk-key{font-size:16px;min-height:32px}
 }
+
+/* Legacy POS imports: visibly identify required fields needing attention. */
+.bulk-table-scroll td.bulk-missing-cell{
+ background:#fff0f0;
+ color:#b42318;
+ border-bottom:2px solid #e25555;
+ font-weight:700;
+}
+.bulk-table-scroll tr.bulk-invalid td.bulk-missing-cell{background:#ffe2e2}
