@@ -60,7 +60,7 @@ const validate=(p:InventoryProduct,others:InventoryProduct[])=>{
 
  if(!p.id.trim()||others.some(x=>x.id===p.id))return "Duplicate or missing SKU.";
  if([p.buy,p.sell,p.stock,p.reorder,p.maxStock??0].some(n=>!Number.isFinite(n)||n<0))return "Prices and stock must be valid non-negative numbers.";
- if(p.barcode.trim()&&others.some(x=>x.barcode.trim()===p.barcode.trim()))return "Duplicate barcode.";
+ if(p.barcode.trim()){const conflict=others.find(x=>x.barcode.trim()===p.barcode.trim());if(conflict)return "Barcode is already used by another product: "+(conflict.name||conflict.id)+" ("+conflict.id+").";}
  return "";
 };
 export default function BulkProductsPage({products,setProducts,onBack,onNotice}:Props){
@@ -83,7 +83,7 @@ export default function BulkProductsPage({products,setProducts,onBack,onNotice}:
  const setField=<K extends keyof InventoryProduct>(key:K,value:InventoryProduct[K])=>setWizard(p=>p?{...p,[key]:value}:p);
  const open=(index?:number)=>{setWizard(index===undefined?fresh(products,drafts):{...drafts[index],images:[...(drafts[index].images||[])]});setEditingIndex(index??null);setStep(0);setError("");setKeyboard(false);setReview(false)};
  const next=()=>{if(!wizard)return;const value=step===0?wizard.name:step===1?wizard.category:step===6?wizard.unit:step===7?wizard.buy:step===8?wizard.sell:step===9?wizard.stock:wizard.reorder;if(required.has(step)&&(typeof value==="string"?!value.trim():!Number.isFinite(value)||value<0)){setError("Enter a valid value to continue.");return;}setError("");setKeyboard(false);if(step<steps.length-1)setStep(x=>x+1);else setStep(steps.length)};
- const finish=()=>{if(!wizard)return;const others=[...products,...drafts.filter((_,i)=>i!==editingIndex)];const issue=validate(wizard,others);if(issue){setError(issue);return;}setDrafts(old=>editingIndex===null?[...old,wizard]:old.map((p,i)=>i===editingIndex?wizard:p));setWizard(null);setEditingIndex(null);setReview(false);onNotice(editingIndex===null?"Product added to bulk draft. Save All to commit.":"Draft product updated. Save All to commit.");};
+ const finish=()=>{if(!wizard)return;const others=[...products,...drafts.filter((_,i)=>i!==editingIndex)];const issue=validate(wizard,others);if(editingIndex===null&&issue){setError(issue);return;}setDrafts(old=>editingIndex===null?[...old,wizard]:old.map((p,i)=>i===editingIndex?wizard:p));setWizard(null);setEditingIndex(null);setReview(true);onNotice(editingIndex===null?"Product added to bulk draft. Save All to commit.":issue?"Draft row updated. Remaining issues are highlighted in the table.":"Draft product updated. Save All to commit.");};
  const generateBarcode=()=>{if(!wizard)return;const used=new Set([...products,...drafts.filter((_,i)=>i!==editingIndex)].map(p=>p.barcode.trim()).filter(Boolean));try{setField("barcode",makeInternalEan13(used));setError("");setKeyboard(false);}catch{setError("Unable to generate a unique barcode. Please try again.");}};
 
  const importData=async(event:ChangeEvent<HTMLInputElement>)=>{
