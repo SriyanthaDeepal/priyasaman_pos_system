@@ -933,3 +933,47 @@
   .products-page--listing{height:100%;min-height:0}
   .products-page--listing .products-keyboard-container{height:35%;max-height:45%}
 }
+
+
+/* Catalogue height is anchored to the actual main element, not a guessed
+   viewport subtraction. The panel's bottom padding stays inside the viewport. */
+.products-page.products-page--listing{
+  position:absolute;
+  inset:0;
+  box-sizing:border-box;
+  width:100%;
+  height:100%;
+  min-height:0;
+  max-height:none;
+  margin:0;
+  padding:clamp(10px,1.1vw,18px);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+.products-page--listing>.products-heading{
+  flex:0 0 auto;
+  margin-bottom:clamp(8px,1vh,14px);
+}
+.products-page--listing>.products-list-panel{
+  box-sizing:border-box;
+  flex:1 1 0;
+  height:0;
+  min-height:0;
+  max-height:none;
+  margin:0;
+  overflow:hidden;
+}
+.products-page--listing .products-table-wrap{
+  height:0;
+  flex:1 1 0;
+  min-height:0;
+  max-height:none;
+  overflow:auto;
+  scrollbar-width:none;
+}
+.products-page--listing .products-table-wrap::-webkit-scrollbar{display:none}
+.products-page--listing .products-count{
+  flex:0 0 auto;
+  margin-top:8px;
+}
