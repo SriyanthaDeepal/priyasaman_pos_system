@@ -52,3 +52,58 @@
  .sup-summary-cards{gap:4px}
  .sup-summary-cards strong{font-size:12px}
 }
+
+
+/* Supplier layout: responsive content inside cards and invisible scrollbars. */
+.sup-page,.sup-table-scroll,.sup-detail-panel,.sup-tabs,.sup-dialog{scrollbar-width:none!important;-ms-overflow-style:none}
+.sup-page::-webkit-scrollbar,.sup-table-scroll::-webkit-scrollbar,.sup-detail-panel::-webkit-scrollbar,.sup-tabs::-webkit-scrollbar,.sup-dialog::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}
+.sup-page{overflow-x:hidden;overflow-y:auto}
+.sup-table-scroll{overflow:auto;min-width:0}
+.sup-table-scroll table{min-width:610px;width:100%;table-layout:auto}
+.sup-table-scroll th,.sup-table-scroll td{white-space:normal;overflow-wrap:anywhere;vertical-align:middle}
+.sup-table-scroll th:first-child,.sup-table-scroll td:first-child{white-space:nowrap}
+.sup-table-scroll td:nth-child(4),.sup-table-scroll td:nth-child(5){white-space:nowrap}
+.sup-kpi{min-width:0;overflow:hidden;align-items:center}
+.sup-kpi>div{flex:1 1 0;min-width:0}
+.sup-kpi small,.sup-kpi strong{display:block;min-width:0;max-width:100%;white-space:normal;overflow-wrap:anywhere;line-height:1.2}
+.sup-kpi-icon{flex:0 0 auto}
+.sup-detail-panel{min-width:0;overflow-x:hidden;overflow-y:auto}
+.sup-detail-head,.sup-summary-head{min-width:0;flex-wrap:wrap}
+.sup-detail-head h2,.sup-summary-head h2{min-width:0;flex:1 1 auto;overflow-wrap:anywhere}
+.sup-identity{min-width:0;flex-wrap:wrap}
+.sup-identity>div{min-width:90px;flex:1 1 110px}
+.sup-identity h3,.sup-identity small{overflow-wrap:anywhere}
+.sup-facts>div{min-width:0;grid-template-columns:20px minmax(75px,.75fr) 8px minmax(0,1.25fr)}
+.sup-facts>div>*{min-width:0;overflow-wrap:anywhere}
+.sup-summary-cards{min-width:0}
+.sup-summary-cards>div{min-width:0;overflow:hidden;padding:9px 4px}
+.sup-summary-cards strong{max-width:100%;font-size:clamp(11px,1.1cqw,17px);line-height:1.2;overflow-wrap:anywhere;word-break:break-word}
+.sup-summary-cards small{max-width:100%;overflow-wrap:anywhere}
+.sup-history-actions button{min-width:0;white-space:normal;text-align:center}
+.sup-pagination>span,.sup-pagination>label{min-width:0}
+@container (max-width:1180px){
+ .sup-kpi{padding:10px;gap:8px}
+ .sup-kpi-icon{width:40px;height:40px}
+ .sup-kpi-icon svg{font-size:25px}
+ .sup-kpi strong{font-size:clamp(13px,1.5cqw,19px)}
+}
+@container (max-width:980px){
+ .sup-content{grid-template-columns:minmax(0,1fr)}
+ .sup-detail-panel{overflow:visible}
+ .sup-list-panel{min-height:340px}
+ .sup-table-scroll{max-height:400px}
+ .sup-summary-cards strong{font-size:clamp(12px,2cqw,18px)}
+}
+@container (max-width:640px){
+ .sup-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .sup-header-actions{width:100%}
+ .sup-header-actions .sup-button{flex:1 1 auto}
+ .sup-kpi{gap:7px}
+ .sup-kpi strong{font-size:clamp(12px,2.6cqw,18px)}
+ .sup-facts>div{grid-template-columns:20px minmax(70px,.7fr) 8px minmax(0,1.3fr)}
+}
+@container (max-width:400px){
+ .sup-kpis{grid-template-columns:minmax(0,1fr)}
+ .sup-summary-cards{grid-template-columns:minmax(0,1fr)}
+ .sup-history-actions{grid-template-columns:minmax(0,1fr)}
+}
