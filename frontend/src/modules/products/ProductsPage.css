@@ -767,3 +767,21 @@
     height:clamp(110px,17vh,155px);
   }
 }
+
+/* Product listing: scanner and Sinhala touch keyboard controls */
+.products-search-controls{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.products-search-controls .products-search{flex:1 1 280px;min-width:min(100%,240px);margin:0}
+.products-search-controls .products-search-action{
+  display:inline-flex;align-items:center;justify-content:center;
+  gap:6px;min-height:40px;padding:8px 12px;
+  white-space:nowrap;flex:0 0 auto;font-size:12px;
+}
+.products-search-controls .products-search-action svg{font-size:19px}
+.products-search-controls select{flex:0 1 185px;min-width:140px;max-width:100%;height:40px}
+.products-keyboard-container{width:100%;min-width:0;max-width:100%;margin:0 0 14px;position:relative;z-index:2}
+.products-keyboard-container .stk-panel{max-width:100%;width:100%;box-sizing:border-box}
+@container (max-width:720px){
+ .products-search-controls .products-search{flex-basis:100%;min-width:0}
+ .products-search-controls .products-search-action{flex:1 1 auto}
+ .products-search-controls select{flex:1 1 100%;width:100%}
+}
