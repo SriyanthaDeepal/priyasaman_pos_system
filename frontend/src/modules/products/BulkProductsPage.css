@@ -1,1 +1,83 @@
 .bulk-page{position:absolute;inset:0;display:flex;flex-direction:column;gap:12px;min-width:0;min-height:0;overflow:hidden;padding:clamp(10px,1.2vw,20px);box-sizing:border-box;color:#152238;background:#f8fafc}.bulk-header,.bulk-actions,.bulk-toolbar,.bulk-footer,.bulk-footer>div,.bulk-wizard header,.bulk-wizard footer,.bulk-wizard footer>div{display:flex;align-items:center;gap:10px}.bulk-header,.bulk-footer,.bulk-wizard header,.bulk-wizard footer{justify-content:space-between}.bulk-header{flex-wrap:wrap;flex:0 0 auto}.bulk-header h1{margin:3px 0;font-size:clamp(20px,2vw,28px)}.bulk-header p,.bulk-header small{margin:0;color:#64748b;font-size:12px}.bulk-page button{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:35px;padding:7px 12px;border-radius:8px;border:1px solid #cbd5e1;background:#fff;color:#17542c;cursor:pointer;font-weight:650;white-space:nowrap}.bulk-page button svg{font-size:18px}.bulk-page button:disabled{opacity:.45;cursor:not-allowed}.bulk-page .bulk-primary{background:#007a19;color:white;border-color:#007a19}.bulk-progress{display:flex;flex:0 0 auto;gap:8px}.bulk-progress span{flex:1;text-align:center;border-radius:9px;background:#edf2f7;color:#64748b;padding:10px 6px;font-weight:700;font-size:12px}.bulk-progress span.active{background:#fff0de;color:#e66b00}.bulk-card{background:#fff;border:1px solid #dbe5ee;border-radius:12px;box-shadow:0 2px 7px #00000008}.bulk-workspace{display:flex;flex-direction:column;flex:1 1 0;min-height:0;padding:12px}.bulk-toolbar{flex:0 0 auto;flex-wrap:wrap;margin-bottom:10px}.bulk-toolbar>input{flex:1 1 230px;min-width:0;height:38px;padding:0 12px;border:1px solid #cbd5e1;border-radius:8px}.bulk-table-scroll{flex:1 1 0;min-height:0;overflow:auto;scrollbar-width:none;overscroll-behavior:contain}.bulk-table-scroll::-webkit-scrollbar,.bulk-keyboard::-webkit-scrollbar{display:none}.bulk-table-scroll table{min-width:1280px;width:100%;border-collapse:collapse;text-align:left;font-size:12px}.bulk-table-scroll thead{position:sticky;top:0;z-index:1;background:#eef2f6}.bulk-table-scroll th,.bulk-table-scroll td{padding:11px 9px;border-bottom:1px solid #e5eaf0;white-space:nowrap}.bulk-table-scroll tr.bulk-invalid{background:#fff1f1}.bulk-ok{color:#007a19}.bulk-error{color:#bd1f2d;font-size:12px}.bulk-empty{padding:50px 15px;text-align:center;color:#64748b;font-size:13px}.bulk-footer{flex:0 0 auto;border-top:1px solid #e2e8f0;padding-top:12px;flex-wrap:wrap}.bulk-footer>div{flex-wrap:wrap;font-size:12px}.bulk-footer>div span{color:#007a19}.bulk-overlay{position:fixed;inset:0;z-index:1300;background:#071b14a8;display:flex;justify-content:flex-end}.bulk-wizard{width:min(560px,100%);height:100%;background:white;display:flex;flex-direction:column;min-height:0;box-shadow:-10px 0 40px #0002}.bulk-wizard header,.bulk-wizard footer{padding:17px 22px;border-bottom:1px solid #e2e8f0;flex:0 0 auto}.bulk-wizard footer{border-bottom:0;border-top:1px solid #e2e8f0}.bulk-wizard header h2{font-size:22px;margin:4px 0}.bulk-wizard header small{color:#64748b}.bulk-wizard-body{padding:22px;overflow:auto;flex:1 1 0;min-height:0;scrollbar-width:none}.bulk-wizard-body::-webkit-scrollbar{display:none}.bulk-step-count{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:#475569}.bulk-step-track{height:7px;background:#e2e8f0;border-radius:8px;overflow:hidden;margin:12px 0 32px}.bulk-step-track>div{height:100%;background:#07842c}.bulk-question{display:flex;flex-direction:column;gap:13px}.bulk-question>label{font-weight:750;font-size:17px}.bulk-question input:not([type=checkbox]),.bulk-question select,.bulk-question textarea{width:100%;box-sizing:border-box;padding:12px;border:1px solid #cbd5e1;border-radius:9px;font:inherit;min-height:46px}.bulk-input-row{display:flex;align-items:center;gap:8px}.bulk-input-row input{flex:1;min-width:0}.bulk-hint{font-size:12px;color:#64748b}.bulk-question .bulk-checkbox{display:flex;align-items:center;gap:10px}.bulk-keyboard{max-height:260px;overflow:auto;scrollbar-width:none}.bulk-keyboard .stk-panel{position:relative;inset:auto;width:100%;height:auto;min-height:0;max-width:100%;box-sizing:border-box;padding:6px;gap:5px}.bulk-keyboard .stk-sinhala-layout{gap:5px}.bulk-keyboard .stk-footer{margin-top:0}.bulk-review{display:flex;flex-direction:column;gap:5px}.bulk-review>div{display:flex;justify-content:space-between;gap:15px;padding:9px 0;border-bottom:1px solid #e2e8f0;font-size:13px}.bulk-review>div strong{max-width:65%;overflow-wrap:anywhere;text-align:right}.bulk-review>div span{color:#64748b}.bulk-images{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}.bulk-images>div{width:90px}.bulk-images img{width:90px;height:75px;object-fit:contain}.bulk-images button{font-size:11px}@media(max-width:760px){.bulk-progress span{font-size:10px}.bulk-header{align-items:flex-start}.bulk-header .bulk-actions{flex-wrap:wrap}.bulk-footer{align-items:stretch}.bulk-footer>.bulk-actions{width:100%;justify-content:flex-end;flex-wrap:wrap}.bulk-wizard-body{padding:16px}.bulk-wizard header,.bulk-wizard footer{padding:12px}}
+
+/* Bulk-entry wizard ONLY: show the complete Sinhala keyboard, not a 260px crop.
+   Other POS keyboard placements retain their existing appearance. */
+.bulk-wizard .bulk-keyboard{
+  max-height:none;
+  height:auto;
+  overflow:visible;
+  scrollbar-width:auto;
+  min-width:0;
+}
+.bulk-wizard .bulk-keyboard .stk-panel{
+  position:relative;
+  inset:auto;
+  display:flex;
+  flex-direction:column;
+  width:100%;
+  height:auto;
+  max-height:none;
+  min-height:0;
+  overflow:visible;
+  box-sizing:border-box;
+  padding:8px;
+  gap:8px;
+}
+.bulk-wizard .bulk-keyboard .stk-sinhala-layout{
+  display:grid;
+  grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);
+  gap:6px;
+  align-items:start;
+  min-width:0;
+}
+.bulk-wizard .bulk-keyboard .stk-letter-grid{
+  grid-template-columns:repeat(7,minmax(0,1fr));
+  gap:3px;
+}
+.bulk-wizard .bulk-keyboard .stk-form-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:3px;
+}
+.bulk-wizard .bulk-keyboard .stk-letter-grid .stk-key,
+.bulk-wizard .bulk-keyboard .stk-form-grid .stk-key{
+  min-height:32px;
+  height:34px;
+  min-width:0;
+  padding:2px 0;
+  font-size:17px;
+}
+.bulk-wizard .bulk-keyboard .stk-right-pane{padding:4px}
+.bulk-wizard .bulk-keyboard .stk-footer{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:6px;
+  margin-top:2px;
+}
+.bulk-wizard .bulk-keyboard .stk-controls,
+.bulk-wizard .bulk-keyboard .stk-modes{
+  display:flex;
+  justify-content:flex-start;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:5px;
+  margin-left:0;
+  width:100%;
+}
+.bulk-wizard .bulk-keyboard .stk-controls button,
+.bulk-wizard .bulk-keyboard .stk-modes button{
+  min-height:31px;
+  padding:3px 7px;
+  font-size:11px;
+}
+.bulk-wizard .bulk-keyboard .stk-close{
+  flex:0 0 auto;
+  align-self:flex-end;
+}
+@media(max-width:520px){
+  .bulk-wizard .bulk-keyboard .stk-sinhala-layout{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}
+  .bulk-wizard .bulk-keyboard .stk-letter-grid{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .bulk-wizard .bulk-keyboard .stk-form-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .bulk-wizard .bulk-keyboard .stk-letter-grid .stk-key,
+  .bulk-wizard .bulk-keyboard .stk-form-grid .stk-key{font-size:16px;min-height:32px}
+}
