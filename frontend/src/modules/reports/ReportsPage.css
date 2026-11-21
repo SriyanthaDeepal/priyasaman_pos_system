@@ -1,37 +1,222 @@
-import { useMemo, useState } from "react";
-import { ShoppingCartOutlined, PaidOutlined, PercentOutlined, TrendingUpOutlined, FactCheckOutlined, WarningAmberOutlined, HighlightOffOutlined, InventoryOutlined } from "@mui/icons-material";
-import "./ReportsPage.css";
+.rpt-page{padding:clamp(12px,1.4vw,24px);display:flex;flex-direction:column;gap:clamp(10px,1vw,16px);min-width:0;min-height:100%;font-family:Arial,sans-serif;color:#102238;background:#fbfcfe;box-sizing:border-box}.rpt-page *{box-sizing:border-box}.rpt-heading,.rpt-heading-name,.rpt-actions,.rpt-card-title{display:flex;align-items:center;justify-content:space-between;gap:12px}.rpt-heading{flex-wrap:wrap}.rpt-heading-name{justify-content:flex-start}.rpt-logo{font-size:44px;color:#ff9500;font-weight:900}.rpt-heading h1{margin:0;font-size:clamp(22px,2vw,32px)}.rpt-heading p{margin:4px 0;color:#223b61}.rpt-actions{flex-wrap:wrap}.rpt-page button,.rpt-page select,.rpt-page input{font:inherit;border:1px solid #dbe4ef;border-radius:10px;padding:11px 14px;background:white;color:#13263e;min-width:0}.rpt-page button{cursor:pointer;font-weight:700}.rpt-page button:hover{filter:brightness(.97)}.rpt-page .rpt-primary,.rpt-tabs .active{background:linear-gradient(#008c0c,#005a06);color:white;border-color:#07841a}.rpt-tabs{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:9px}.rpt-tabs button{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 6px;white-space:nowrap;font-size:clamp(11px,.85vw,14px)}.rpt-tabs span{font-size:18px}.rpt-kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.rpt-kpi{min-width:0;display:flex;align-items:center;gap:12px;border:1px solid;border-radius:14px;padding:clamp(12px,1vw,20px);min-height:105px}.rpt-kpi.green{background:linear-gradient(135deg,#fff,#e6ffea);border-color:#c4efcf}.rpt-kpi.blue{background:linear-gradient(135deg,#fff,#e4f2ff);border-color:#c7e1ff}.rpt-kpi.purple{background:linear-gradient(135deg,#fff,#f3e4ff);border-color:#e9d4ff}.rpt-kpi.amber{background:linear-gradient(135deg,#fff,#fff1d5);border-color:#ffe3b3}.rpt-kpi.pink{background:linear-gradient(135deg,#fff,#ffe9ef);border-color:#ffd3dc}.rpt-kpi-icon{font-size:clamp(22px,2.5vw,36px);color:#078f26;flex-shrink:0}.rpt-kpi b,.rpt-kpi strong,.rpt-kpi small{display:block}.rpt-kpi b{font-size:clamp(11px,.8vw,14px)}.rpt-kpi strong{font-size:clamp(16px,1.4vw,23px);overflow-wrap:anywhere;margin:7px 0}.rpt-kpi small{font-size:11px;color:#078524;font-weight:700}.rpt-charts{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) minmax(0,1fr);gap:10px}.rpt-card{border:1px solid #e0e7ef;border-radius:14px;background:white;padding:clamp(12px,1vw,18px);box-shadow:0 2px 6px #172c4110;min-width:0;overflow:hidden}.rpt-card h2{font-size:clamp(15px,1.15vw,19px);margin:0 0 14px}.rpt-trend svg{width:100%;height:auto;max-height:290px}.rpt-category{display:flex;align-items:center;gap:12px;min-height:240px}.rpt-donut{width:min(52%,200px);aspect-ratio:1;border-radius:50%;background:conic-gradient(#22bd34 0 42.3%,#0c8cf0 42.3% 60.9%,#ffad16 60.9% 77%,#b13df2 77% 89.4%,#aeb5bb 89.4%);display:grid;place-items:center;flex-shrink:0}.rpt-donut span{width:66%;aspect-ratio:1;border-radius:50%;background:white;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-weight:800;font-size:clamp(9px,.75vw,13px)}.rpt-donut small{display:block;font-size:10px}.rpt-legend{flex:1;min-width:0}.rpt-legend>div{display:flex;gap:7px;align-items:center;margin:12px 0;font-size:clamp(10px,.75vw,13px)}.rpt-legend i{width:12px;height:12px;border-radius:3px;flex-shrink:0}.rpt-legend b{margin-left:auto}.rpt-page table{width:100%;border-collapse:collapse;text-align:left;font-size:clamp(11px,.8vw,14px)}.rpt-page th{background:#eef2f6;padding:10px 9px;white-space:nowrap}.rpt-page td{padding:10px 9px;border-bottom:1px solid #e8edf3}.rpt-pill{background:#d9f9dd;border-radius:20px;padding:4px 12px;color:#00680a;font-weight:800}.rpt-bottom{display:grid;grid-template-columns:1.15fr 1fr;gap:10px}.rpt-card-title h2{margin-bottom:10px}.rpt-card-title button{padding:6px 12px}.rpt-highlight{background:#e2ffe6;font-weight:700}.rpt-link{color:#163aab;font-weight:700}.rpt-table-scroll{overflow-x:auto;scrollbar-width:none}.rpt-table-scroll::-webkit-scrollbar{display:none}.rpt-audit-kpis{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}.rpt-filters{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}.rpt-filters input{flex:2 1 230px}.rpt-filters select{flex:1 1 150px}.rpt-risk{border-radius:20px;padding:5px 12px;font-weight:700}.rpt-risk.high{background:#ffe1e1;color:#bd1010}.rpt-risk.medium{background:#fff0cf;color:#925400}.rpt-risk.low{background:#e0f9e5;color:#08751b}.rpt-note,.rpt-disclaimer{font-size:12px;color:#66788d}.rpt-placeholder{min-height:260px}.rpt-placeholder p{max-width:650px;line-height:1.7}@media(max-width:1350px){.rpt-tabs{grid-template-columns:repeat(4,minmax(0,1fr))}.rpt-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}.rpt-charts{grid-template-columns:repeat(2,minmax(0,1fr))}.rpt-trend{grid-column:span 2}}@media(max-width:850px){.rpt-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}.rpt-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.rpt-charts,.rpt-bottom{grid-template-columns:minmax(0,1fr)}.rpt-trend{grid-column:auto}.rpt-heading,.rpt-heading-name{align-items:flex-start}.rpt-category{justify-content:center}}@media(max-width:480px){.rpt-kpis{grid-template-columns:minmax(0,1fr)}.rpt-actions{width:100%}.rpt-actions select{width:100%}.rpt-tabs button{font-size:11px}.rpt-category{flex-wrap:wrap}.rpt-donut{width:180px}.rpt-legend{min-width:180px}}@media print{.rpt-actions,.rpt-tabs,.rpt-disclaimer{display:none}.rpt-page{padding:0}.rpt-card{break-inside:avoid}}
+/* Consistent KPI layout across available monitor widths and text scaling */
+.rpt-logo{display:grid;place-items:center;width:clamp(42px,3.4vw,54px);height:clamp(42px,3.4vw,54px);flex:none}
+.rpt-logo svg{display:block;width:100%;height:100%}
+.rpt-kpis{grid-template-columns:repeat(5,minmax(0,1fr))}
+.rpt-kpi{display:grid;grid-template-columns:clamp(34px,3.1vw,48px) minmax(0,1fr);align-items:center;gap:clamp(8px,.8vw,14px);padding:clamp(10px,.95vw,17px);min-height:clamp(112px,8.5vw,138px)}
+.rpt-kpi>div{min-width:0;display:flex;flex-direction:column;justify-content:center;align-self:stretch}
+.rpt-kpi-icon{width:clamp(34px,3.1vw,48px);display:flex;align-items:center;justify-content:center;font-size:clamp(23px,2.2vw,34px);line-height:1}
+.rpt-kpi b{font-size:clamp(11px,.82vw,14px);line-height:1.3}
+.rpt-kpi strong{font-size:clamp(17px,1.25vw,23px);line-height:1.18;margin:5px 0;overflow-wrap:normal;word-break:normal}
+.rpt-kpi small{font-size:clamp(10px,.7vw,12px);line-height:1.25}
+.rpt-summary-only{grid-template-columns:minmax(0,1fr)}
+.rpt-summary-only .rpt-card{width:100%}
+@media(max-width:1500px){.rpt-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:1050px){.rpt-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:580px){.rpt-kpis{grid-template-columns:minmax(0,1fr)}}
 
-type Tab = "Sales Report"|"Inventory Report"|"Purchase Report"|"Customer Report"|"Supplier Report"|"Financial Statements"|"Audit Reports";
-type Period = "today"|"week"|"month"|"last"|"all";
-const tabs:Tab[]=["Sales Report","Inventory Report","Purchase Report","Customer Report","Supplier Report","Financial Statements","Audit Reports"];
-const tabIcons=["🛒","📦","🚚","👥","🏪","📑","🛡️"];
-const money=(v:number)=>"Rs. "+v.toLocaleString("en-LK",{minimumFractionDigits:2,maximumFractionDigits:2});
-const sales=[52,112,101,145,128,173,185,250,188,205,190];
-const products=[["Basmati Rice 5 kg",320],["Sunflower Oil 1 L",186],["Tea 200 g",174],["Toothpaste 120 g",152],["Sugar 1 kg",148]] as const;
-const audit=[{date:"Nov 03, 2026 09:42 AM",user:"Admin User",module:"Sales",action:"Discount approved",reference:"INV-002614",risk:"Medium"},{date:"Nov 03, 2026 09:21 AM",user:"Cashier 01",module:"Inventory",action:"Stock adjustment",reference:"STK-00018",risk:"High"},{date:"Nov 03, 2026 08:15 AM",user:"Admin User",module:"Purchases",action:"Supplier payment recorded",reference:"PO-000129",risk:"Low"},{date:"Nov 02, 2026 05:12 PM",user:"Cashier 02",module:"Sales",action:"Sale voided",reference:"INV-002608",risk:"High"}];
-export default function ReportsPage({onNotice}:{onNotice:(message:string)=>void}) {
- const [tab,setTab]=useState<Tab>("Sales Report");
- const [period,setPeriod]=useState<Period>("month");
- const [query,setQuery]=useState("");
- const [statement,setStatement]=useState("Profit & Loss Statement");
- const [auditModule,setAuditModule]=useState("All Modules");
- const [auditRisk,setAuditRisk]=useState("All Risks");
- const dateLabel={today:"Today",week:"This Week",month:"This Month (Nov 01 – Nov 30, 2026)",last:"Last Month (Oct 2026)",all:"All Time"}[period];
- const filteredAudit=useMemo(()=>audit.filter(a=>(auditModule==="All Modules"||a.module===auditModule)&&(auditRisk==="All Risks"||a.risk===auditRisk)&&Object.values(a).join(" ").toLowerCase().includes(query.toLowerCase())),[auditModule,auditRisk,query]);
- const exportCsv=()=>{if(tab==="Financial Statements"){onNotice("Financial statements require reconciled ledger data before they can be exported.");return;}const rows=tab==="Audit Reports"?[["Date & Time","User","Module","Action","Reference","Risk"],...filteredAudit.map(a=>[a.date,a.user,a.module,a.action,a.reference,a.risk])]:[["Report","Period","Metric","Value"],[tab,dateLabel,"Total Sales","1245600"],[tab,dateLabel,"Gross Profit","268400"]];const csv=rows.map(row=>row.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(",")).join("\r\n");const url=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));const link=document.createElement("a");link.href=url;link.download=tab.toLowerCase().replaceAll(" ","-")+".csv";link.click();URL.revokeObjectURL(url);onNotice("Demo report exported.");};
- const linePoints=sales.map((v,i)=>`${40+i*48},${245-v*.72}`).join(" ");
- return <div className="rpt-page">
- <header className="rpt-heading"><div className="rpt-heading-name"><span className="rpt-logo" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none"><rect x="4" y="27" width="10" height="17" rx="2" fill="#ff9500"/><rect x="19" y="17" width="10" height="27" rx="2" fill="#ff9500"/><rect x="34" y="5" width="10" height="39" rx="2" fill="#ff9500"/></svg></span><div><h1>Reports</h1><p>View business performance, sales, inventory, financial and audit reports.</p></div></div><div className="rpt-actions"><select aria-label="Report period" value={period} onChange={e=>setPeriod(e.target.value as Period)}><option value="today">Today</option><option value="week">This Week</option><option value="month">This Month (Nov 01 – Nov 30, 2026)</option><option value="last">Last Month</option><option value="all">All Time</option></select><button onClick={()=>window.print()}>▣ Print</button><button className="rpt-primary" onClick={exportCsv}>⇩ Export</button></div></header>
- <nav className="rpt-tabs" aria-label="Report types">{tabs.map((t,i)=><button key={t} className={tab===t?"active":""} onClick={()=>{setTab(t);setQuery("");}}><span>{tabIcons[i]}</span>{t}</button>)}</nav>
- {tab==="Sales Report"?<><section className="rpt-kpis">{[["Total Sales",money(1245600),"+14.8%","green","sales"],["Gross Profit",money(268400),"+16.1%","amber","profit"],["Profit Margin","21.5%","+1.9%","pink","margin"],["Sales Growth","+14.8%","compared with last month","blue","growth"]].map(([name,value,change,color,icon])=><div className={"rpt-kpi "+color} key={name}><span className="rpt-kpi-icon">{icon==="sales"?<ShoppingCartOutlined fontSize="inherit"/>:icon==="profit"?<PaidOutlined fontSize="inherit"/>:icon==="margin"?<PercentOutlined fontSize="inherit"/>:<TrendingUpOutlined fontSize="inherit"/>}</span><div><b>{name}</b><strong>{value}</strong><small>{name==="Sales Growth"?change:`▲ ${change} vs last month`}</small></div></div>)}</section>
- <section className="rpt-charts"><article className="rpt-card rpt-trend"><h2>▥ Sales Trend</h2><svg viewBox="0 0 560 280" role="img" aria-label="Illustrative sales trend line chart"><defs><linearGradient id="salesShade" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stopColor="#39c84a" stopOpacity=".45"/><stop offset="100%" stopColor="#39c84a" stopOpacity=".04"/></linearGradient></defs>{[50,100,150,200,250].map(v=><g key={v}><line x1="40" x2="530" y1={245-v*.72} y2={245-v*.72} stroke="#e3e9ed"/><text x="3" y={249-v*.72} fontSize="12" fill="#56657a">{v}K</text></g>)}<polygon points={`40,245 ${linePoints} 520,245`} fill="url(#salesShade)"/><polyline points={linePoints} fill="none" stroke="#07851e" strokeWidth="4" strokeLinejoin="round"/>{sales.map((v,i)=><circle key={i} cx={40+i*48} cy={245-v*.72} r="4" fill="#07851e"/>)}{["Nov 01","Nov 07","Nov 13","Nov 19","Nov 25","Nov 30"].map((d,i)=><text key={d} x={40+i*96} y="270" fontSize="12" fill="#4a5668">{d}</text>)}</svg></article>
- <article className="rpt-card"><h2>▥ Sales by Category</h2><div className="rpt-category"><div className="rpt-donut"><span>{money(1245600)}<small>Total Sales</small></span></div><div className="rpt-legend">{[["Groceries","42.3%","#22bd34"],["Beverages","18.6%","#0c8cf0"],["Household","16.1%","#ffad16"],["Personal Care","12.4%","#b13df2"],["Others","10.6%","#aeb5bb"]].map(([n,v,c])=><div key={n}><i style={{background:c}}/><span className="rpt-legend-name">{n}</span><b>{v}</b></div>)}</div></div></article>
- <article className="rpt-card"><h2>🏆 Top Selling Products</h2><div className="rpt-table-scroll rpt-top-products"><table><thead><tr><th>#</th><th>Product</th><th>Qty Sold</th></tr></thead><tbody>{products.map(([p,q],i)=><tr key={p}><td>{i+1}</td><td>{p}</td><td><span className="rpt-pill">{q}</span></td></tr>)}</tbody></table></div></article></section>
- <section className="rpt-bottom rpt-summary-only"><article className="rpt-card"><h2>▤ Sales Summary</h2><div className="rpt-table-scroll"><table><thead><tr><th>Period</th><th>Total Sales</th><th>Total Invoices</th><th>Gross Profit</th><th>Profit Margin</th></tr></thead><tbody>{[["Today (Nov 03)","48,600","76","10,800","22.2%"],["This Week (Nov 01 – 07)","320,600","492","68,400","21.3%"],["This Month (Nov 01 – 30)","1,245,600","1,860","268,400","21.5%"],["Last Month (Oct 01 – 31)","1,084,200","1,620","221,600","20.4%"]].map((r,i)=><tr className={i===2?"rpt-highlight":""} key={i}><td>{r[0]}</td><td>Rs. {r[1]}</td><td>{r[2]}</td><td>Rs. {r[3]}</td><td><span className="rpt-pill">{r[4]}</span></td></tr>)}</tbody></table></div></article></section></>:
- tab==="Financial Statements"?<section className="rpt-card rpt-financial"><div className="rpt-card-title"><h2>Financial Statements</h2><span className="rpt-note">Accounting data integration pending</span></div><p>Select a financial statement to view its purpose and data requirements. Financial values are not generated until the ledger and opening balances are verified.</p><div className="rpt-financial-layout"><div className="rpt-financial-choices">{["Profit & Loss Statement","Balance Sheet","Cash Flow Statement","Trial Balance","Receivables & Payables Aging"].map(name=><button key={name} className={statement===name?"selected":""} onClick={()=>setStatement(name)}>{name}</button>)}</div><div className="rpt-financial-detail"><h3>{statement}</h3><p>{({"Profit & Loss Statement":"Revenue, cost of goods sold, operating expenses and net profit for the selected period.","Balance Sheet":"Assets, liabilities and owner equity as of the reporting date.","Cash Flow Statement":"Cash movements from operating, investing and financing activities.","Trial Balance":"Debit and credit balances from the general ledger.","Receivables & Payables Aging":"Customer balances and supplier obligations grouped by days outstanding."} as Record<string,string>)[statement]}</p><p className="rpt-note">Reporting period: {dateLabel}. Requires validated transactions, ledger postings and applicable opening balances.</p><button onClick={()=>onNotice("Financial statement generation is unavailable until accounting records are connected and reconciled.")}>Generate Statement</button></div></div></section>:
-  tab==="Audit Reports"?<><section className="rpt-kpis rpt-audit-kpis">{[["Total Audit Events","4","blue","events"],["High-Risk Events","2","pink","risk"],["Voided Transactions","1","amber","void"],["Stock Adjustments","1","green","stock"]].map(([n,v,c,ic])=><div className={"rpt-kpi "+c} key={n}><span className="rpt-kpi-icon">{ic==="events"?<FactCheckOutlined fontSize="inherit"/>:ic==="risk"?<WarningAmberOutlined fontSize="inherit"/>:ic==="void"?<HighlightOffOutlined fontSize="inherit"/>:<InventoryOutlined fontSize="inherit"/>}</span><div><b>{n}</b><strong>{v}</strong></div></div>)}</section><section className="rpt-card rpt-audit"><div className="rpt-card-title"><h2>🛡️ Audit Activity Log</h2><span className="rpt-note">Demonstration data · not connected to backend</span></div><div className="rpt-filters"><input placeholder="Search user, action, reference..." value={query} onChange={e=>setQuery(e.target.value)}/><select value={auditModule} onChange={e=>setAuditModule(e.target.value)}>{["All Modules","Sales","Inventory","Purchases"].map(x=><option key={x}>{x}</option>)}</select><select value={auditRisk} onChange={e=>setAuditRisk(e.target.value)}>{["All Risks","Low","Medium","High"].map(x=><option key={x}>{x}</option>)}</select></div><div className="rpt-table-scroll"><table><thead><tr>{["Date & Time","User","Module","Action","Reference","Risk"].map(h=><th key={h}>{h}</th>)}</tr></thead><tbody>{filteredAudit.map((a,i)=><tr key={i}><td>{a.date}</td><td>{a.user}</td><td>{a.module}</td><td>{a.action}</td><td>{a.reference}</td><td><span className={"rpt-risk "+a.risk.toLowerCase()}>{a.risk}</span></td></tr>)}</tbody></table>{!filteredAudit.length&&<p>No matching audit events.</p>}</div></section></>:
- <><section className="rpt-kpis rpt-audit-kpis">{[["Report Period",dateLabel,"blue","▣"],["Report Type",tab,"green",tabIcons[tabs.indexOf(tab)]],["Data Source","Demo","amber","ⓘ"]].map(([n,v,c,ic])=><div className={"rpt-kpi "+c} key={n}><span className="rpt-kpi-icon">{ic}</span><div><b>{n}</b><strong>{v}</strong></div></div>)}</section><section className="rpt-card rpt-placeholder"><h2>{tab}</h2><p>This report is ready for integration with actual {tab.toLowerCase()} transactions. No live financial figures are shown until the underlying records are connected.</p><button onClick={()=>onNotice("Report data integration is not yet configured.")}>Refresh Report</button></section></>}
- <p className="rpt-disclaimer">Preview uses illustrative sample figures. Reports and audit events must be connected to verified backend records before operational use.</p>
- </div>;
+/* Four balanced sales KPI cards; audit and other report cards retain auto-fit layouts. */
+.rpt-kpis:not(.rpt-audit-kpis){grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:1350px){.rpt-kpis:not(.rpt-audit-kpis){grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:580px){.rpt-kpis:not(.rpt-audit-kpis){grid-template-columns:minmax(0,1fr)}}
+
+/* Compact, adaptive report KPI cards */
+.rpt-kpis:not(.rpt-audit-kpis) .rpt-kpi{min-height:0;padding:clamp(10px,1vw,15px);gap:clamp(8px,.9vw,12px);grid-template-columns:clamp(32px,2.6vw,42px) minmax(0,1fr)}
+.rpt-kpis:not(.rpt-audit-kpis) .rpt-kpi-icon{width:clamp(32px,2.6vw,42px);font-size:clamp(24px,2vw,32px)}
+.rpt-kpis:not(.rpt-audit-kpis) .rpt-kpi strong{margin:3px 0;font-size:clamp(16px,1.3vw,22px);overflow-wrap:anywhere}
+.rpt-kpis:not(.rpt-audit-kpis) .rpt-kpi>div{align-self:center}
+.rpt-kpis:not(.rpt-audit-kpis) .rpt-kpi.amber .rpt-kpi-icon{color:#e08a00}
+.rpt-kpis:not(.rpt-audit-kpis) .rpt-kpi.pink .rpt-kpi-icon{color:#e52e55}
+.rpt-kpis:not(.rpt-audit-kpis) .rpt-kpi.blue .rpt-kpi-icon{color:#087ce0}
+@media(max-width:850px){.rpt-kpis:not(.rpt-audit-kpis){grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.rpt-kpis:not(.rpt-audit-kpis){grid-template-columns:minmax(0,1fr)}}
+
+
+/* Financial statements: responsive selector and detail panel */
+.rpt-financial{min-height:0}
+.rpt-financial-layout{display:grid;grid-template-columns:minmax(190px,0.85fr) minmax(0,2fr);gap:clamp(10px,1.2vw,20px);margin-top:16px}
+.rpt-financial-choices{display:flex;flex-direction:column;gap:8px;min-width:0}
+.rpt-financial-choices button{text-align:left;border:1px solid #dce5ed;background:#fff;border-radius:9px;padding:12px;color:#19324c;font-weight:650;cursor:pointer}
+.rpt-financial-choices button.selected{background:#e7f8e9;border-color:#0a862c;color:#006b24}
+.rpt-financial-detail{min-width:0;border:1px solid #e0e9ef;border-radius:10px;padding:clamp(12px,1.4vw,22px)}
+.rpt-financial-detail h3{margin:0 0 10px;color:#073d23}
+.rpt-financial-detail p{line-height:1.6}
+.rpt-financial-detail button{border:0;border-radius:8px;background:#006d17;color:white;padding:11px 18px;font-weight:700;cursor:pointer}
+@media(max-width:800px){.rpt-financial-layout{grid-template-columns:minmax(0,1fr)}.rpt-financial-choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr))}}
+
+
+/* Match Audit Report KPI cards to the compact four-card Sales Report layout. */
+.rpt-kpis.rpt-audit-kpis{grid-template-columns:repeat(4,minmax(0,1fr))}
+.rpt-kpis.rpt-audit-kpis .rpt-kpi{min-height:0;padding:clamp(10px,1vw,15px);gap:clamp(8px,.9vw,12px);grid-template-columns:clamp(32px,2.6vw,42px) minmax(0,1fr)}
+.rpt-kpis.rpt-audit-kpis .rpt-kpi-icon{width:clamp(32px,2.6vw,42px);font-size:clamp(24px,2vw,32px)}
+.rpt-kpis.rpt-audit-kpis .rpt-kpi>div{align-self:center}
+.rpt-kpis.rpt-audit-kpis .rpt-kpi strong{margin:3px 0;font-size:clamp(16px,1.3vw,22px);overflow-wrap:anywhere}
+.rpt-kpis.rpt-audit-kpis .rpt-kpi.blue .rpt-kpi-icon{color:#087ce0}
+.rpt-kpis.rpt-audit-kpis .rpt-kpi.pink .rpt-kpi-icon{color:#e52e55}
+.rpt-kpis.rpt-audit-kpis .rpt-kpi.amber .rpt-kpi-icon{color:#e08a00}
+.rpt-kpis.rpt-audit-kpis .rpt-kpi.green .rpt-kpi-icon{color:#008b35}
+@media(max-width:1350px){.rpt-kpis.rpt-audit-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:580px){.rpt-kpis.rpt-audit-kpis{grid-template-columns:minmax(0,1fr)}}
+
+
+/* Responsive report shell: measure available content width, not browser viewport. */
+.rpt-page{container-type:inline-size;width:100%;max-width:100%;min-width:0;overflow-x:clip}
+.rpt-page :is(.rpt-heading,.rpt-heading-name,.rpt-actions,.rpt-tabs,.rpt-kpis,.rpt-charts,.rpt-bottom,.rpt-card,.rpt-category,.rpt-financial-layout,.rpt-financial-detail,.rpt-card-title,.rpt-filters){min-width:0;max-width:100%}
+.rpt-heading-name{flex:1 1 290px}
+.rpt-heading-name>div{min-width:0}
+.rpt-heading-name p{overflow-wrap:anywhere}
+.rpt-actions{flex:0 1 auto;justify-content:flex-end}
+.rpt-actions select{max-width:min(100%,350px);text-overflow:ellipsis}
+.rpt-tabs{grid-template-columns:repeat(7,minmax(0,1fr))}
+.rpt-tabs button{white-space:normal;overflow-wrap:anywhere;line-height:1.25;min-height:46px}
+.rpt-tabs button span{flex:none}
+.rpt-kpis,.rpt-kpis:not(.rpt-audit-kpis),.rpt-kpis.rpt-audit-kpis{grid-template-columns:repeat(4,minmax(0,1fr))}
+.rpt-kpi,.rpt-kpis:not(.rpt-audit-kpis) .rpt-kpi,.rpt-kpis.rpt-audit-kpis .rpt-kpi{min-width:0;min-height:76px;grid-template-columns:clamp(30px,3cqw,42px) minmax(0,1fr)}
+.rpt-kpi strong,.rpt-kpis:not(.rpt-audit-kpis) .rpt-kpi strong,.rpt-kpis.rpt-audit-kpis .rpt-kpi strong{overflow-wrap:anywhere;word-break:normal}
+.rpt-charts{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) minmax(0,1fr)}
+.rpt-trend svg{display:block;width:100%;height:auto;max-height:none}
+.rpt-category{min-height:0;align-items:center}
+.rpt-donut{width:clamp(110px,13cqw,190px);max-width:48%;min-width:0}
+.rpt-donut span{overflow-wrap:anywhere}
+.rpt-legend>div{min-width:0;flex-wrap:wrap;overflow-wrap:anywhere}
+.rpt-legend b{margin-left:auto}
+.rpt-card-title{flex-wrap:wrap}
+.rpt-page .rpt-table-scroll{max-width:100%;min-width:0;overflow-x:auto;overscroll-behavior-x:contain}
+.rpt-table-scroll table{min-width:580px}
+.rpt-audit .rpt-table-scroll table{min-width:720px}
+.rpt-page table{max-width:100%}
+.rpt-filters{display:grid;grid-template-columns:minmax(0,2fr) repeat(2,minmax(0,1fr))}
+.rpt-filters input,.rpt-filters select{width:100%;min-width:0}
+.rpt-financial-layout{grid-template-columns:minmax(0,0.85fr) minmax(0,2fr)}
+.rpt-financial-choices button{white-space:normal;overflow-wrap:anywhere}
+.rpt-financial-detail p{overflow-wrap:anywhere}
+.rpt-disclaimer{overflow-wrap:anywhere}
+@container (max-width:1250px){
+ .rpt-tabs{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .rpt-charts{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .rpt-trend{grid-column:1/-1}
+ .rpt-category{justify-content:center}
 }
+@container (max-width:900px){
+ .rpt-heading{align-items:flex-start}
+ .rpt-actions{flex:1 1 100%;justify-content:flex-start}
+ .rpt-kpis,.rpt-kpis:not(.rpt-audit-kpis),.rpt-kpis.rpt-audit-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .rpt-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .rpt-financial-layout{grid-template-columns:minmax(0,1fr)}
+ .rpt-financial-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@container (max-width:650px){
+ .rpt-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .rpt-charts,.rpt-bottom{grid-template-columns:minmax(0,1fr)}
+ .rpt-trend{grid-column:auto}
+ .rpt-category{flex-wrap:wrap;justify-content:center}
+ .rpt-donut{width:min(190px,55%);max-width:55%}
+ .rpt-legend{flex:1 1 160px}
+ .rpt-filters{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .rpt-filters input{grid-column:1/-1}
+ .rpt-actions select{flex:1 1 100%;max-width:100%}
+}
+@container (max-width:420px){
+ .rpt-kpis,.rpt-kpis:not(.rpt-audit-kpis),.rpt-kpis.rpt-audit-kpis{grid-template-columns:minmax(0,1fr)}
+ .rpt-tabs{grid-template-columns:minmax(0,1fr)}
+ .rpt-actions button{flex:1 1 auto}
+ .rpt-financial-choices{grid-template-columns:minmax(0,1fr)}
+ .rpt-filters{grid-template-columns:minmax(0,1fr)}
+ .rpt-filters input{grid-column:auto}
+ .rpt-category{flex-direction:column}
+ .rpt-donut{max-width:190px;width:70%}
+ .rpt-legend{width:100%;flex:auto}
+}
+@media print{
+ .rpt-page{container-type:normal;overflow:visible}
+ .rpt-table-scroll{overflow:visible!important}
+ .rpt-table-scroll table{min-width:0}
+}
+
+
+/* Reports layout correction: prevent premature wrapping and oversized SVGs. */
+.rpt-tabs{grid-template-columns:repeat(7,minmax(0,1fr))}
+.rpt-tabs button{font-size:clamp(10px,.85vw,13px);padding:10px 5px;gap:5px;min-height:44px}
+.rpt-tabs button span{font-size:clamp(13px,1.1vw,18px)}
+.rpt-charts{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) minmax(0,1fr);align-items:stretch}
+.rpt-trend{grid-column:auto}
+.rpt-trend svg{width:100%;height:auto;max-height:290px;aspect-ratio:2/1;object-fit:contain}
+.rpt-category{min-height:0}
+.rpt-category .rpt-donut{width:clamp(105px,12cqw,180px)}
+.rpt-charts .rpt-card{min-width:0}
+@container (max-width:1250px){
+ .rpt-tabs{grid-template-columns:repeat(7,minmax(0,1fr))}
+ .rpt-charts{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) minmax(0,1fr)}
+ .rpt-trend{grid-column:auto}
+}
+@container (max-width:1050px){
+ .rpt-tabs{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .rpt-charts{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .rpt-trend{grid-column:1/-1}
+ .rpt-trend svg{max-height:260px;aspect-ratio:auto}
+}
+@container (max-width:650px){
+ .rpt-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .rpt-charts{grid-template-columns:minmax(0,1fr)}
+ .rpt-trend{grid-column:auto}
+ .rpt-trend svg{max-height:250px}
+}
+@container (max-width:420px){
+ .rpt-tabs{grid-template-columns:minmax(0,1fr)}
+}
+
+
+
+/* Category chart: center the entire visual vertically and horizontally.
+   Each legend row has a dedicated no-wrap percentage column. */
+.rpt-charts > .rpt-card:nth-child(2){
+ display:flex;flex-direction:column;
+}
+.rpt-charts > .rpt-card:nth-child(2) .rpt-category{
+ display:flex;flex:1;min-height:240px;width:100%;
+ align-items:center;justify-content:center;
+ gap:clamp(8px,.8vw,16px);margin:auto 0;
+}
+.rpt-charts > .rpt-card:nth-child(2) .rpt-donut{
+ flex:0 1 160px;width:min(45%,160px);max-width:160px;
+ min-width:105px;aspect-ratio:1;
+}
+.rpt-charts > .rpt-card:nth-child(2) .rpt-legend{
+ flex:0 1 auto;width:max-content;max-width:calc(55% - 8px);min-width:0;
+}
+.rpt-charts > .rpt-card:nth-child(2) .rpt-legend > div{
+ display:grid;grid-template-columns:10px minmax(0,1fr) max-content;
+ align-items:center;column-gap:5px;
+ margin:10px 0;font-size:clamp(10px,.7vw,12px);
+}
+.rpt-charts > .rpt-card:nth-child(2) .rpt-legend i{
+ width:10px;height:10px;
+}
+.rpt-charts > .rpt-card:nth-child(2) .rpt-legend-name{
+ min-width:0;white-space:nowrap;
+}
+.rpt-charts > .rpt-card:nth-child(2) .rpt-legend b{
+ margin:0 0 0 5px;white-space:nowrap;justify-self:end;
+}
+@media (max-width:1200px){
+ .rpt-charts > .rpt-card:nth-child(2) .rpt-category{
+  flex-wrap:wrap;align-content:center;
+ }
+ .rpt-charts > .rpt-card:nth-child(2) .rpt-legend{
+  max-width:100%;
+ }
+}
+
+/* Top products: override the generic 580px table minimum so Qty Sold stays visible. */
+.rpt-page .rpt-top-products{width:100%;max-width:100%;overflow-x:visible}
+.rpt-page .rpt-top-products table{
+ width:100%;min-width:0;table-layout:fixed;
+}
+.rpt-page .rpt-top-products th:nth-child(1),
+.rpt-page .rpt-top-products td:nth-child(1){width:12%}
+.rpt-page .rpt-top-products th:nth-child(2),
+.rpt-page .rpt-top-products td:nth-child(2){width:56%;overflow-wrap:anywhere}
+.rpt-page .rpt-top-products th:nth-child(3),
+.rpt-page .rpt-top-products td:nth-child(3){width:32%;text-align:center;white-space:nowrap}
+.rpt-page .rpt-top-products :is(th,td){padding:10px clamp(3px,.45vw,9px)}
+.rpt-page .rpt-top-products .rpt-pill{display:inline-block;padding:4px clamp(6px,.65vw,12px)}
