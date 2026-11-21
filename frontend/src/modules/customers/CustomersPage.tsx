@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Add, DownloadOutlined, UploadOutlined, PeopleOutline, GroupsOutlined, WorkspacePremiumOutlined, CreditCardOutlined, AccessTimeOutlined, ShoppingCartOutlined, Search, LocalOfferOutlined, EditOutlined, DeleteOutlined, PersonOutlined, PhoneOutlined, EmailOutlined, PlaceOutlined, ArrowBackIosNew, ArrowForwardIos, Close, AccountBalanceWalletOutlined, HistoryOutlined } from "@mui/icons-material";
+import { Add, DownloadOutlined, UploadOutlined, PeopleOutlined, GroupsOutlined, WorkspacePremiumOutlined, CreditCardOutlined, AccessTimeOutlined, ShoppingCartOutlined, Search, LocalOfferOutlined, EditOutlined, DeleteOutlined, PersonOutlined, PhoneOutlined, EmailOutlined, PlaceOutlined, ArrowBackIosNew, ArrowForwardIos, Close, AccountBalanceWalletOutlined, HistoryOutlined } from "@mui/icons-material";
 import "./CustomersPage.css";
 
 type CustomerType = "Retail" | "Wholesale" | "Credit";
@@ -44,7 +44,7 @@ const importCsv=(file:File)=>{file.text().then(content=>{const data=content.repl
 useEffect(()=>{const key=(e:KeyboardEvent)=>{if(e.key==="F2"&&!dialog){e.preventDefault();openEditor()}};window.addEventListener("keydown",key);return()=>window.removeEventListener("keydown",key)},[dialog]);
 const totalBalance=customers.reduce((sum,c)=>sum+c.balance,0);
 return <div className="cus-page">
-<header className="cus-header"><div className="cus-title"><PeopleOutline/><div><h1>Customers Management</h1><p>Manage customer information, credit accounts, and purchase history.</p></div></div><div className="cus-actions"><label className="cus-button"><DownloadOutlined/> Import Customers<input hidden type="file" accept=".csv,text/csv" onChange={e=>{const f=e.target.files?.[0];if(f)importCsv(f);e.target.value=""}}/></label><button className="cus-button" onClick={exportCsv}><UploadOutlined/> Export</button><button className="cus-button cus-primary" onClick={()=>openEditor()}><Add/> Add Customer (F2)</button></div></header>
+<header className="cus-header"><div className="cus-title"><PeopleOutlined/><div><h1>Customers Management</h1><p>Manage customer information, credit accounts, and purchase history.</p></div></div><div className="cus-actions"><label className="cus-button"><DownloadOutlined/> Import Customers<input hidden type="file" accept=".csv,text/csv" onChange={e=>{const f=e.target.files?.[0];if(f)importCsv(f);e.target.value=""}}/></label><button className="cus-button" onClick={exportCsv}><UploadOutlined/> Export</button><button className="cus-button cus-primary" onClick={()=>openEditor()}><Add/> Add Customer (F2)</button></div></header>
 <div className="cus-kpis">{[
 {label:"Total Customers",value:String(customers.length),icon:<GroupsOutlined/>,color:"green"},
 {label:"Loyal Customers",value:String(customers.filter(c=>c.loyal).length),icon:<WorkspacePremiumOutlined/>,color:"blue"},
@@ -60,7 +60,7 @@ return <div className="cus-page">
 </section><aside className="cus-detail-panel"><div className="cus-detail-head"><h2><PersonOutlined/> Customer Details</h2><button disabled={!selected} onClick={()=>selected&&openEditor(selected)}><EditOutlined/> Edit</button></div>{selected?<><div className="cus-detail-main"><div className="cus-identity"><span className="cus-avatar">{selected.name.charAt(0).toUpperCase()}</span><div><h3>{selected.name}</h3><small>Customer ID: {selected.id}</small></div><span className={"cus-status "+(selected.active?"yes":"no")}>{selected.active?"✓ Active":"Inactive"}</span></div><div className="cus-facts">{[
 {icon:<PhoneOutlined/>,label:"Phone",value:selected.phone},
 {icon:<EmailOutlined/>,label:"Email",value:selected.email||"—"},
-{icon:<PeopleOutline/>,label:"Type",value:selected.type},
+{icon:<PeopleOutlined/>,label:"Type",value:selected.type},
 {icon:<CreditCardOutlined/>,label:"Credit Limit",value:money(selected.creditLimit)},
 {icon:<AccountBalanceWalletOutlined/>,label:"Outstanding",value:money(selected.balance)},
 {icon:<PlaceOutlined/>,label:"Address",value:selected.address||"—"}
