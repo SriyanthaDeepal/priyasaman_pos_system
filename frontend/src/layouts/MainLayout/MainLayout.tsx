@@ -14,6 +14,7 @@ import FeedbackSnackbar from "../../components/common/FeedbackSnackbar";
 
 import POSPage from "../../modules/pos/POSPage";
 import ProductsPage from "../../modules/products/ProductsPage";
+import PurchasesPage from "../../modules/purchases/PurchasesPage";
 import SalesPage from "../../modules/sales/SalesPage";
 import ReturnExchangePage from "../../modules/sales/ReturnExchangePage";
 import type { ExchangeSale } from "../../modules/sales/ReturnExchangePage";
@@ -76,6 +77,9 @@ export default function MainLayout({
 
       case "products":
         return <ProductsPage products={inventoryProducts} setProducts={setInventoryProducts} onNotice={setFeedback} />;
+
+      case "purchases":
+        return <PurchasesPage products={inventoryProducts} onNotice={setFeedback} />;
 
       case "sales":
         return returnInvoice ? <ReturnExchangePage sale={returnInvoice} onBack={() => setReturnInvoice(null)} onComplete={() => { setReturnedInvoices(previous => previous.includes(returnInvoice.invoice) ? previous : [...previous, returnInvoice.invoice]); setReturnInvoice(null); setFeedback("Return / exchange completed successfully."); }} /> : <SalesPage key={invoiceScanRequested ? "invoice-scan" : "sales"} initialScanOpen={invoiceScanRequested} returnedInvoices={returnedInvoices} onNewSale={() => handleNavigate("pos")} onReturnRefund={sale => { setInvoiceScanRequested(false); setReturnInvoice(sale); }} />;
