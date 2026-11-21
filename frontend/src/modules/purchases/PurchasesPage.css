@@ -120,3 +120,64 @@
  .pur-entry-keyboard-side{max-height:34dvh}
  .pur-request-line{grid-template-columns:minmax(0,1fr) 90px 40px}
 }
+
+/* Purchase entry polish: one-line product rows and compact keyboard container. */
+.pur-entry-main .pur-request-list .pur-request-line{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(175px,230px) 42px;
+  align-items:center;
+  column-gap:12px;
+  min-height:64px;
+  padding:9px 0;
+}
+.pur-entry-main .pur-request-list .pur-request-line>strong{
+  min-width:0;
+  align-self:center;
+  line-height:1.35;
+}
+.pur-entry-main .pur-request-list .pur-request-line>label{
+  display:flex;
+  flex-direction:row;
+  align-items:center;
+  justify-content:flex-end;
+  gap:10px;
+  white-space:nowrap;
+  margin:0;
+  align-self:center;
+}
+.pur-entry-main .pur-request-list .pur-request-line>label input{
+  width:85px;
+  min-width:65px;
+  height:40px;
+  flex:0 0 85px;
+  margin:0;
+}
+.pur-entry-main .pur-request-list .pur-request-line>.pur-remove-item{
+  align-self:center;
+  justify-self:center;
+  width:40px;
+  height:40px;
+}
+.pur-modal:not(.pur-payment-modal) .pur-entry-keyboard-side{
+  align-self:start;
+  min-height:0;
+  height:auto;
+  max-height:100%;
+  background:transparent;
+  border:0;
+  padding:0;
+  border-radius:0;
+  overflow-y:auto;
+}
+.pur-modal:not(.pur-payment-modal) .pur-entry-keyboard-side .pur-keyboard{
+  margin:0;
+  max-height:none;
+}
+@media(max-width:1100px){
+ .pur-entry-main .pur-request-list .pur-request-line{grid-template-columns:minmax(0,1fr) minmax(135px,170px) 40px;gap:8px}
+ .pur-entry-main .pur-request-list .pur-request-line>label{gap:6px;font-size:12px}
+ .pur-entry-main .pur-request-list .pur-request-line>label input{width:65px;flex-basis:65px}
+}
+@media(max-width:650px){
+ .pur-entry-main .pur-request-list .pur-request-line{grid-template-columns:minmax(0,1fr) minmax(125px,155px) 40px}
+}
