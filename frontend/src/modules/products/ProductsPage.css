@@ -785,3 +785,104 @@
  .products-search-controls .products-search-action{flex:1 1 auto}
  .products-search-controls select{flex:1 1 100%;width:100%}
 }
+
+
+/* Product catalogue viewport: table and keyboard share the remaining
+   available space, rather than pushing the document beyond the screen. */
+.products-page--listing{
+  display:flex;
+  flex-direction:column;
+  box-sizing:border-box;
+  height:calc(100dvh - 130px);
+  min-height:300px;
+  overflow:hidden;
+}
+.products-page--listing>.products-heading{
+  flex:0 0 auto;
+  min-height:0;
+}
+.products-page--listing>.products-list-panel{
+  flex:1 1 0;
+  min-height:0;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+.products-page--listing .products-search-controls{
+  flex:0 0 auto;
+}
+.products-page--listing .products-keyboard-container{
+  flex:0 1 auto;
+  height:clamp(185px,34dvh,310px);
+  max-height:48%;
+  min-height:0;
+  overflow:hidden;
+  margin-bottom:10px;
+}
+.products-page--listing .products-keyboard-container>.stk-panel{
+  position:relative;
+  inset:auto;
+  box-sizing:border-box;
+  width:100%;
+  height:100%;
+  max-height:100%;
+  min-height:0;
+  overflow-y:auto;
+  overflow-x:hidden;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+}
+.products-page--listing .products-keyboard-container>.stk-panel::-webkit-scrollbar{
+  display:none;
+}
+.products-page--listing .products-table-wrap{
+  flex:1 1 0;
+  height:auto;
+  min-height:0;
+  max-height:none;
+  overflow:auto;
+  overscroll-behavior:contain;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+}
+.products-page--listing .products-table-wrap::-webkit-scrollbar{
+  display:none;
+}
+.products-page--listing .products-table-wrap table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+}
+.products-page--listing .products-table-wrap thead{
+  position:sticky;
+  top:0;
+  z-index:1;
+}
+.products-page--listing .products-table-wrap th{
+  background:#eef2f6;
+}
+.products-page--listing .products-count,
+.products-page--listing .products-empty{
+  flex:0 0 auto;
+}
+@media(max-height:680px){
+  .products-page--listing{
+    height:calc(100dvh - 130px);
+    min-height:240px;
+  }
+  .products-page--listing .products-keyboard-container{
+    height:clamp(135px,29dvh,230px);
+    max-height:43%;
+  }
+}
+@media(max-width:720px){
+  .products-page--listing{
+    height:calc(100dvh - 130px);
+    min-height:250px;
+  }
+  .products-page--listing .products-keyboard-container{
+    height:clamp(145px,32dvh,260px);
+    max-height:43%;
+  }
+}
