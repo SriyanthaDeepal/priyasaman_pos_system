@@ -126,12 +126,12 @@ export default function MainLayout({
 
   return (
     <Box
-      className="pos-themed-root"
+      className={`pos-themed-root${theme.primary === defaultPOSTheme.primary && theme.accent === defaultPOSTheme.accent && theme.button === null && theme.header === null ? " pos-theme-original" : ""}`}
       style={{
         ["--pos-primary" as string]: theme.primary,
         ["--pos-accent" as string]: theme.accent,
         ["--pos-button" as string]: theme.button ?? theme.primary,
-        ["--pos-header" as string]: theme.header ?? `color-mix(in srgb, ${theme.primary} 11%, white)`,
+        ["--pos-header" as string]: theme.header ?? (theme.primary === defaultPOSTheme.primary ? "#E8F3EC" : `color-mix(in srgb, ${theme.primary} 11%, white)`),
         ["--pos-soft" as string]: `color-mix(in srgb, ${theme.primary} 8%, white)`,
       }}
       sx={{
