@@ -43,3 +43,17 @@
 .rpt-financial-detail p{line-height:1.6}
 .rpt-financial-detail button{border:0;border-radius:8px;background:#006d17;color:white;padding:11px 18px;font-weight:700;cursor:pointer}
 @media(max-width:800px){.rpt-financial-layout{grid-template-columns:minmax(0,1fr)}.rpt-financial-choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr))}}
+
+
+/* Match Audit Report KPI cards to the compact four-card Sales Report layout. */
+.rpt-kpis.rpt-audit-kpis{grid-template-columns:repeat(4,minmax(0,1fr))}
+.rpt-kpis.rpt-audit-kpis .rpt-kpi{min-height:0;padding:clamp(10px,1vw,15px);gap:clamp(8px,.9vw,12px);grid-template-columns:clamp(32px,2.6vw,42px) minmax(0,1fr)}
+.rpt-kpis.rpt-audit-kpis .rpt-kpi-icon{width:clamp(32px,2.6vw,42px);font-size:clamp(24px,2vw,32px)}
+.rpt-kpis.rpt-audit-kpis .rpt-kpi>div{align-self:center}
+.rpt-kpis.rpt-audit-kpis .rpt-kpi strong{margin:3px 0;font-size:clamp(16px,1.3vw,22px);overflow-wrap:anywhere}
+.rpt-kpis.rpt-audit-kpis .rpt-kpi.blue .rpt-kpi-icon{color:#087ce0}
+.rpt-kpis.rpt-audit-kpis .rpt-kpi.pink .rpt-kpi-icon{color:#e52e55}
+.rpt-kpis.rpt-audit-kpis .rpt-kpi.amber .rpt-kpi-icon{color:#e08a00}
+.rpt-kpis.rpt-audit-kpis .rpt-kpi.green .rpt-kpi-icon{color:#008b35}
+@media(max-width:1350px){.rpt-kpis.rpt-audit-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:580px){.rpt-kpis.rpt-audit-kpis{grid-template-columns:minmax(0,1fr)}}
