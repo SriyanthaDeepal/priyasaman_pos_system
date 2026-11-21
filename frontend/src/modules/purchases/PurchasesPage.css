@@ -323,46 +323,97 @@
  .pur-receipt-side{overflow:visible}
 }
 
-/* Receipt right column: fluid height, compact summary, unobtrusive scrolling.
-   Override legacy fixed-height rules without affecting other purchase dialogs. */
-.pur-overlay .pur-receipt-modal{
-  height:calc(100dvh - clamp(12px,2.4vw,36px));
-  max-height:calc(100dvh - clamp(12px,2.4vw,36px));
+/* Receipt dialog: adaptive two-column workspace.
+   Keep header/footer fixed, scroll the item list and payment column independently.
+   At narrow widths stack sections and allow the body to scroll. */
+.pur-overlay:has(.pur-receipt-modal){
+  padding:clamp(8px,1.1vw,20px);
+  align-items:center;
 }
-.pur-receipt-modal .pur-modal-body{display:flex;flex-direction:column;min-height:0;overflow:hidden}
-.pur-receipt-modal .pur-receipt-layout{
+.pur-overlay .pur-receipt-modal{
+  box-sizing:border-box;
+  width:min(100%,1800px);
+  height:clamp(400px,calc(100dvh - 2 * clamp(8px,1.1vw,20px)),1100px);
+  max-height:calc(100dvh - 2 * clamp(8px,1.1vw,20px));
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+.pur-receipt-modal header,.pur-receipt-modal footer{
+  flex:0 0 auto;
+  position:relative;
+  z-index:1;
+  background:#fff;
+}
+.pur-receipt-modal .pur-modal-body{
+  display:flex;
   flex:1 1 auto;
-  height:100%;
+  flex-direction:column;
+  min-height:0;
+  padding:clamp(10px,1vw,18px);
+  overflow:hidden;
+}
+.pur-receipt-modal .pur-receipt-layout{
+  display:grid;
+  grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);
+  gap:clamp(10px,1vw,18px);
+  flex:1 1 auto;
+  height:auto;
   min-height:0;
   align-items:stretch;
-  grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);
+  overflow:hidden;
 }
-.pur-receipt-modal .pur-receipt-side-wrap{
-  min-height:0;
+.pur-receipt-modal .pur-receipt-items-panel{
+  display:flex;
+  flex-direction:column;
   min-width:0;
+  min-height:0;
+  overflow:hidden;
+}
+.pur-receipt-modal .pur-receipt-table-wrap{
+  flex:1 1 auto;
+  min-height:0;
+  overflow:auto;
+  scrollbar-width:none;
+}
+.pur-receipt-modal .pur-receipt-table-wrap::-webkit-scrollbar{display:none}
+.pur-receipt-modal .pur-receipt-side-wrap{
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+  min-height:0;
   overflow:hidden;
 }
 .pur-receipt-modal .pur-receipt-side{
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
   flex:1 1 auto;
+  min-width:0;
   min-height:0;
-  height:100%;
+  height:auto;
   overflow-x:hidden;
   overflow-y:auto;
   overscroll-behavior:contain;
   scrollbar-width:none;
+  gap:clamp(8px,.75vw,12px);
   padding-right:2px;
-  gap:clamp(8px,.8vw,12px);
 }
 .pur-receipt-modal .pur-receipt-side::-webkit-scrollbar{display:none}
 .pur-receipt-modal .pur-receipt-side section{
   flex:0 0 auto;
-  padding:clamp(10px,1vw,14px);
+  min-width:0;
+  padding:clamp(10px,.85vw,14px);
 }
-.pur-receipt-modal .pur-receipt-side h3{margin:0 0 8px;font-size:clamp(15px,1vw,17px)}
+.pur-receipt-modal .pur-receipt-side h3{
+  margin:0 0 8px;
+  font-size:clamp(15px,1vw,17px);
+}
 .pur-receipt-modal .pur-receipt-side .pur-receipt-payment-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
   gap:clamp(7px,.65vw,10px);
   margin:8px 0;
-  grid-template-columns:repeat(2,minmax(0,1fr));
 }
 .pur-receipt-modal .pur-receipt-side .pur-receipt-summary{
   gap:clamp(5px,.5vw,8px);
@@ -370,18 +421,60 @@
   font-size:clamp(12px,.85vw,14px);
 }
 .pur-receipt-modal .pur-receipt-side input:not([type=checkbox]),
-.pur-receipt-modal .pur-receipt-side select{height:clamp(34px,2.5vw,40px)}
+.pur-receipt-modal .pur-receipt-side select{
+  width:100%;
+  min-width:0;
+  height:clamp(34px,2.5vw,40px);
+}
 .pur-receipt-modal .pur-receipt-side label{gap:5px}
-.pur-receipt-modal footer{position:relative;z-index:1;background:#fff}
 @media(max-width:1050px){
- .pur-receipt-modal .pur-receipt-layout{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}
- .pur-receipt-modal .pur-receipt-side .pur-receipt-payment-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pur-receipt-modal .pur-receipt-layout{
+    grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);
+  }
 }
 @media(max-width:760px){
- .pur-receipt-modal .pur-modal-body{overflow-y:auto;overflow-x:hidden;scrollbar-width:none}
- .pur-receipt-modal .pur-modal-body::-webkit-scrollbar{display:none}
- .pur-receipt-modal .pur-receipt-layout{display:flex;flex-direction:column;height:auto;overflow:visible;flex:none}
- .pur-receipt-modal .pur-receipt-items-panel{flex:none;min-height:clamp(220px,35dvh,380px)}
- .pur-receipt-modal .pur-receipt-side-wrap{flex:none;overflow:visible}
- .pur-receipt-modal .pur-receipt-side{height:auto;overflow:visible}
+  .pur-overlay .pur-receipt-modal{
+    width:100%;
+    height:calc(100dvh - 16px);
+    max-height:calc(100dvh - 16px);
+  }
+  .pur-receipt-modal .pur-modal-body{
+    display:block;
+    overflow-x:hidden;
+    overflow-y:auto;
+    scrollbar-width:none;
+  }
+  .pur-receipt-modal .pur-modal-body::-webkit-scrollbar{display:none}
+  .pur-receipt-modal .pur-receipt-layout{
+    display:flex;
+    flex-direction:column;
+    height:auto;
+    min-height:0;
+    overflow:visible;
+  }
+  .pur-receipt-modal .pur-receipt-items-panel{
+    flex:0 0 auto;
+    min-height:0;
+    overflow:visible;
+  }
+  .pur-receipt-modal .pur-receipt-table-wrap{
+    flex:none;
+    max-height:clamp(180px,32dvh,360px);
+    overflow:auto;
+  }
+  .pur-receipt-modal .pur-receipt-side-wrap{
+    flex:0 0 auto;
+    min-height:0;
+    overflow:visible;
+  }
+  .pur-receipt-modal .pur-receipt-side{
+    flex:none;
+    height:auto;
+    overflow:visible;
+  }
+}
+@media(max-height:650px) and (min-width:761px){
+  .pur-receipt-modal header,.pur-receipt-modal footer{padding-block:9px}
+  .pur-receipt-modal .pur-modal-body{padding-block:8px}
+  .pur-receipt-modal .pur-receipt-side section{padding:9px}
 }
