@@ -33,6 +33,7 @@ export default function PurchasesPage({ products, onNotice }: Props) {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(7);
   const [selectedId, setSelectedId] = useState("PO-000128");
+  const selected = orders.find(p => p.id === selectedId) ?? orders[0];
   const [editorOpen, setEditorOpen] = useState(false);
   const [draft, setDraft] = useState(newDraft);
   const [addProduct, setAddProduct] = useState("");
@@ -75,7 +76,6 @@ export default function PurchasesPage({ products, onNotice }: Props) {
   const searchRef = useRef<HTMLInputElement>(null);
   const addLine = (p: InventoryProduct) => { setDraft(d => ({ ...d, lines: d.lines.some(l => l.productId === p.id) ? d.lines : [...d.lines, { productId: p.id, name: p.name, qty: 1, unitPrice: 0 }] })); setAddProduct(""); setProductSearch(""); };
   const scanProduct = (barcode: string) => { const p = products.find(x => x.barcode?.trim() === barcode.trim() && x.active !== false); if (!p) throw new Error("No active product matches this barcode."); addLine(p); setScannerOpen(false); };
-  const selected = orders.find(p => p.id === selectedId) ?? orders[0];
   const filtered = useMemo(() => orders.filter(p => (filter === "All Purchases" || p.status === filter) && (period === "all" || (period === "month" ? p.date.startsWith(new Date().toISOString().slice(0, 7)) : p.date.startsWith(new Date().toISOString().slice(0, 4)))) && (p.id + " " + p.supplier + " " + p.lines.map(l => l.name).join(" ")).toLowerCase().includes(query.toLowerCase())).sort((a, b) => b.date.localeCompare(a.date)), [orders, filter, period, query]);
   const pages = Math.max(1, Math.ceil(filtered.length / pageSize));
   const visible = filtered.slice((Math.min(page, pages) - 1) * pageSize, Math.min(page, pages) * pageSize);
