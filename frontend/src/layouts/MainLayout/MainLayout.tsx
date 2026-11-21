@@ -138,7 +138,7 @@ export default function MainLayout({
       style={{
         ["--pos-primary" as string]: theme.primary,
         ["--pos-accent" as string]: theme.accent,
-        ["--pos-button" as string]: theme.button ?? theme.primary,
+        ["--pos-button" as string]: theme.button ?? theme.accent,
         ["--pos-header" as string]: theme.header ?? (theme.primary === defaultPOSTheme.primary ? "#E8F3EC" : `color-mix(in srgb, ${theme.primary} 11%, white)`),
         ["--pos-soft" as string]: `color-mix(in srgb, ${theme.primary} 8%, white)`,
       }}
