@@ -1,7 +1,8 @@
 import { useMemo, useRef, useState } from "react";
 import type { Dispatch, SetStateAction, ChangeEvent } from "react";
-import { Add, ArrowBack, ArrowForward, CheckCircleOutlined, DeleteOutlined, ContentCopy, QrCodeScanner, KeyboardOutlined, SaveOutlined } from "@mui/icons-material";
+import { Add, ArrowBack, ArrowForward, CheckCircleOutlined, DeleteOutlined, ContentCopy, QrCodeScanner, KeyboardOutlined, SaveOutlined, UploadFileOutlined } from "@mui/icons-material";
 import { Dialog, DialogContent, DialogTitle, IconButton } from "@mui/material";
+import * as XLSX from "xlsx";
 import BarcodeScanner from "../../components/common/BarcodeScanner/BarcodeScanner";
 import BarcodeDisplay from "../../components/common/BarcodeDisplay/BarcodeDisplay";
 import SinhalaTouchKeyboard from "../pos/SinhalaTouchKeyboard";
@@ -10,6 +11,33 @@ import "./BulkProductsPage.css";
 
 type Props={products:InventoryProduct[];setProducts:Dispatch<SetStateAction<InventoryProduct[]>>;onBack:()=>void;onNotice:(message:string)=>void};
 const makeInternalEan13=(used:Set<string>):string=>{for(let attempt=0;attempt<1000;attempt++){const bytes=new Uint32Array(1);crypto.getRandomValues(bytes);const first12="20"+String(bytes[0]).padStart(10,"0").slice(-10);let sum=0;for(let i=0;i<12;i++)sum+=Number(first12[i])*(i%2===0?1:3);const code=first12+String((10-sum%10)%10);if(!used.has(code))return code;}throw new Error("Unable to generate a unique barcode.");};
+
+type ImportRow=Record<string,unknown>;
+const normalizeColumn=(value:string)=>value.toLowerCase().replace(/[^a-z0-9]/g,"");
+const importAliases:Record<string,string[]>={
+ name:["productname","name","itemname","product","item","descriptionofgoods"],
+ id:["sku","productsku","productcode","itemcode","stockcode"],
+ barcode:["barcode","barcodenumber","ean","ean13","gtin","upc"],
+ category:["category","productcategory","group"],
+ brand:["brand","brandname"],
+ supplier:["supplier","suppliername","vendor"],
+ description:["description","details","productdescription"],
+ variantName:["variant","variantname","size","productvariant"],
+ unit:["unit","uom","unitofmeasure","measurementunit"],
+ buy:["buy","buyingprice","purchaseprice","costprice","unitcost","cost"],
+ sell:["sell","sellingprice","saleprice","retailprice","price","unitprice"],
+ stock:["stock","currentstock","quantity","qty","openingstock","stockquantity"],
+ reorder:["reorder","reorderlevel","minimumstock","minstock","reorderpoint"],
+ maxStock:["maxstock","maximumstock","stocklimit"],
+ active:["status","active","productstatus"]
+};
+const mappedImportRow=(row:ImportRow)=>{
+ const entries=Object.entries(row).map(([k,v])=>[normalizeColumn(k),v] as const);
+ const get=(key:string):unknown=>{const aliases=importAliases[key]||[];return entries.find(([column])=>aliases.includes(column))?.[1];};
+ const str=(key:string)=>String(get(key)??"").trim();
+ const num=(key:string,defaultValue:number)=>{const raw=get(key);if(raw===undefined||raw===null||String(raw).trim()==="")return defaultValue;const n=Number(String(raw).replace(/[,\s]|Rs\.?/gi,""));return Number.isFinite(n)?n:NaN;};
+ return {get,str,num};
+};
 const categories=["Groceries","Beverages","Household","Personal Care","Snacks","Others"];
 const units=["Pack","Bag","Bottle","Piece","Box","Kg","Litre","Gram","Carton","Dozen","Tin"];
 const steps=["Product Name","Category","Brand","Supplier","Description","Variant / Size","Unit","Buying Price","Selling Price","Current Stock","Reorder Level","Maximum Stock","Barcode","Product Images","Status"];
@@ -36,6 +64,8 @@ export default function BulkProductsPage({products,setProducts,onBack,onNotice}:
  const [scanner,setScanner]=useState(false);
  const [query,setQuery]=useState("");
  const fileRef=useRef<HTMLInputElement>(null);
+ const importRef=useRef<HTMLInputElement>(null);
+ const [importing,setImporting]=useState(false);
  const inputRef=useRef<HTMLInputElement>(null);
  const suppliers=useMemo(()=>Array.from(new Set(products.flatMap(p=>(p.supplierOffers||[]).map(x=>x.supplier)).filter(Boolean))),[products]);
  const currentSupplier=wizard?.supplierOffers?.find(x=>x.preferred)?.supplier||"";
@@ -44,6 +74,62 @@ export default function BulkProductsPage({products,setProducts,onBack,onNotice}:
  const next=()=>{if(!wizard)return;const value=step===0?wizard.name:step===1?wizard.category:step===6?wizard.unit:step===7?wizard.buy:step===8?wizard.sell:step===9?wizard.stock:wizard.reorder;if(required.has(step)&&(typeof value==="string"?!value.trim():!Number.isFinite(value)||value<0)){setError("Enter a valid value to continue.");return;}setError("");setKeyboard(false);if(step<steps.length-1)setStep(x=>x+1);else setStep(steps.length)};
  const finish=()=>{if(!wizard)return;const others=[...products,...drafts.filter((_,i)=>i!==editingIndex)];const issue=validate(wizard,others);if(issue){setError(issue);return;}setDrafts(old=>editingIndex===null?[...old,wizard]:old.map((p,i)=>i===editingIndex?wizard:p));setWizard(null);setEditingIndex(null);setReview(false);onNotice("Product added to bulk draft. Save All to commit.");};
  const generateBarcode=()=>{if(!wizard)return;const used=new Set([...products,...drafts.filter((_,i)=>i!==editingIndex)].map(p=>p.barcode.trim()).filter(Boolean));try{setField("barcode",makeInternalEan13(used));setError("");setKeyboard(false);}catch{setError("Unable to generate a unique barcode. Please try again.");}};
+
+ const importData=async(event:ChangeEvent<HTMLInputElement>)=>{
+  const file=event.target.files?.[0];
+  event.target.value="";
+  if(!file)return;
+  if(!/\.(xlsx|xls|csv)$/i.test(file.name)){onNotice("Choose a spreadsheet file (Excel or CSV).");return;}
+  setImporting(true);
+  try{
+   const workbook=XLSX.read(await file.arrayBuffer(),{type:"array",raw:false});
+   const sheet=workbook.Sheets[workbook.SheetNames[0]];
+   if(!sheet)throw new Error("The file contains no readable sheet.");
+   const rows=XLSX.utils.sheet_to_json<ImportRow>(sheet,{defval:"",raw:false});
+   if(!rows.length)throw new Error("No product rows were found.");
+   const keys=Object.keys(rows[0]).map(normalizeColumn);
+   if(!keys.some(k=>importAliases.name.includes(k)))throw new Error("Could not identify a Product Name column. Add a Product Name or Name heading and try again.");
+   const occupied=[...products,...drafts];
+   const imported:InventoryProduct[]=[];
+   let nextId=Math.max(0,...occupied.map(p=>Number(p.id.replace(/^PRD-/,""))||0));
+   for(const row of rows){
+    if(Object.values(row).every(v=>String(v??"").trim()===""))continue;
+    const m=mappedImportRow(row);
+    const requestedSku=m.str("id");
+    const usedIds=new Set([...occupied,...imported].map(p=>p.id));
+    let sku=requestedSku;
+    if(!sku){do{sku="PRD-"+String(++nextId).padStart(5,"0");}while(usedIds.has(sku));}
+    const supplier=m.str("supplier");
+    const status=m.str("active").toLowerCase();
+    imported.push({
+     ...fresh(products,[...drafts,...imported]),
+     id:sku,
+     name:m.str("name"),
+     barcode:m.str("barcode"),
+     category:m.str("category")||"Groceries",
+     brand:m.str("brand"),
+     description:m.str("description"),
+     variantName:m.str("variantName")||"Default",
+     unit:m.str("unit")||"Pack",
+     buy:m.num("buy",NaN),
+     sell:m.num("sell",NaN),
+     stock:m.num("stock",0),
+     reorder:m.num("reorder",10),
+     maxStock:m.num("maxStock",0),
+     active:!["inactive","disabled","false","no","0"].includes(status),
+     supplierOffers:supplier?[{id:"import-"+imported.length,supplier,cost:m.num("buy",0),preferred:true}]:[]
+    });
+   }
+   if(!imported.length)throw new Error("No non-empty product rows were found.");
+   setDrafts(old=>[...old,...imported]);
+   setReview(true);
+   setSelected([]);
+   const combined=[...drafts,...imported];
+   const invalid=combined.filter((p,i)=>validate(p,[...products,...combined.filter((_,j)=>j!==i)])).length;
+   onNotice(imported.length+" products imported into drafts. "+(invalid?invalid+" rows need correction before saving.":"Review the products before saving."));
+  }catch(err){onNotice(err instanceof Error?err.message:"Could not read this spreadsheet. Please check the file and try again.");}
+  finally{setImporting(false);}
+ };
  const upload=(e:ChangeEvent<HTMLInputElement>)=>{const files=Array.from(e.target.files||[]);const available=5-(wizard?.images?.length||0);if(files.length>available||files.some(f=>!f.type.startsWith("image/")||f.size>2*1024*1024)){setError("Use up to five images, each under 2 MB.");return;}files.forEach(f=>{const reader=new FileReader();reader.onload=()=>{if(typeof reader.result==="string")setWizard(p=>p?{...p,images:[...(p.images||[]),reader.result as string]}:p)};reader.readAsDataURL(f)});e.target.value="";};
  const errors=drafts.map((p,i)=>validate(p,[...products,...drafts.filter((_,j)=>j!==i)]));
  const valid=errors.every(x=>!x);
@@ -53,7 +139,7 @@ export default function BulkProductsPage({products,setProducts,onBack,onNotice}:
   <header className="bulk-header"><div><small>Products / Bulk Add Products</small><h1>Bulk Add Products</h1><p>Guided entry for accurate multi-product registration.</p></div><div className="bulk-actions"><button onClick={onBack}><ArrowBack/> Back to Products</button><button className="bulk-primary" onClick={()=>open()}><Add/> Add Product Row</button></div></header>
   <div className="bulk-progress"><span className={!review?"active":""}>1 · Enter Products</span><span className={review?"active":""}>2 · Review &amp; Validate</span><span>3 · Save</span></div>
   <section className="bulk-card bulk-workspace">
-   <div className="bulk-toolbar"><input aria-label="Search draft products" placeholder="Search draft products..." value={query} onChange={e=>setQuery(e.target.value)}/><button onClick={()=>open()}><Add/> Add Row</button><button disabled={!selected.length} onClick={()=>{const copies=selected.map(i=>({...drafts[i],id:makeSku(products,[...drafts,...selected.slice(0,selected.indexOf(i)).map(j=>drafts[j])]),barcode:"",name:drafts[i].name+" (Copy)"}));setDrafts(old=>[...old,...copies]);setSelected([])}}><ContentCopy/> Duplicate</button><button disabled={!selected.length} onClick={()=>{setDrafts(old=>old.filter((_,i)=>!selected.includes(i)));setSelected([])}}><DeleteOutlined/> Delete</button></div>
+   <div className="bulk-toolbar"><input ref={importRef} type="file" accept=".xlsx,.xls,.csv" hidden aria-label="Select product spreadsheet" onChange={importData}/><input aria-label="Search draft products" placeholder="Search draft products..." value={query} onChange={e=>setQuery(e.target.value)}/><button onClick={()=>open()}><Add/> Add Row</button><button type="button" disabled={importing} onClick={()=>importRef.current?.click()}><UploadFileOutlined/> {importing?"Importing...":"Import Data"}</button><button disabled={!selected.length} onClick={()=>{const copies=selected.map(i=>({...drafts[i],id:makeSku(products,[...drafts,...selected.slice(0,selected.indexOf(i)).map(j=>drafts[j])]),barcode:"",name:drafts[i].name+" (Copy)"}));setDrafts(old=>[...old,...copies]);setSelected([])}}><ContentCopy/> Duplicate</button><button disabled={!selected.length} onClick={()=>{setDrafts(old=>old.filter((_,i)=>!selected.includes(i)));setSelected([])}}><DeleteOutlined/> Delete</button></div>
    <div className="bulk-table-scroll"><table><thead><tr><th><input aria-label="Select all" type="checkbox" checked={drafts.length>0&&selected.length===drafts.length} onChange={e=>setSelected(e.target.checked?drafts.map((_,i)=>i):[])}/></th><th>#</th><th>Product Name</th><th>SKU</th><th>Barcode</th><th>Category</th><th>Variant</th><th>Unit</th><th>Buying (Rs.)</th><th>Selling (Rs.)</th><th>Stock</th><th>Reorder</th><th>Status</th><th>Actions</th></tr></thead><tbody>{visible.map(({p,i})=><tr key={p.id} className={review&&errors[i]?"bulk-invalid":""}><td><input type="checkbox" checked={selected.includes(i)} onChange={e=>setSelected(old=>e.target.checked?[...old,i]:old.filter(x=>x!==i))}/></td><td>{i+1}</td><td><strong>{p.name}</strong></td><td>{p.id}</td><td>{p.barcode||"—"}</td><td>{p.category}</td><td>{p.variantName||"Default"}</td><td>{p.unit}</td><td>{p.buy.toFixed(2)}</td><td>{p.sell.toFixed(2)}</td><td>{p.stock}</td><td>{p.reorder}</td><td>{review&&errors[i]?<span className="bulk-error">{errors[i]}</span>:<span className="bulk-ok">Ready</span>}</td><td><button onClick={()=>open(i)}>Edit</button></td></tr>)}</tbody></table>{!visible.length&&<div className="bulk-empty">{drafts.length?"No matching draft products.":"No products added yet. Select Add Row to enter your first product using the guided form."}</div>}</div>
    <footer className="bulk-footer"><div><strong>{drafts.length} products</strong><span>{drafts.length-errors.filter(Boolean).length} valid</span>{errors.filter(Boolean).length>0&&<span className="bulk-error">{errors.filter(Boolean).length} need attention</span>}</div><div className="bulk-actions"><button disabled={!drafts.length} onClick={()=>{if(window.confirm("Clear all unsaved product rows?")){setDrafts([]);setSelected([]);setReview(false)}}}>Clear All</button><button onClick={()=>{setReview(true);onNotice(valid?"All draft products are valid.":"Some rows need correction.")}}>Validate All</button><button className="bulk-primary" onClick={saveAll}><SaveOutlined/> Save All Products</button></div></footer>
   </section>
