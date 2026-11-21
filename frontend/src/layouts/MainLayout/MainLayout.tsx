@@ -17,6 +17,7 @@ import ProductsPage from "../../modules/products/ProductsPage";
 import PurchasesPage from "../../modules/purchases/PurchasesPage";
 import SuppliersPage from "../../modules/suppliers/SuppliersPage";
 import CustomersPage from "../../modules/customers/CustomersPage";
+import ReportsPage from "../../modules/reports/ReportsPage";
 import SalesPage from "../../modules/sales/SalesPage";
 import ReturnExchangePage from "../../modules/sales/ReturnExchangePage";
 import type { ExchangeSale } from "../../modules/sales/ReturnExchangePage";
@@ -85,6 +86,9 @@ export default function MainLayout({
 
       case "customers":
         return <CustomersPage onNotice={setFeedback} />;
+
+      case "reports":
+        return <ReportsPage onNotice={setFeedback} />;
 
       case "purchases":
         return <PurchasesPage products={inventoryProducts} onNotice={setFeedback} />;
