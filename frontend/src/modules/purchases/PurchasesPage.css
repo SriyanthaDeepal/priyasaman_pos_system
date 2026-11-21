@@ -17,3 +17,29 @@
 .pur-keyboard::-webkit-scrollbar{display:none}
 .pur-keyboard .stk-panel{width:100%;max-width:100%;position:relative;box-sizing:border-box}
 @media(max-width:650px){.pur-request-line{grid-template-columns:minmax(0,1fr) 100px 30px}.pur-product-search button{padding:7px}}
+
+/* Full-workspace purchase entry dialog: keep the existing application sidebar and header unchanged. */
+.pur-overlay{padding:clamp(8px,1.2vw,18px)}
+.pur-modal:not(.pur-payment-modal){
+  width:min(1500px,calc(100vw - 36px));
+  height:min(94dvh,1050px);
+  max-height:calc(100dvh - 20px);
+  max-width:none;
+}
+.pur-modal:not(.pur-payment-modal) .pur-modal-body{
+  flex:1 1 auto;
+  min-height:0;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  scrollbar-width:none;
+}
+.pur-modal:not(.pur-payment-modal) .pur-modal-body::-webkit-scrollbar{display:none}
+.pur-modal:not(.pur-payment-modal) header,
+.pur-modal:not(.pur-payment-modal) footer{flex-shrink:0}
+.pur-modal:not(.pur-payment-modal) .pur-keyboard{
+  max-height:none;
+  overflow:visible;
+}
+@media(max-width:900px){
+ .pur-modal:not(.pur-payment-modal){width:calc(100vw - 16px);height:calc(100dvh - 16px);max-height:none}
+}
