@@ -522,3 +522,34 @@
     padding-bottom:8px;
   }
 }
+
+/* Compact receipt chrome and single-line supplier invoice reference */
+.pur-receipt-modal header{
+  padding-block:clamp(8px,.65vw,12px);
+}
+.pur-receipt-modal footer{
+  padding-block:clamp(8px,.65vw,12px);
+}
+.pur-receipt-modal .pur-modal-body{
+  padding-block:clamp(6px,.55vw,10px);
+}
+.pur-receipt-modal .pur-receipt-invoice{
+  padding-top:clamp(5px,.45vw,8px);
+}
+.pur-receipt-modal .pur-receipt-invoice label{
+  width:100%;
+  display:flex;
+  flex-direction:row;
+  align-items:center;
+  gap:clamp(8px,.8vw,14px);
+  white-space:nowrap;
+}
+.pur-receipt-modal .pur-receipt-invoice label input{
+  width:auto;
+  flex:1 1 180px;
+  max-width:380px;
+}
+@media(max-width:480px){
+ .pur-receipt-modal .pur-receipt-invoice label{flex-wrap:wrap;white-space:normal}
+ .pur-receipt-modal .pur-receipt-invoice label input{max-width:none}
+}
