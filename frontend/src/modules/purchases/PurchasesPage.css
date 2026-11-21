@@ -43,3 +43,14 @@
 @media(max-width:900px){
  .pur-modal:not(.pur-payment-modal){width:calc(100vw - 16px);height:calc(100dvh - 16px);max-height:none}
 }
+
+/* Purchase entry: reserve a separate right-hand column for the touch keyboard. */
+.pur-entry-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:clamp(12px,1.3vw,22px);min-height:0;align-items:start}
+.pur-entry-layout-keyboard{grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr)}
+.pur-entry-main,.pur-entry-keyboard-side{min-width:0}
+.pur-entry-keyboard-side{position:sticky;top:0;align-self:start;border:1px solid #d6e9da;background:#f7fff9;border-radius:12px;padding:10px;overflow:hidden}
+.pur-entry-keyboard-side .pur-keyboard{margin:0;max-height:calc(94dvh - 235px);overflow-y:auto;scrollbar-width:none}
+.pur-entry-keyboard-side .pur-keyboard::-webkit-scrollbar{display:none}
+.pur-entry-keyboard-side .stk-panel{width:100%;max-width:100%;min-width:0}
+.pur-entry-main .pur-product-matches{position:relative;z-index:1}
+@media(max-width:900px){.pur-entry-layout-keyboard{grid-template-columns:minmax(0,1fr)}.pur-entry-keyboard-side{position:relative}.pur-entry-keyboard-side .pur-keyboard{max-height:45dvh}}
