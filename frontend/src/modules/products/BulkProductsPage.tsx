@@ -15,18 +15,18 @@ const makeInternalEan13=(used:Set<string>):string=>{for(let attempt=0;attempt<10
 type ImportRow=Record<string,unknown>;
 const normalizeColumn=(value:string)=>value.toLowerCase().replace(/[^a-z0-9]/g,"");
 const importAliases:Record<string,string[]>={
- name:["productname","name","itemname","product","item","descriptionofgoods"],
+ name:["productname","name","itemname","product","item","descriptionofgoods","itemdescription","stockname","stockdescription","productdescription","producttitle","itemtitle","particulars"],
  id:["sku","productsku","productcode","itemcode","stockcode"],
- barcode:["barcode","barcodenumber","ean","ean13","gtin","upc"],
+ barcode:["barcode","barcodenumber","ean","ean13","gtin","upc","barcodeno","itembarcode","productbarcode"],
  category:["category","productcategory","group"],
  brand:["brand","brandname"],
  supplier:["supplier","suppliername","vendor"],
  description:["description","details","productdescription"],
  variantName:["variant","variantname","size","productvariant"],
  unit:["unit","uom","unitofmeasure","measurementunit"],
- buy:["buy","buyingprice","purchaseprice","costprice","unitcost","cost"],
- sell:["sell","sellingprice","saleprice","retailprice","price","unitprice"],
- stock:["stock","currentstock","quantity","qty","openingstock","stockquantity"],
+ buy:["buy","buyingprice","purchaseprice","costprice","unitcost","cost","purchasecost","buyprice","averagecost","avgcost"],
+ sell:["sell","sellingprice","saleprice","retailprice","price","unitprice","mrp","salesprice","sellingrate","rate"],
+ stock:["stock","currentstock","quantity","qty","openingstock","stockquantity","onhand","qtyonhand","availableqty","balanceqty","stockonhand"],
  reorder:["reorder","reorderlevel","minimumstock","minstock","reorderpoint"],
  maxStock:["maxstock","maximumstock","stocklimit"],
  active:["status","active","productstatus"]
@@ -44,9 +44,20 @@ const steps=["Product Name","Category","Brand","Supplier","Description","Variant
 const required=new Set([0,1,6,7,8,9,10]);
 const makeSku=(products:InventoryProduct[],drafts:InventoryProduct[])=>"PRD-"+String(Math.max(0,...[...products,...drafts].map(p=>Number(p.id.replace(/^PRD-/,""))||0))+1).padStart(5,"0");
 const fresh=(products:InventoryProduct[],drafts:InventoryProduct[]):InventoryProduct=>({id:makeSku(products,drafts),name:"",category:"Groceries",barcode:"",unit:"Pack",stock:0,buy:0,sell:0,reorder:10,maxStock:0,brand:"",description:"",variantName:"Default",emoji:"📦",active:true,images:[],supplierOffers:[]});
+const mandatoryIssues=(p:InventoryProduct):Record<string,string>=>{
+ const issues:Record<string,string>={};
+ if(!p.name.trim())issues.name="Product name is required";
+ if(!p.category.trim())issues.category="Category is required";
+ if(!p.unit.trim())issues.unit="Unit is required";
+ for(const [key,label] of [["buy","Buying price"],["sell","Selling price"],["stock","Current stock"],["reorder","Reorder level"]] as const){
+  if(!Number.isFinite(p[key]))issues[key]=label+" is missing or invalid";
+  else if(p[key]<0)issues[key]=label+" cannot be negative";
+ }
+ return issues;
+};
 const validate=(p:InventoryProduct,others:InventoryProduct[])=>{
- if(!p.name.trim())return "Product name is required.";
- if(!p.category.trim()||!p.unit.trim())return "Category and unit are required.";
+ const missing=Object.values(mandatoryIssues(p));if(missing.length)return missing.join("; ")+". ";
+
  if(!p.id.trim()||others.some(x=>x.id===p.id))return "Duplicate or missing SKU.";
  if([p.buy,p.sell,p.stock,p.reorder,p.maxStock??0].some(n=>!Number.isFinite(n)||n<0))return "Prices and stock must be valid non-negative numbers.";
  if(p.barcode.trim()&&others.some(x=>x.barcode.trim()===p.barcode.trim()))return "Duplicate barcode.";
@@ -106,15 +117,15 @@ export default function BulkProductsPage({products,setProducts,onBack,onNotice}:
      id:sku,
      name:m.str("name"),
      barcode:m.str("barcode"),
-     category:m.str("category")||"Groceries",
+     category:m.str("category"),
      brand:m.str("brand"),
      description:m.str("description"),
      variantName:m.str("variantName")||"Default",
-     unit:m.str("unit")||"Pack",
+     unit:m.str("unit"),
      buy:m.num("buy",NaN),
      sell:m.num("sell",NaN),
-     stock:m.num("stock",0),
-     reorder:m.num("reorder",10),
+     stock:m.num("stock",NaN),
+     reorder:m.num("reorder",NaN),
      maxStock:m.num("maxStock",0),
      active:!["inactive","disabled","false","no","0"].includes(status),
      supplierOffers:supplier?[{id:"import-"+imported.length,supplier,cost:m.num("buy",0),preferred:true}]:[]
@@ -134,13 +145,14 @@ export default function BulkProductsPage({products,setProducts,onBack,onNotice}:
  const errors=drafts.map((p,i)=>validate(p,[...products,...drafts.filter((_,j)=>j!==i)]));
  const valid=errors.every(x=>!x);
  const saveAll=()=>{if(!drafts.length){onNotice("Add at least one product first.");return;}setReview(true);if(!valid){onNotice("Correct the highlighted rows before saving.");return;}setProducts(old=>[...old,...drafts]);onNotice(drafts.length+" products saved to inventory.");setDrafts([]);setSelected([]);setReview(false);onBack();};
+ const fieldError=(p:InventoryProduct,key:string)=>mandatoryIssues(p)[key];
  const visible=drafts.map((p,i)=>({p,i})).filter(({p})=>[p.name,p.id,p.barcode,p.category].join(" ").toLowerCase().includes(query.toLowerCase()));
  return <div className="bulk-page">
   <header className="bulk-header"><div><small>Products / Bulk Add Products</small><h1>Bulk Add Products</h1><p>Guided entry for accurate multi-product registration.</p></div><div className="bulk-actions"><button onClick={onBack}><ArrowBack/> Back to Products</button><button className="bulk-primary" onClick={()=>open()}><Add/> Add Product Row</button></div></header>
   <div className="bulk-progress"><span className={!review?"active":""}>1 · Enter Products</span><span className={review?"active":""}>2 · Review &amp; Validate</span><span>3 · Save</span></div>
   <section className="bulk-card bulk-workspace">
    <div className="bulk-toolbar"><input ref={importRef} type="file" accept=".xlsx,.xls,.csv" hidden aria-label="Select product spreadsheet" onChange={importData}/><input aria-label="Search draft products" placeholder="Search draft products..." value={query} onChange={e=>setQuery(e.target.value)}/><button onClick={()=>open()}><Add/> Add Row</button><button type="button" disabled={importing} onClick={()=>importRef.current?.click()}><UploadFileOutlined/> {importing?"Importing...":"Import Data"}</button><button disabled={!selected.length} onClick={()=>{const copies=selected.map(i=>({...drafts[i],id:makeSku(products,[...drafts,...selected.slice(0,selected.indexOf(i)).map(j=>drafts[j])]),barcode:"",name:drafts[i].name+" (Copy)"}));setDrafts(old=>[...old,...copies]);setSelected([])}}><ContentCopy/> Duplicate</button><button disabled={!selected.length} onClick={()=>{setDrafts(old=>old.filter((_,i)=>!selected.includes(i)));setSelected([])}}><DeleteOutlined/> Delete</button></div>
-   <div className="bulk-table-scroll"><table><thead><tr><th><input aria-label="Select all" type="checkbox" checked={drafts.length>0&&selected.length===drafts.length} onChange={e=>setSelected(e.target.checked?drafts.map((_,i)=>i):[])}/></th><th>#</th><th>Product Name</th><th>SKU</th><th>Barcode</th><th>Category</th><th>Variant</th><th>Unit</th><th>Buying (Rs.)</th><th>Selling (Rs.)</th><th>Stock</th><th>Reorder</th><th>Status</th><th>Actions</th></tr></thead><tbody>{visible.map(({p,i})=><tr key={p.id} className={review&&errors[i]?"bulk-invalid":""}><td><input type="checkbox" checked={selected.includes(i)} onChange={e=>setSelected(old=>e.target.checked?[...old,i]:old.filter(x=>x!==i))}/></td><td>{i+1}</td><td><strong>{p.name}</strong></td><td>{p.id}</td><td>{p.barcode||"—"}</td><td>{p.category}</td><td>{p.variantName||"Default"}</td><td>{p.unit}</td><td>{p.buy.toFixed(2)}</td><td>{p.sell.toFixed(2)}</td><td>{p.stock}</td><td>{p.reorder}</td><td>{review&&errors[i]?<span className="bulk-error">{errors[i]}</span>:<span className="bulk-ok">Ready</span>}</td><td><button onClick={()=>open(i)}>Edit</button></td></tr>)}</tbody></table>{!visible.length&&<div className="bulk-empty">{drafts.length?"No matching draft products.":"No products added yet. Select Add Row to enter your first product using the guided form."}</div>}</div>
+   <div className="bulk-table-scroll"><table><thead><tr><th><input aria-label="Select all" type="checkbox" checked={drafts.length>0&&selected.length===drafts.length} onChange={e=>setSelected(e.target.checked?drafts.map((_,i)=>i):[])}/></th><th>#</th><th>Product Name</th><th>SKU</th><th>Barcode</th><th>Category</th><th>Variant</th><th>Unit</th><th>Buying (Rs.)</th><th>Selling (Rs.)</th><th>Stock</th><th>Reorder</th><th>Status</th><th>Actions</th></tr></thead><tbody>{visible.map(({p,i})=><tr key={p.id} className={errors[i]?"bulk-invalid":""}><td><input type="checkbox" checked={selected.includes(i)} onChange={e=>setSelected(old=>e.target.checked?[...old,i]:old.filter(x=>x!==i))}/></td><td>{i+1}</td><td className={fieldError(p,"name")?"bulk-missing-cell":""} title={fieldError(p,"name")||undefined}><strong>{p.name||"Required"}</strong></td><td>{p.id}</td><td>{p.barcode||"—"}</td><td className={fieldError(p,"category")?"bulk-missing-cell":""} title={fieldError(p,"category")||undefined}>{p.category||"Required"}</td><td>{p.variantName||"Default"}</td><td className={fieldError(p,"unit")?"bulk-missing-cell":""} title={fieldError(p,"unit")||undefined}>{p.unit||"Required"}</td><td className={fieldError(p,"buy")?"bulk-missing-cell":""} title={fieldError(p,"buy")||undefined}>{Number.isFinite(p.buy)?p.buy.toFixed(2):"Required"}</td><td className={fieldError(p,"sell")?"bulk-missing-cell":""} title={fieldError(p,"sell")||undefined}>{Number.isFinite(p.sell)?p.sell.toFixed(2):"Required"}</td><td className={fieldError(p,"stock")?"bulk-missing-cell":""} title={fieldError(p,"stock")||undefined}>{Number.isFinite(p.stock)?p.stock:"Required"}</td><td className={fieldError(p,"reorder")?"bulk-missing-cell":""} title={fieldError(p,"reorder")||undefined}>{Number.isFinite(p.reorder)?p.reorder:"Required"}</td><td>{errors[i]?<span className="bulk-error">{errors[i]}</span>:<span className="bulk-ok">Ready</span>}</td><td><button onClick={()=>open(i)}>Edit</button></td></tr>)}</tbody></table>{!visible.length&&<div className="bulk-empty">{drafts.length?"No matching draft products.":"No products added yet. Select Add Row to enter your first product using the guided form."}</div>}</div>
    <footer className="bulk-footer"><div><strong>{drafts.length} products</strong><span>{drafts.length-errors.filter(Boolean).length} valid</span>{errors.filter(Boolean).length>0&&<span className="bulk-error">{errors.filter(Boolean).length} need attention</span>}</div><div className="bulk-actions"><button disabled={!drafts.length} onClick={()=>{if(window.confirm("Clear all unsaved product rows?")){setDrafts([]);setSelected([]);setReview(false)}}}>Clear All</button><button onClick={()=>{setReview(true);onNotice(valid?"All draft products are valid.":"Some rows need correction.")}}>Validate All</button><button className="bulk-primary" onClick={saveAll}><SaveOutlined/> Save All Products</button></div></footer>
   </section>
   {wizard&&<div className="bulk-overlay" role="presentation"><section className="bulk-wizard" role="dialog" aria-modal="true" aria-label="Guided product entry"><header><div><small>{editingIndex===null?"New Product":"Edit Draft Product"} · {wizard.id}</small><h2>{step===steps.length?"Review Product":steps[step]}</h2></div><button onClick={()=>{setWizard(null);setKeyboard(false)}} aria-label="Close">×</button></header><div className="bulk-wizard-body"><div className="bulk-step-count">Step {Math.min(step+1,steps.length)} of {steps.length} <span>{Math.round(Math.min(step+1,steps.length)/steps.length*100)}%</span></div><div className="bulk-step-track"><div style={{width:Math.min(step+1,steps.length)/steps.length*100+"%"}}/></div>
