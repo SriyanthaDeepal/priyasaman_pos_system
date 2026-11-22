@@ -224,7 +224,7 @@ function Sidebar({
             />
 
             <Box className="ps-sidebar-brand-text">
-              <Typography className="ps-sidebar-brand-name">
+              <Typography className="ps-sidebar-brand-name" sx={{ fontSize: branding.displayName.length > 26 ? "12px !important" : branding.displayName.length > 19 ? "15px !important" : branding.displayName.length > 14 ? "17px !important" : "20px !important" }}>
                 {branding.displayName}
               </Typography>
 
