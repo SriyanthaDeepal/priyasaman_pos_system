@@ -47,14 +47,15 @@ function ColorField({ label, value, onChange }: { label: string; value: string; 
     {open && <div className="st-color-palette"><div className="st-palette-title">Quick colors <small>Or use the spectrum picker for any color</small></div><div className="st-swatch-grid">{palette.map(color => <button key={color} type="button" className="st-palette-color" title={color} aria-label={`Choose ${color}`} aria-pressed={value.toLowerCase() === color.toLowerCase()} onClick={() => onChange(color)} style={{ backgroundColor: color }} />)}</div></div>}
   </div>;
 }
-export default function SettingsPage({ theme, onSave }: { theme: POSTheme; onSave: (theme: POSTheme) => void }) {
+export default function SettingsPage({ theme, onSave, onPreview }: { theme: POSTheme; onSave: (theme: POSTheme) => void; onPreview: (theme: POSTheme | null) => void }) {
   const [section, setSection] = useState<string>("Business Profile");
   const [draft, setDraft] = useState<POSTheme>(theme);
   const [autoButton, setAutoButton] = useState(theme.button === null);
   const [autoHeader, setAutoHeader] = useState(theme.header === null);
   const [savedNotice, setSavedNotice] = useState(false);
-  const update = (patch: Partial<POSTheme>) => { setDraft(previous => ({ ...previous, ...patch })); setSavedNotice(false); };
-  const reset = () => { setDraft(defaultPOSTheme); setAutoButton(true); setAutoHeader(true); setSavedNotice(false); };
+  const update = (patch: Partial<POSTheme>) => { setDraft(previous => { const next = { ...previous, ...patch }; if ([next.primary, next.accent, ...(next.button ? [next.button] : []), ...(next.header ? [next.header] : [])].every(validHex)) onPreview(next); return next; }); setSavedNotice(false); };
+  const reset = () => { setDraft(defaultPOSTheme); onPreview(defaultPOSTheme); setAutoButton(true); setAutoHeader(true); setSavedNotice(false); };
+  const cancel = () => { setDraft(theme); setAutoButton(theme.button === null); setAutoHeader(theme.header === null); onPreview(null); setSavedNotice(false); };
   const save = () => {
     if (![draft.primary, draft.accent, ...(draft.button ? [draft.button] : []), ...(draft.header ? [draft.header] : [])].every(validHex)) return;
     onSave(draft); setSavedNotice(true);
@@ -80,7 +81,7 @@ export default function SettingsPage({ theme, onSave }: { theme: POSTheme; onSav
           <div className="st-panel"><h3>Store Operating Hours</h3><div className="st-hours">{["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map((day, i) => <div key={day}><strong>{day}</strong><input type="checkbox" defaultChecked={i < 6}/><small>{i === 6 ? "Closed" : "08:00 AM – 09:00 PM"}</small></div>)}</div></div>
           <p className="st-hint">Business details are a visual preview; backend saving will be connected with the business settings API.</p>
         </> : <><div className="st-section-head"><span className="st-section-icon">⚙</span><div><h2>{section}</h2><p>{sections.find(item => item[0] === section)?.[1]}</p></div></div><div className="st-panel"><h3>{section}</h3><p className="st-hint">This settings section is ready for its dedicated configuration controls and backend integration.</p></div></>}
-        {section === "Theme & Appearance" && <footer className="st-actions"><button type="button" className="st-reset" onClick={reset}>↻ Restore Original Theme</button><button type="button" className="st-save" onClick={save}>▣ Save Changes</button>{savedNotice && <span role="status">Theme saved successfully</span>}</footer>}
+        {section === "Theme & Appearance" && <footer className="st-actions"><button type="button" className="st-reset" onClick={reset}>↻ Restore Original Theme</button><button type="button" className="st-reset" onClick={cancel}>Cancel Preview</button><button type="button" className="st-save" onClick={save}>▣ Save Changes</button>{savedNotice && <span role="status">Theme saved successfully</span>}</footer>}
       </div>
     </div>
   </div>;
