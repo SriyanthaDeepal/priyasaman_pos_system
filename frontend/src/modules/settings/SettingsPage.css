@@ -14,3 +14,17 @@
 .st-palette-color:hover{transform:scale(1.06)}
 .st-color-input input[type=color]{flex:0 0 42px}
 @media(max-width:1100px){.st-swatch-grid{grid-template-columns:repeat(7,minmax(0,1fr))}}
+
+/* Business branding editor */
+.st-brand-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:14px 0}
+.st-brand-fields label{display:flex;flex-direction:column;gap:7px;font-size:12px;font-weight:700}
+.st-brand-fields input,.st-brand-fields select{width:100%;min-width:0;border:1px solid #d9e1ea;border-radius:8px;padding:11px;background:#fff;color:#172132;font:inherit;font-weight:400}
+.st-brand-icon-label{display:block;font-size:12px;font-weight:700;margin:12px 0 8px}
+.st-brand-icons{display:grid;grid-template-columns:repeat(auto-fit,minmax(105px,1fr));gap:8px}
+.st-brand-icon-option{background:#fff;border:1px solid #dce3ec;border-radius:8px;padding:10px 8px;cursor:pointer;color:#172132;font-size:12px}
+.st-brand-icon-option.selected{border:2px solid var(--pos-primary,#003f2d);background:var(--pos-soft,#e8f3ec);font-weight:700}
+.st-brand-actions{display:flex;justify-content:flex-end;align-items:center;flex-wrap:wrap;gap:10px;margin-top:16px}
+.st-brand-actions button{padding:10px 15px;border-radius:9px;font-weight:700;cursor:pointer}
+.st-brand-actions button:disabled{opacity:.5;cursor:not-allowed}
+.st-brand-actions [role=status]{font-size:12px;color:#11763d}
+@media(max-width:900px){.st-brand-fields{grid-template-columns:1fr}}
