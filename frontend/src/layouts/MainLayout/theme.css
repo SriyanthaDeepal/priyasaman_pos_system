@@ -2,12 +2,12 @@
    deep multi-stop sidebar, warm orange-style accent gradient, pale header. */
 .pos-themed-root:not(.pos-theme-original) .ps-sidebar {
   background:
-    radial-gradient(ellipse at 90% 85%, color-mix(in srgb,var(--pos-primary) 66%,white) 32%,transparent 55%),
+    radial-gradient(ellipse at 90% 85%, color-mix(in srgb,var(--pos-primary) 76%,black) 35%,transparent 58%),
     linear-gradient(165deg,
-      color-mix(in srgb,var(--pos-primary) 74%,black) 0%,
-      var(--pos-primary) 42%,
-      color-mix(in srgb,var(--pos-primary) 80%,white) 72%,
-      color-mix(in srgb,var(--pos-primary) 93%,black) 100%) !important;
+      color-mix(in srgb,var(--pos-primary) 48%,black) 0%,
+      color-mix(in srgb,var(--pos-primary) 68%,black) 42%,
+      color-mix(in srgb,var(--pos-primary) 83%,black) 72%,
+      color-mix(in srgb,var(--pos-primary) 63%,black) 100%) !important;
 }
 .pos-themed-root:not(.pos-theme-original) .ps-sidebar-nav-row-active,
 .pos-themed-root:not(.pos-theme-original) .ps-sidebar-item-active.MuiListItemButton-root.Mui-selected,
