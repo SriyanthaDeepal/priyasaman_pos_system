@@ -26,7 +26,7 @@ const sections = [
 ] as const;
 const validHex = (s: string) => /^#[0-9a-fA-F]{6}$/.test(s);
 const palette = ["#003F2D", "#047857", "#006C73", "#164B8B", "#2563EB", "#53338C", "#842D42", "#283341", "#FF9200", "#F59E0B", "#DC2626", "#E8F3EC", "#FFFFFF", "#111827"];
-const colorGradient = (color: string) => `linear-gradient(165deg, color-mix(in srgb, ${color} 74%, black), ${color} 42%, color-mix(in srgb, ${color} 80%, white) 72%, color-mix(in srgb, ${color} 93%, black))`;
+const colorGradient = (color: string) => `linear-gradient(165deg, color-mix(in srgb, ${color} 48%, black), color-mix(in srgb, ${color} 68%, black) 42%, color-mix(in srgb, ${color} 83%, black) 72%, color-mix(in srgb, ${color} 63%, black))`;
 const accentGradient = (color: string) => `linear-gradient(180deg, color-mix(in srgb, ${color} 82%, white), ${color} 55%, color-mix(in srgb, ${color} 83%, black))`;
 const textOn = (hex: string) => {
   if (!validHex(hex)) return "#ffffff";
