@@ -1,5 +1,7 @@
 import { useState } from "react";
 import "./SettingsPage.css";
+import { brandIcons, businessTypes, defaultPOSBranding, iconForBusinessType } from "./posBranding";
+import type { POSBranding } from "./posBranding";
 
 export type POSTheme = { primary: string; accent: string; button: string | null; header: string | null };
 export const defaultPOSTheme: POSTheme = { primary: "#003f2d", accent: "#ff9200", button: null, header: null };
@@ -47,7 +49,25 @@ function ColorField({ label, value, onChange }: { label: string; value: string; 
     {open && <div className="st-color-palette"><div className="st-palette-title">Quick colors <small>Or use the spectrum picker for any color</small></div><div className="st-swatch-grid">{palette.map(color => <button key={color} type="button" className="st-palette-color" title={color} aria-label={`Choose ${color}`} aria-pressed={value.toLowerCase() === color.toLowerCase()} onClick={() => onChange(color)} style={{ backgroundColor: color }} />)}</div></div>}
   </div>;
 }
-export default function SettingsPage({ theme, onSave, onPreview }: { theme: POSTheme; onSave: (theme: POSTheme) => void; onPreview: (theme: POSTheme | null) => void }) {
+export default function SettingsPage({ theme, onSave, onPreview, branding, onBrandingPreview, onBrandingSave }: { theme: POSTheme; onSave: (theme: POSTheme) => void; onPreview: (theme: POSTheme | null) => void; branding: POSBranding; onBrandingPreview: (branding: POSBranding | null) => void; onBrandingSave: (branding: POSBranding) => void }) {
+  const [brandDraft, setBrandDraft] = useState<POSBranding>(branding);
+  const [brandSaved, setBrandSaved] = useState(false);
+  const changeBrand = (patch: Partial<POSBranding>) => {
+    const next = { ...brandDraft, ...patch };
+    setBrandDraft(next);
+    setBrandSaved(false);
+    onBrandingPreview(next);
+  };
+  const saveBrand = () => {
+    const name = brandDraft.displayName.trim();
+    if (!name || name.length > 48) return;
+    const next = { ...brandDraft, displayName: name };
+    setBrandDraft(next);
+    onBrandingSave(next);
+    setBrandSaved(true);
+  };
+  const cancelBrand = () => { setBrandDraft(branding); onBrandingPreview(null); setBrandSaved(false); };
+  const resetBrand = () => { setBrandDraft(defaultPOSBranding); onBrandingPreview(defaultPOSBranding); setBrandSaved(false); };
   const [section, setSection] = useState<string>("Business Profile");
   const [draft, setDraft] = useState<POSTheme>(theme);
   const [autoButton, setAutoButton] = useState(theme.button === null);
@@ -77,6 +97,22 @@ export default function SettingsPage({ theme, onSave, onPreview }: { theme: POST
           <div className="st-panel"><h3>Live Theme Preview</h3><div className="st-preview"><div className="st-preview-sidebar" style={{ background: colorGradient(draft.primary), color: textOn(draft.primary) }}><strong>Priyasaman POS</strong><span style={{ background: accentGradient(draft.accent), color: textOn(draft.accent) }}>Dashboard</span><span>Inventory</span><span>Reports</span></div><div className="st-preview-main"><div className="st-preview-top" style={{ background: draft.header ?? (draft.primary === defaultPOSTheme.primary ? "#E8F3EC" : `color-mix(in srgb, ${draft.primary} 11%, white)`) }}>POS Dashboard</div><div className="st-preview-cards"><div>Today's Sales<strong>Rs. 45,600</strong></div><div>Orders<strong>128</strong></div></div><button type="button" style={{ background: draft.button ?? draft.accent, color: textOn(draft.button ?? draft.accent) }}>Save Transaction</button></div></div></div>
         </> : section === "Business Profile" ? <>
           <div className="st-section-head"><span className="st-section-icon">▣</span><div><h2>Business Profile</h2><p>Update your store information, contact details, and branding.</p></div></div>
+          <div className="st-panel st-brand-panel">
+            <h3>System Branding</h3>
+            <p className="st-hint">Personalize the name and icon displayed in the POS sidebar. Changes are previewed immediately and saved only when you select Save Branding.</p>
+            <div className="st-brand-fields">
+              <label>POS Display Name <input aria-label="POS Display Name" maxLength={48} value={brandDraft.displayName} onChange={e => changeBrand({ displayName: e.target.value })} placeholder="e.g. Dinith Bakery" /></label>
+              <label>Business Category <select aria-label="Business Category" value={brandDraft.businessType} onChange={e => changeBrand({ businessType: e.target.value, icon: iconForBusinessType(e.target.value) })}>{businessTypes.map(type => <option key={type} value={type}>{type}</option>)}</select></label>
+            </div>
+            <label className="st-brand-icon-label">Sidebar Icon</label>
+            <div className="st-brand-icons">{brandIcons.map(item => <button type="button" key={item.id} className={"st-brand-icon-option" + (brandDraft.icon === item.id ? " selected" : "")} onClick={() => changeBrand({ icon: item.id })} aria-pressed={brandDraft.icon === item.id}>{item.label}</button>)}</div>
+            <div className="st-brand-actions">
+              <button type="button" className="st-reset" onClick={resetBrand}>Restore Original</button>
+              <button type="button" className="st-reset" onClick={cancelBrand}>Cancel Preview</button>
+              <button type="button" className="st-save" onClick={saveBrand} disabled={!brandDraft.displayName.trim()}>Save Branding</button>
+              {brandSaved && <span role="status">Branding saved successfully</span>}
+            </div>
+          </div>
           <div className="st-panel"><div className="st-profile-grid"><div><label>Business Name *</label><input defaultValue="Priyasaman Super Mart" /><label>Business Type</label><select defaultValue="Retail Store"><option>Retail Store</option><option>Wholesale</option><option>Restaurant</option><option>Other</option></select><label>Phone Number</label><input defaultValue="077 123 4567" /><label>Email</label><input defaultValue="info@priyasamanmart.lk" /><label>Address</label><textarea defaultValue={"No. 120, Main Street,\nJa-Ela, Sri Lanka"} /></div><div><label>Business Logo</label><div className="st-logo-placeholder">🛒<small>Priyasaman<br/>Super Mart</small></div><label>Currency *</label><select defaultValue="LKR"><option value="LKR">LKR – Sri Lankan Rupee (Rs.)</option></select><label>Tax (VAT) Rate</label><input type="number" defaultValue="15" /><label>Fiscal Year Start</label><select defaultValue="January"><option>January</option><option>April</option></select></div></div></div>
           <div className="st-panel"><h3>Store Operating Hours</h3><div className="st-hours">{["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map((day, i) => <div key={day}><strong>{day}</strong><input type="checkbox" defaultChecked={i < 6}/><small>{i === 6 ? "Closed" : "08:00 AM – 09:00 PM"}</small></div>)}</div></div>
           <p className="st-hint">Business details are a visual preview; backend saving will be connected with the business settings API.</p>
