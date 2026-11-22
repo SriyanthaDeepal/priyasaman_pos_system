@@ -441,3 +441,38 @@
 /* Branding names shrink responsively and never overlap sidebar controls. */
 .ps-sidebar-brand-text{min-width:0;flex:1}
 .ps-sidebar-brand-name.MuiTypography-root{white-space:normal;overflow-wrap:anywhere;text-align:center;max-width:100%;}
+
+/* Adaptive brand lockup: icon and name share available sidebar width. */
+.ps-sidebar-brand-top{
+  width:100%;
+  min-width:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:clamp(6px, .7vw, 12px);
+}
+.ps-sidebar-brand-icon.MuiSvgIcon-root{
+  flex:0 0 auto;
+  width:clamp(29px, 3vw, 39px);
+  height:clamp(29px, 3vw, 39px);
+}
+.ps-sidebar-brand-text{
+  flex:0 1 auto;
+  min-width:0;
+  max-width:calc(100% - 45px);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+.ps-sidebar-brand-name.MuiTypography-root{
+  max-width:100%;
+  overflow-wrap:anywhere;
+  word-break:normal;
+  text-align:center;
+  line-height:1.15;
+}
+.ps-sidebar-brand-subtitle.MuiTypography-root{
+  max-width:100%;
+  overflow-wrap:break-word;
+  line-height:1.2;
+}
