@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./SettingsPage.css";
-import { brandIcons, businessTypes, defaultPOSBranding, iconForBusinessType } from "./posBranding";
+import { businessTypes, defaultPOSBranding, iconForBusinessType } from "./posBranding";
 import type { POSBranding } from "./posBranding";
 
 export type POSTheme = { primary: string; accent: string; button: string | null; header: string | null };
@@ -104,8 +104,6 @@ export default function SettingsPage({ theme, onSave, onPreview, branding, onBra
               <label>POS Display Name <input aria-label="POS Display Name" maxLength={48} value={brandDraft.displayName} onChange={e => changeBrand({ displayName: e.target.value })} placeholder="e.g. Dinith Bakery" /></label>
               <label>Business Category <select aria-label="Business Category" value={brandDraft.businessType} onChange={e => changeBrand({ businessType: e.target.value, icon: iconForBusinessType(e.target.value) })}>{businessTypes.map(type => <option key={type} value={type}>{type}</option>)}</select></label>
             </div>
-            <label className="st-brand-icon-label">Sidebar Icon</label>
-            <div className="st-brand-icons">{brandIcons.map(item => <button type="button" key={item.id} className={"st-brand-icon-option" + (brandDraft.icon === item.id ? " selected" : "")} onClick={() => changeBrand({ icon: item.id })} aria-pressed={brandDraft.icon === item.id}>{item.label}</button>)}</div>
             <div className="st-brand-actions">
               <button type="button" className="st-reset" onClick={resetBrand}>Restore Original</button>
               <button type="button" className="st-reset" onClick={cancelBrand}>Cancel Preview</button>
