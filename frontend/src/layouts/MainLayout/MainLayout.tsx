@@ -3,6 +3,8 @@ import { useState } from "react";
 import SettingsPage, { defaultPOSTheme } from "../../modules/settings/SettingsPage";
 import type { POSTheme } from "../../modules/settings/SettingsPage";
 import "./theme.css";
+import { defaultPOSBranding } from "../../modules/settings/posBranding";
+import type { POSBranding } from "../../modules/settings/posBranding";
 import InventoryPage, { initialInventory } from "../../modules/inventory/InventoryPage";
 import type { InventoryProduct, InventoryView } from "../../modules/inventory/InventoryPage";
 import type { ReactNode } from "react";
@@ -64,6 +66,27 @@ export default function MainLayout({
     setTheme(value);
     try { window.localStorage.setItem("priyasaman-pos-theme", JSON.stringify(value)); } catch { /* Continue with in-memory theme. */ }
   };
+  const [branding, setBranding] = useState<POSBranding>(() => {
+    try {
+      const stored = window.localStorage.getItem("priyasaman-pos-branding");
+      if (stored) {
+        const value: unknown = JSON.parse(stored);
+        if (value && typeof value === "object" && "displayName" in value && "businessType" in value && "icon" in value) {
+          const parsed = value as POSBranding;
+          if (typeof parsed.displayName === "string" && parsed.displayName.trim() && parsed.displayName.length <= 48 &&
+              typeof parsed.businessType === "string" && typeof parsed.icon === "string") return parsed;
+        }
+      }
+    } catch { /* Use original branding. */ }
+    return defaultPOSBranding;
+  });
+  const [previewBranding, setPreviewBranding] = useState<POSBranding | null>(null);
+  const appliedBranding = previewBranding ?? branding;
+  const saveBranding = (value: POSBranding) => {
+    setBranding(value);
+    setPreviewBranding(null);
+    try { window.localStorage.setItem("priyasaman-pos-branding", JSON.stringify(value)); } catch { /* In-memory branding remains active. */ }
+  };
   const [inventoryProducts, setInventoryProducts] = useState<InventoryProduct[]>(initialInventory);
   const [activePage, setActivePage] =
     useState<SidebarPage>("dashboard");
@@ -86,6 +109,7 @@ export default function MainLayout({
   const handleNavigate = (page: SidebarPage) => {
     // Inventory opens Stock Overview by default, including its selected submenu state.
     setPreviewTheme(null);
+    setPreviewBranding(null);
     setActivePage(page === "inventory" ? "stock-overview" : page);
     setReturnInvoice(null);
     setInvoiceScanRequested(false);
@@ -120,7 +144,7 @@ export default function MainLayout({
         return <CustomersPage onNotice={setFeedback} />;
 
       case "settings":
-        return <SettingsPage theme={theme} onSave={saveTheme} onPreview={setPreviewTheme} />;
+        return <SettingsPage theme={theme} onSave={saveTheme} onPreview={setPreviewTheme} branding={branding} onBrandingPreview={setPreviewBranding} onBrandingSave={saveBranding} />;
 
       case "reports":
         return <ReportsPage onNotice={setFeedback} />;
@@ -160,6 +184,7 @@ export default function MainLayout({
       <FeedbackSnackbar open={Boolean(feedback)} message={feedback} onClose={() => setFeedback("")} />
       {/* SIDEBAR */}
       <Sidebar
+        branding={appliedBranding}
         activePage={activePage}
         onNavigate={handleNavigate}
         mobileOpen={mobileSidebarOpen}
