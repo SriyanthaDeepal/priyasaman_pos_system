@@ -57,7 +57,10 @@ export default function MainLayout({
     } catch { /* Use default theme when local storage is unavailable. */ }
     return defaultPOSTheme;
   });
+  const [previewTheme, setPreviewTheme] = useState<POSTheme | null>(null);
+  const appliedTheme = previewTheme ?? theme;
   const saveTheme = (value: POSTheme) => {
+    setPreviewTheme(null);
     setTheme(value);
     try { window.localStorage.setItem("priyasaman-pos-theme", JSON.stringify(value)); } catch { /* Continue with in-memory theme. */ }
   };
@@ -82,6 +85,7 @@ export default function MainLayout({
 
   const handleNavigate = (page: SidebarPage) => {
     // Inventory opens Stock Overview by default, including its selected submenu state.
+    setPreviewTheme(null);
     setActivePage(page === "inventory" ? "stock-overview" : page);
     setReturnInvoice(null);
     setInvoiceScanRequested(false);
@@ -116,7 +120,7 @@ export default function MainLayout({
         return <CustomersPage onNotice={setFeedback} />;
 
       case "settings":
-        return <SettingsPage theme={theme} onSave={saveTheme} />;
+        return <SettingsPage theme={theme} onSave={saveTheme} onPreview={setPreviewTheme} />;
 
       case "reports":
         return <ReportsPage onNotice={setFeedback} />;
@@ -134,13 +138,13 @@ export default function MainLayout({
 
   return (
     <Box
-      className={`pos-themed-root${theme.primary === defaultPOSTheme.primary && theme.accent === defaultPOSTheme.accent && theme.button === null && theme.header === null ? " pos-theme-original" : ""}`}
+      className={`pos-themed-root${appliedTheme.primary === defaultPOSTheme.primary && appliedTheme.accent === defaultPOSTheme.accent && appliedTheme.button === null && appliedTheme.header === null ? " pos-theme-original" : ""}`}
       style={{
-        ["--pos-primary" as string]: theme.primary,
-        ["--pos-accent" as string]: theme.accent,
-        ["--pos-button" as string]: theme.button ?? theme.accent,
-        ["--pos-header" as string]: theme.header ?? (theme.primary === defaultPOSTheme.primary ? "#E8F3EC" : `color-mix(in srgb, ${theme.primary} 11%, white)`),
-        ["--pos-soft" as string]: `color-mix(in srgb, ${theme.primary} 8%, white)`,
+        ["--pos-primary" as string]: appliedTheme.primary,
+        ["--pos-accent" as string]: appliedTheme.accent,
+        ["--pos-button" as string]: appliedTheme.button ?? appliedTheme.accent,
+        ["--pos-header" as string]: appliedTheme.header ?? (appliedTheme.primary === defaultPOSTheme.primary ? "#E8F3EC" : `color-mix(in srgb, ${appliedTheme.primary} 11%, white)`),
+        ["--pos-soft" as string]: `color-mix(in srgb, ${appliedTheme.primary} 8%, white)`,
       }}
       sx={{
         display: "flex",
