@@ -198,3 +198,11 @@
    Do not introduce another scrolling container or change form positioning. */
 .st-page{padding-bottom:clamp(18px,2.5dvh,28px)}
 .st-global-actions{bottom:clamp(10px,1.6dvh,18px);margin-top:clamp(6px,0.8dvh,10px)}
+
+/* Fit section navigation and common actions within typical laptop heights. */
+.st-navigation{gap:clamp(2px,0.25dvh,4px)}
+.st-nav-item{
+  min-height:clamp(39px,5.05dvh,49px);
+  padding-block:clamp(5px,0.55dvh,8px);
+}
+.st-global-actions{margin-top:clamp(5px,0.65dvh,9px)}
