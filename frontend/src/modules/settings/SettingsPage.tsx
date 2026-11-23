@@ -28,14 +28,6 @@ const sections = [
 ] as const;
 const validHex = (s: string) => /^#[0-9a-fA-F]{6}$/.test(s);
 const palette = ["#003F2D", "#047857", "#006C73", "#164B8B", "#2563EB", "#53338C", "#842D42", "#283341", "#FF9200", "#F59E0B", "#DC2626", "#E8F3EC", "#FFFFFF", "#111827"];
-const colorGradient = (color: string) => `linear-gradient(165deg, color-mix(in srgb, ${color} 48%, black), color-mix(in srgb, ${color} 68%, black) 42%, color-mix(in srgb, ${color} 83%, black) 72%, color-mix(in srgb, ${color} 63%, black))`;
-const accentGradient = (color: string) => `linear-gradient(180deg, color-mix(in srgb, ${color} 82%, white), ${color} 55%, color-mix(in srgb, ${color} 83%, black))`;
-const textOn = (hex: string) => {
-  if (!validHex(hex)) return "#ffffff";
-  const rgb = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255);
-  const luminance = rgb.map(v => v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4);
-  return 0.2126 * luminance[0] + 0.7152 * luminance[1] + 0.0722 * luminance[2] > 0.36 ? "#172132" : "#ffffff";
-};
 function ColorField({ label, value, onChange }: { label: string; value: string; onChange: (value: string) => void }) {
   const [open, setOpen] = useState(false);
   return <div className="st-color-field">
@@ -87,14 +79,14 @@ export default function SettingsPage({ theme, onSave, onPreview, branding, onBra
       <div className="st-content">
         {section === "Theme & Appearance" ? <>
           <div className="st-section-head"><span className="st-section-icon">◉</span><div><h2>Theme & Appearance</h2><p>Customize your POS colors. The sidebar theme coordinates the rest of your interface.</p></div></div>
-          <div className="st-panel"><h3>Choose a Theme</h3><div className="st-presets">{themePresets.map(p => <button type="button" key={p.name} className={"st-preset" + (draft.primary === p.primary && draft.accent === p.accent ? " active" : "")} onClick={() => { update({ primary: p.primary, accent: p.accent, button: null, header: null }); setAutoButton(true); setAutoHeader(true); }}><span className="st-preset-preview" style={{ background: colorGradient(p.primary) }}><i style={{ background: accentGradient(p.accent) }} /></span><span>{p.name}</span></button>)}</div></div>
+          <div className="st-panel"><h3>Choose a Theme</h3><div className="st-presets">{themePresets.map(p => <button type="button" key={p.name} className={"st-preset" + (draft.primary === p.primary && draft.accent === p.accent ? " active" : "")} onClick={() => { update({ primary: p.primary, accent: p.accent, button: null, header: null }); setAutoButton(true); setAutoHeader(true); }}><span className="st-preset-preview" style={{ background: `linear-gradient(165deg, color-mix(in srgb, ${p.primary} 48%, black), color-mix(in srgb, ${p.primary} 83%, black))` }}><i style={{ background: p.accent }} /></span><span>{p.name}</span></button>)}</div></div>
           <div className="st-panel"><h3>Color Customization Panel</h3><p className="st-hint">Choose any color using the full spectrum picker, enter a HEX code, or select a quick swatch. Automatic matching keeps the original POS gradient design.</p><div className="st-color-grid">
             <ColorField label="Sidebar / Primary Color" value={draft.primary} onChange={v => update({ primary: v })} />
             <ColorField label="Accent / Active Navigation" value={draft.accent} onChange={v => update({ accent: v })} />
             <div><label className="st-check"><input type="checkbox" checked={autoButton} onChange={e => { setAutoButton(e.target.checked); update({ button: e.target.checked ? null : draft.accent }); }} /> Automatically coordinate button color with accent</label>{!autoButton && <ColorField label="Primary Button Color" value={draft.button ?? draft.accent} onChange={v => update({ button: v })} />}</div>
             <div><label className="st-check"><input type="checkbox" checked={autoHeader} onChange={e => { setAutoHeader(e.target.checked); update({ header: e.target.checked ? null : "#e8f3ec" }); }} /> Automatically coordinate top bar with sidebar</label>{!autoHeader && <ColorField label="Top Bar Color" value={draft.header ?? "#e8f3ec"} onChange={v => update({ header: v })} />}</div>
           </div></div>
-          <div className="st-panel"><h3>Live Theme Preview</h3><div className="st-preview"><div className="st-preview-sidebar" style={{ background: colorGradient(draft.primary), color: textOn(draft.primary) }}><strong>Priyasaman POS</strong><span style={{ background: accentGradient(draft.accent), color: textOn(draft.accent) }}>Dashboard</span><span>Inventory</span><span>Reports</span></div><div className="st-preview-main"><div className="st-preview-top" style={{ background: draft.header ?? (draft.primary === defaultPOSTheme.primary ? "#E8F3EC" : `color-mix(in srgb, ${draft.primary} 11%, white)`) }}>POS Dashboard</div><div className="st-preview-cards"><div>Today's Sales<strong>Rs. 45,600</strong></div><div>Orders<strong>128</strong></div></div><button type="button" style={{ background: draft.button ?? draft.accent, color: textOn(draft.button ?? draft.accent) }}>Save Transaction</button></div></div></div>
+          
         </> : section === "Business Profile" ? <>
           <div className="st-section-head"><span className="st-section-icon">▣</span><div><h2>Business Profile</h2><p>Update your store information, contact details, and branding.</p></div></div>
           <div className="st-panel st-brand-panel">
