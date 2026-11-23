@@ -138,6 +138,15 @@ export default function MainLayout({
         handleNavigate("customers");
         setQuickAction("add-customer");
         break;
+      case "/sales":
+        handleNavigate("sales");
+        break;
+      case "/products":
+        handleNavigate("products");
+        break;
+      case "/customers":
+        handleNavigate("customers");
+        break;
       case "/reports":
         handleNavigate("reports");
         break;
@@ -269,8 +278,8 @@ export default function MainLayout({
             bgcolor: "#fbfcfe",
             overflowX: "hidden",
             overflowY: activePage === "products" ? "hidden" : "auto",
-            scrollbarWidth: activePage === "settings" ? "none" : undefined,
-            "&::-webkit-scrollbar": activePage === "settings" ? { display: "none" } : undefined,
+            scrollbarWidth: activePage === "settings" || activePage === "dashboard" ? "none" : undefined,
+            "&::-webkit-scrollbar": activePage === "settings" || activePage === "dashboard" ? { display: "none" } : undefined,
           }}
         >
           {renderPage()}
