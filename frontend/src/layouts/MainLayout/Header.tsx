@@ -403,7 +403,6 @@ function Header({ onMenuClick, connections }: HeaderProps) {
             sx={{
               display: "flex",
               alignItems: "center",
-              gap: { xs: 0.25, md: 0.5 },
               flexShrink: 0,
               pr: { xs: 0.5, md: 1 },
               gap: { xs: 0.25, md: 1.25 },
