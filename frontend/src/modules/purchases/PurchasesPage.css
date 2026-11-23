@@ -687,3 +687,17 @@
   .pur-receipt-modal header,.pur-receipt-modal footer{padding-block:6px}
   .pur-receipt-modal .pur-modal-body{padding-block:5px}
 }
+
+/* Date filter changes are staged until Apply. */
+.pur-date-picker{position:relative;flex:0 1 170px;min-width:0}
+.pur-date-picker .pur-date{width:100%;flex:none;cursor:pointer;justify-content:flex-start;font:inherit;color:inherit}
+.pur-date-picker .pur-date span{margin-left:auto;font-size:18px}
+.pur-date-menu{position:absolute;top:calc(100% + 7px);right:0;z-index:100;width:min(290px,calc(100vw - 30px));padding:14px;background:#fff;border:1px solid #d5e0ea;border-radius:14px;box-shadow:0 12px 35px #152c4640}
+.pur-date-menu>strong{display:block;font-size:15px;margin-bottom:11px}
+.pur-date-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.pur-date-options button,.pur-date-actions button{min-height:36px;border:1px solid #d8e0e8;border-radius:9px;background:#f6f8fb;color:#23374b;font-size:12px;font-weight:700;cursor:pointer}
+.pur-date-options button.selected{background:#ddf8e6;border-color:#75c995;color:#08712b}
+.pur-date-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+.pur-date-actions button{padding:0 13px}
+.pur-date-actions button:last-child{background:#e1f8e9;border-color:#8bd3a5;color:#08732b}
+.pur-date-picker button:focus-visible{outline:2px solid #72bd92;outline-offset:2px}
