@@ -28,3 +28,51 @@
 .st-brand-actions button:disabled{opacity:.5;cursor:not-allowed}
 .st-brand-actions [role=status]{font-size:12px;color:#11763d}
 @media(max-width:900px){.st-brand-fields{grid-template-columns:1fr}}
+
+.st-page{container-type:inline-size;container-name:settings}
+
+/* Responsive settings layout: respond to the available panel width, not just viewport width. */
+.st-page{width:100%;max-width:100%;min-width:0;overflow-x:hidden;padding:clamp(12px,1.7vw,24px)}
+.st-heading,.st-heading>div,.st-layout,.st-content,.st-panel,.st-section-head,.st-section-head>div{min-width:0;max-width:100%}
+.st-heading h1,.st-heading p,.st-section-head h2,.st-section-head p,.st-hint{overflow-wrap:anywhere}
+.st-layout{grid-template-columns:minmax(190px,clamp(210px,27%,340px)) minmax(0,1fr);gap:clamp(10px,1.3vw,18px)}
+.st-navigation{min-width:0}
+.st-nav-item{width:100%;min-width:0}
+.st-nav-label strong,.st-nav-label small{overflow-wrap:anywhere}
+.st-panel{min-width:0}
+.st-presets{grid-template-columns:repeat(auto-fit,minmax(min(100%,105px),1fr))}
+.st-color-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))}
+.st-profile-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:clamp(12px,2vw,26px)}
+.st-hours{grid-template-columns:repeat(auto-fit,minmax(min(100%,110px),1fr))}
+.st-hours small{white-space:normal;overflow-wrap:anywhere}
+.st-brand-fields{grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))}
+.st-color-input{width:100%;max-width:100%}
+.st-color-input input:not([type=color]){width:0;min-width:0;flex:1}
+.st-actions,.st-brand-actions{min-width:0}
+.st-page button,.st-page input,.st-page select,.st-page textarea{max-width:100%}
+@container settings (max-width: 850px){
+ .st-layout{grid-template-columns:1fr}
+ .st-navigation{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .st-nav-item{min-height:58px}
+}
+@container settings (max-width: 490px){
+ .st-navigation{grid-template-columns:1fr}
+ .st-heading{gap:10px}
+ .st-gear{font-size:34px}
+ .st-section-head{padding:10px}
+ .st-section-icon{font-size:24px}
+ .st-panel{padding:12px}
+ .st-actions button,.st-brand-actions button{flex:1 1 130px}
+}
+@media(max-width:1150px){
+ .st-layout{grid-template-columns:minmax(190px,32%) minmax(0,1fr)}
+}
+@media(max-width:900px){
+ .st-layout{grid-template-columns:1fr}
+ .st-navigation{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+}
+@media(max-width:520px){
+ .st-navigation{grid-template-columns:1fr}
+ .st-heading h1{font-size:22px}
+ .st-page{padding:12px}
+}
