@@ -72,7 +72,7 @@ export default function SettingsPage({ theme, onSave, onPreview, branding, onBra
     if (![draft.primary, draft.accent, ...(draft.button ? [draft.button] : []), ...(draft.header ? [draft.header] : [])].every(validHex)) return;
     onSave(draft); setSavedNotice(true);
   };
-  return <div className={`st-page${section === "Business Profile" ? " st-business-page" : ""}`}>
+  return <div className="st-page">
     <header className="st-heading"><span className="st-gear">⚙</span><div><h1>System Settings</h1><p>Configure your POS, business, and system preferences.</p></div></header>
     <div className="st-layout">
       <nav className="st-navigation" aria-label="Settings sections">{sections.map(([name, description, icon]) => <button key={name} type="button" className={section === name ? "st-nav-item selected" : "st-nav-item"} onClick={() => setSection(name)}><span className="st-nav-icon">{icon}</span><span className="st-nav-label"><strong>{name}</strong><small>{description}</small></span><span className="st-nav-arrow">›</span></button>)}</nav>
