@@ -141,3 +141,27 @@
 @container settings (max-width: 520px){
  .st-navigation,.st-profile-grid,.st-brand-fields,.st-color-grid{grid-template-columns:1fr}
 }
+
+/* Business Profile: use the available height efficiently, without an inner
+   scrollbar. On short displays the main workspace may still scroll so fields
+   and actions are never inaccessible. */
+.st-business-page{padding-top:clamp(8px,1dvh,14px);padding-bottom:clamp(8px,1dvh,14px)}
+.st-business-page .st-heading{margin-bottom:clamp(6px,0.9dvh,10px)}
+.st-business-page .st-content{gap:clamp(7px,1dvh,11px)}
+.st-business-page .st-panel{padding:clamp(10px,1.25dvh,16px)}
+.st-business-page .st-brand-panel h3{margin-bottom:clamp(5px,0.6dvh,9px)}
+.st-business-page .st-brand-panel .st-hint{margin:clamp(4px,0.6dvh,8px) 0}
+.st-business-page .st-brand-fields{margin:clamp(7px,0.9dvh,11px) 0;gap:clamp(9px,1vw,16px)}
+.st-business-page .st-brand-actions{margin-top:clamp(7px,0.9dvh,11px)}
+.st-business-page .st-profile-grid{gap:clamp(10px,1.2vw,20px)}
+.st-business-page .st-profile-grid>div{gap:clamp(3px,0.5dvh,7px)}
+.st-business-page .st-profile-grid label{margin-top:clamp(2px,0.3dvh,5px)}
+.st-business-page .st-profile-grid input,
+.st-business-page .st-profile-grid select,
+.st-business-page .st-brand-fields input,
+.st-business-page .st-brand-fields select{min-height:clamp(32px,4.2dvh,42px);padding:clamp(6px,0.7dvh,9px)}
+.st-business-page .st-profile-grid textarea{min-height:clamp(46px,6dvh,68px)}
+.st-business-page .st-logo-placeholder{max-height:clamp(80px,12dvh,118px)}
+.st-business-page .st-navigation{gap:clamp(2px,0.35dvh,5px)}
+.st-business-page .st-nav-item{min-height:clamp(37px,4.9dvh,52px);padding-block:clamp(5px,0.65dvh,9px)}
+.st-business-page .st-nav-label{gap:2px}
