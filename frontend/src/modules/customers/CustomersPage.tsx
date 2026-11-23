@@ -15,8 +15,8 @@ const initial:Customer[] = [
 const demoHistory:Record<string,Purchase[]> = {"CST-0001":[{date:"Oct 28, 2026",invoice:"INV-002614",amount:12500},{date:"Oct 20, 2026",invoice:"INV-002557",amount:8750},{date:"Oct 15, 2026",invoice:"INV-002491",amount:15000}]};
 const money=(n:number)=>"Rs. "+n.toLocaleString("en-LK",{minimumFractionDigits:2,maximumFractionDigits:2});
 const blank:Customer={id:"",name:"",phone:"",email:"",type:"Retail",creditLimit:0,balance:0,address:"",active:true,loyal:false};
-type Props={onNotice:(message:string)=>void};
-export default function CustomersPage({onNotice}:Props){
+type Props={openNewOnMount?:boolean;onNotice:(message:string)=>void};
+export default function CustomersPage({onNotice,openNewOnMount=false}:Props){
 const [customers,setCustomers]=useState<Customer[]>(initial);
 const [selectedId,setSelectedId]=useState("CST-0001");
 const [filter,setFilter]=useState("All Customers");
@@ -24,7 +24,7 @@ const [query,setQuery]=useState("");
 const [typeFilter,setTypeFilter]=useState("All Customer Types");
 const [page,setPage]=useState(1);
 const [perPage,setPerPage]=useState(10);
-const [dialog,setDialog]=useState(false);
+const [dialog,setDialog]=useState(openNewOnMount);
 const [editing,setEditing]=useState<string|null>(null);
 const [draft,setDraft]=useState<Customer>(blank);
 const [showHistory,setShowHistory]=useState(false);
