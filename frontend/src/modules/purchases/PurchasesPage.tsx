@@ -10,7 +10,7 @@ type Status = "Pending" | "Partially Received" | "Completed" | "Cancelled";
 type Payment = "Pending" | "Partial" | "Paid";
 type PurchaseLine = { productId: string; name: string; qty: number; unitPrice: number; receivedQty?: number; sellingPrice?: number; returnQty?: number };
 type Purchase = { id: string; supplier: string; date: string; expected: string; status: Status; payment: Payment; lines: PurchaseLine[]; discount: number; tax: number; paidAmount?: number; invoiceNumber?: string; payments?: {method:string;amount:number;chequeDate?:string;status?:"Pending"|"Cleared"|"Returned"}[] };
-type Props = { products: InventoryProduct[]; onNotice: (message: string) => void };
+type Props = { openNewOnMount?: boolean; products: InventoryProduct[]; onNotice: (message: string) => void };
 const formatMoney = (n: number) => "Rs. " + n.toLocaleString("en-LK", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const subtotal = (p: Purchase) => p.lines.reduce((sum, line) => sum + line.qty * line.unitPrice, 0);
 const total = (p: Purchase) => Math.max(0, subtotal(p) - p.discount + p.tax);
@@ -29,7 +29,7 @@ const pendingCheques = (p: Purchase) => (p.payments??[]).filter(x=>x.method==="C
 const outstanding = (p: Purchase) => Math.max(0,total(p)-clearedPaid(p));
 const paymentStatus = (p: Purchase): Payment => outstanding(p)<0.005?"Paid":clearedPaid(p)>0?"Partial":"Pending";
 const newDraft = () => ({ supplier: "", expected: "", lines: [] as PurchaseLine[], discount: 0, tax: 0 });
-export default function PurchasesPage({ products, onNotice }: Props) {
+export default function PurchasesPage({ products, onNotice, openNewOnMount = false }: Props) {
   const [orders, setOrders] = useState<Purchase[]>(sample);
   const [filter, setFilter] = useState<"All Purchases" | Status>("All Purchases");
   const [query, setQuery] = useState("");
