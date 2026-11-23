@@ -9,7 +9,7 @@ import BulkProductsPage from "./BulkProductsPage";
 import type { InventoryProduct } from "../inventory/InventoryPage";
 import "./ProductsPage.css";
 
-type Props = { products: InventoryProduct[]; setProducts: Dispatch<SetStateAction<InventoryProduct[]>>; onNotice: (message: string) => void };
+type Props = { openNewOnMount?: boolean; products: InventoryProduct[]; setProducts: Dispatch<SetStateAction<InventoryProduct[]>>; onNotice: (message: string) => void };
 const money = (n:number) => "Rs. "+n.toLocaleString("en-LK",{minimumFractionDigits:2,maximumFractionDigits:2});
 const blank:InventoryProduct = {id:"",name:"",category:"Groceries",barcode:"",unit:"Pack",stock:0,buy:0,sell:0,reorder:10,emoji:"📦",brand:"",description:"",maxStock:0,active:true,images:[]};
 const isValidEan13=(value:string):boolean=>{if(!/^\d{13}$/.test(value))return false;let sum=0;for(let i=0;i<12;i++)sum+=Number(value[i])*(i%2===0?1:3);return (10-sum%10)%10===Number(value[12]);};
@@ -20,11 +20,11 @@ const nextSku=(products:InventoryProduct[],reserved:string[]=[])=>"PRD-"+String(
 const offerId=()=>Math.random().toString(36).slice(2,10);
 
 
-export default function ProductsPage({products,setProducts,onNotice}:Props) {
+export default function ProductsPage({products,setProducts,onNotice,openNewOnMount=false}:Props) {
   const [bulkOpen,setBulkOpen]=useState(false);
   const [search,setSearch]=useState("");
   const [category,setCategory]=useState("All Products");
-  const [editing,setEditing]=useState<InventoryProduct|null>(null);
+  const [editing,setEditing]=useState<InventoryProduct|null>(openNewOnMount ? {...blank} : null);
   const [originalId,setOriginalId]=useState<string|null>(null);
   const [variants,setVariants]=useState<InventoryProduct[]>([]);
   const [selectedImage,setSelectedImage]=useState(0);
