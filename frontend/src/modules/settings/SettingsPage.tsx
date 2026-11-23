@@ -72,7 +72,7 @@ export default function SettingsPage({ theme, onSave, onPreview, branding, onBra
     if (![draft.primary, draft.accent, ...(draft.button ? [draft.button] : []), ...(draft.header ? [draft.header] : [])].every(validHex)) return;
     onSave(draft); setSavedNotice(true);
   };
-  return <div className="st-page">
+  return <div className={`st-page${section === "Business Profile" ? " st-business-page" : ""}`}>
     <header className="st-heading"><span className="st-gear">⚙</span><div><h1>System Settings</h1><p>Configure your POS, business, and system preferences.</p></div></header>
     <div className="st-layout">
       <nav className="st-navigation" aria-label="Settings sections">{sections.map(([name, description, icon]) => <button key={name} type="button" className={section === name ? "st-nav-item selected" : "st-nav-item"} onClick={() => setSection(name)}><span className="st-nav-icon">{icon}</span><span className="st-nav-label"><strong>{name}</strong><small>{description}</small></span><span className="st-nav-arrow">›</span></button>)}</nav>
@@ -105,7 +105,7 @@ export default function SettingsPage({ theme, onSave, onPreview, branding, onBra
           </div>
           <div className="st-panel"><div className="st-profile-grid"><div><label>Business Name *</label><input defaultValue="Priyasaman Super Mart" /><label>Business Type</label><select defaultValue="Retail Store"><option>Retail Store</option><option>Wholesale</option><option>Restaurant</option><option>Other</option></select><label>Phone Number</label><input defaultValue="077 123 4567" /><label>Email</label><input defaultValue="info@priyasamanmart.lk" /><label>Address</label><textarea defaultValue={"No. 120, Main Street,\nJa-Ela, Sri Lanka"} /></div><div><label>Business Logo</label><div className="st-logo-placeholder">🛒<small>Priyasaman<br/>Super Mart</small></div><label>Currency *</label><select defaultValue="LKR"><option value="LKR">LKR – Sri Lankan Rupee (Rs.)</option></select><label>Tax (VAT) Rate</label><input type="number" defaultValue="15" /><label>Fiscal Year Start</label><select defaultValue="January"><option>January</option><option>April</option></select></div></div></div>
 
-          <p className="st-hint">Business details are a visual preview; backend saving will be connected with the business settings API.</p>
+
         </> : section === "POS Preferences" ? <><div className="st-panel"><h3>Store Operating Hours</h3><p className="st-hint">Configure the days your business operates. These controls are currently a visual preview and are not yet saved.</p><div className="st-hours">{["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map((day, i) => <div key={day}><strong>{day}</strong><input type="checkbox" defaultChecked={i < 6}/><small>{i === 6 ? "Closed" : "08:00 AM – 09:00 PM"}</small></div>)}</div></div></> : <><div className="st-panel"><h3>{section}</h3><p className="st-hint">This settings section is ready for its dedicated configuration controls and backend integration.</p></div></>}
         {section === "Theme & Appearance" && <footer className="st-actions"><button type="button" className="st-reset" onClick={reset}>↻ Restore Original Theme</button><button type="button" className="st-reset" onClick={cancel}>Cancel Preview</button><button type="button" className="st-save" onClick={save}>▣ Save Changes</button>{savedNotice && <span role="status">Theme saved successfully</span>}</footer>}
       </div>
