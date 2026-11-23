@@ -5,6 +5,7 @@ import type { POSBranding } from "./posBranding";
 
 export type POSTheme = { primary: string; accent: string; button: string | null; header: string | null };
 export const defaultPOSTheme: POSTheme = { primary: "#003f2d", accent: "#ff9200", button: null, header: null };
+const defaultBusinessProfile = { name: "Priyasaman Super Mart", type: "Retail Store", phone: "077 123 4567", email: "info@priyasamanmart.lk", address: "No. 120, Main Street,\\nJa-Ela, Sri Lanka", currency: "LKR", vat: "15", fiscal: "January" };
 export const themePresets = [
   { name: "Emerald", primary: "#003f2d", accent: "#ff9200" },
   { name: "Ocean", primary: "#164b8b", accent: "#f59e0b" },
@@ -43,34 +44,39 @@ function ColorField({ label, value, onChange }: { label: string; value: string; 
 }
 export default function SettingsPage({ theme, onSave, onPreview, branding, onBrandingPreview, onBrandingSave }: { theme: POSTheme; onSave: (theme: POSTheme) => void; onPreview: (theme: POSTheme | null) => void; branding: POSBranding; onBrandingPreview: (branding: POSBranding | null) => void; onBrandingSave: (branding: POSBranding) => void }) {
   const [brandDraft, setBrandDraft] = useState<POSBranding>(branding);
-  const [brandSaved, setBrandSaved] = useState(false);
+  const [businessDraft, setBusinessDraft] = useState(() => { try { const stored = window.localStorage.getItem("priyasaman-pos-business-profile"); return stored ? { ...defaultBusinessProfile, ...JSON.parse(stored) as Partial<typeof defaultBusinessProfile> } : defaultBusinessProfile; } catch { return defaultBusinessProfile; } });
+  const [hoursDraft, setHoursDraft] = useState<boolean[]>(() => { try { const stored = window.localStorage.getItem("priyasaman-pos-operating-days"); const value: unknown = stored ? JSON.parse(stored) : null; return Array.isArray(value) && value.length === 7 && value.every(v => typeof v === "boolean") ? value : [true,true,true,true,true,true,false]; } catch { return [true,true,true,true,true,true,false]; } });
+  const [savedNotice, setSavedNotice] = useState(false);
   const changeBrand = (patch: Partial<POSBranding>) => {
     const next = { ...brandDraft, ...patch };
     setBrandDraft(next);
-    setBrandSaved(false);
+    setSavedNotice(false);
     onBrandingPreview(next);
   };
-  const saveBrand = () => {
-    const name = brandDraft.displayName.trim();
-    if (!name || name.length > 48) return;
-    const next = { ...brandDraft, displayName: name };
-    setBrandDraft(next);
-    onBrandingSave(next);
-    setBrandSaved(true);
-  };
-  const cancelBrand = () => { setBrandDraft(branding); onBrandingPreview(null); setBrandSaved(false); };
-  const resetBrand = () => { setBrandDraft(defaultPOSBranding); onBrandingPreview(defaultPOSBranding); setBrandSaved(false); };
   const [section, setSection] = useState<string>("Business Profile");
   const [draft, setDraft] = useState<POSTheme>(theme);
   const [autoButton, setAutoButton] = useState(theme.button === null);
   const [autoHeader, setAutoHeader] = useState(theme.header === null);
-  const [savedNotice, setSavedNotice] = useState(false);
   const update = (patch: Partial<POSTheme>) => { setDraft(previous => { const next = { ...previous, ...patch }; if ([next.primary, next.accent, ...(next.button ? [next.button] : []), ...(next.header ? [next.header] : [])].every(validHex)) onPreview(next); return next; }); setSavedNotice(false); };
-  const reset = () => { setDraft(defaultPOSTheme); onPreview(defaultPOSTheme); setAutoButton(true); setAutoHeader(true); setSavedNotice(false); };
-  const cancel = () => { setDraft(theme); setAutoButton(theme.button === null); setAutoHeader(theme.header === null); onPreview(null); setSavedNotice(false); };
-  const save = () => {
-    if (![draft.primary, draft.accent, ...(draft.button ? [draft.button] : []), ...(draft.header ? [draft.header] : [])].every(validHex)) return;
-    onSave(draft); setSavedNotice(true);
+  const validTheme = [draft.primary, draft.accent, ...(draft.button ? [draft.button] : []), ...(draft.header ? [draft.header] : [])].every(validHex);
+  const validBrand = Boolean(brandDraft.displayName.trim()) && brandDraft.displayName.trim().length <= 48;
+  const [savedBusiness, setSavedBusiness] = useState(() => { try { const raw = window.localStorage.getItem("priyasaman-pos-business-profile"); return raw ? { ...defaultBusinessProfile, ...JSON.parse(raw) as Partial<typeof defaultBusinessProfile> } : defaultBusinessProfile; } catch { return defaultBusinessProfile; } });
+  const [savedHours, setSavedHours] = useState<boolean[]>(() => { try { const raw = window.localStorage.getItem("priyasaman-pos-operating-days"); const v: unknown = raw ? JSON.parse(raw) : null; return Array.isArray(v) && v.length === 7 && v.every(x => typeof x === "boolean") ? v : [true,true,true,true,true,true,false]; } catch { return [true,true,true,true,true,true,false]; } });
+  const dirty = JSON.stringify(draft) !== JSON.stringify(theme) || JSON.stringify(brandDraft) !== JSON.stringify(branding) || JSON.stringify(businessDraft) !== JSON.stringify(savedBusiness) || JSON.stringify(hoursDraft) !== JSON.stringify(savedHours);
+  const discardAll = () => { setDraft(theme); setAutoButton(theme.button === null); setAutoHeader(theme.header === null); onPreview(null); setBrandDraft(branding); onBrandingPreview(null); setBusinessDraft(savedBusiness); setHoursDraft([...savedHours]); setSavedNotice(false); };
+  const saveAll = () => {
+    if (!validTheme || !validBrand || !dirty) return;
+    const normalizedBrand = { ...brandDraft, displayName: brandDraft.displayName.trim() };
+    onSave(draft);
+    onBrandingSave(normalizedBrand);
+    setBrandDraft(normalizedBrand);
+    setSavedBusiness({ ...businessDraft });
+    setSavedHours([...hoursDraft]);
+    try {
+      window.localStorage.setItem("priyasaman-pos-business-profile", JSON.stringify(businessDraft));
+      window.localStorage.setItem("priyasaman-pos-operating-days", JSON.stringify(hoursDraft));
+    } catch { /* In-memory settings remain available. */ }
+    setSavedNotice(true);
   };
   return <div className="st-page">
     <header className="st-heading"><span className="st-gear">⚙</span><div><h1>System Settings</h1><p>Configure your POS, business, and system preferences.</p></div></header>
@@ -91,24 +97,24 @@ export default function SettingsPage({ theme, onSave, onPreview, branding, onBra
           
           <div className="st-panel st-brand-panel">
             <h3>System Branding</h3>
-            <p className="st-hint">Personalize the name and icon displayed in the POS sidebar. Changes are previewed immediately and saved only when you select Save Branding.</p>
+            <p className="st-hint">Personalize the name and icon displayed in the POS sidebar. Changes are previewed immediately. Use Save Changes below to apply edits across all sections.</p>
             <div className="st-brand-fields">
               <label>POS Display Name <input aria-label="POS Display Name" maxLength={48} value={brandDraft.displayName} onChange={e => changeBrand({ displayName: e.target.value })} placeholder="e.g. Dinith Bakery" /></label>
               <label>Business Category <select aria-label="Business Category" value={brandDraft.businessType} onChange={e => changeBrand({ businessType: e.target.value, icon: iconForBusinessType(e.target.value) })}>{businessTypes.map(type => <option key={type} value={type}>{type}</option>)}</select></label>
             </div>
-            <div className="st-brand-actions">
-              <button type="button" className="st-reset" onClick={resetBrand}>Restore Original</button>
-              <button type="button" className="st-reset" onClick={cancelBrand}>Cancel Preview</button>
-              <button type="button" className="st-save" onClick={saveBrand} disabled={!brandDraft.displayName.trim()}>Save Branding</button>
-              {brandSaved && <span role="status">Branding saved successfully</span>}
-            </div>
+
           </div>
-          <div className="st-panel"><div className="st-profile-grid"><div><label>Business Name *</label><input defaultValue="Priyasaman Super Mart" /><label>Business Type</label><select defaultValue="Retail Store"><option>Retail Store</option><option>Wholesale</option><option>Restaurant</option><option>Other</option></select><label>Phone Number</label><input defaultValue="077 123 4567" /><label>Email</label><input defaultValue="info@priyasamanmart.lk" /><label>Address</label><textarea defaultValue={"No. 120, Main Street,\nJa-Ela, Sri Lanka"} /></div><div><label>Business Logo</label><div className="st-logo-placeholder">🛒<small>Priyasaman<br/>Super Mart</small></div><label>Currency *</label><select defaultValue="LKR"><option value="LKR">LKR – Sri Lankan Rupee (Rs.)</option></select><label>Tax (VAT) Rate</label><input type="number" defaultValue="15" /><label>Fiscal Year Start</label><select defaultValue="January"><option>January</option><option>April</option></select></div></div></div>
+          <div className="st-panel"><div className="st-profile-grid"><div><label>Business Name *</label><input value={businessDraft.name} onChange={e => { setBusinessDraft(v => ({ ...v, name: e.target.value })); setSavedNotice(false); }} /><label>Business Type</label><select value={businessDraft.type} onChange={e => { setBusinessDraft(v => ({ ...v, type: e.target.value })); setSavedNotice(false); }}><option>Retail Store</option><option>Wholesale</option><option>Restaurant</option><option>Other</option></select><label>Phone Number</label><input value={businessDraft.phone} onChange={e => { setBusinessDraft(v => ({ ...v, phone: e.target.value })); setSavedNotice(false); }} /><label>Email</label><input value={businessDraft.email} onChange={e => { setBusinessDraft(v => ({ ...v, email: e.target.value })); setSavedNotice(false); }} /><label>Address</label><textarea value={businessDraft.address} onChange={e => { setBusinessDraft(v => ({ ...v, address: e.target.value })); setSavedNotice(false); }} /></div><div><label>Business Logo</label><div className="st-logo-placeholder">🛒<small>Priyasaman<br/>Super Mart</small></div><label>Currency *</label><select value={businessDraft.currency} onChange={e => { setBusinessDraft(v => ({ ...v, currency: e.target.value })); setSavedNotice(false); }}><option value="LKR">LKR – Sri Lankan Rupee (Rs.)</option></select><label>Tax (VAT) Rate</label><input type="number" value={businessDraft.vat} onChange={e => { setBusinessDraft(v => ({ ...v, vat: e.target.value })); setSavedNotice(false); }} /><label>Fiscal Year Start</label><select value={businessDraft.fiscal} onChange={e => { setBusinessDraft(v => ({ ...v, fiscal: e.target.value })); setSavedNotice(false); }}><option>January</option><option>April</option></select></div></div></div>
 
 
-        </> : section === "POS Preferences" ? <><div className="st-panel"><h3>Store Operating Hours</h3><p className="st-hint">Configure the days your business operates. These controls are currently a visual preview and are not yet saved.</p><div className="st-hours">{["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map((day, i) => <div key={day}><strong>{day}</strong><input type="checkbox" defaultChecked={i < 6}/><small>{i === 6 ? "Closed" : "08:00 AM – 09:00 PM"}</small></div>)}</div></div></> : <><div className="st-panel"><h3>{section}</h3><p className="st-hint">This settings section is ready for its dedicated configuration controls and backend integration.</p></div></>}
-        {section === "Theme & Appearance" && <footer className="st-actions"><button type="button" className="st-reset" onClick={reset}>↻ Restore Original Theme</button><button type="button" className="st-reset" onClick={cancel}>Cancel Preview</button><button type="button" className="st-save" onClick={save}>▣ Save Changes</button>{savedNotice && <span role="status">Theme saved successfully</span>}</footer>}
+        </> : section === "POS Preferences" ? <><div className="st-panel"><h3>Store Operating Hours</h3><p className="st-hint">Configure the days your business operates. Choose operating days, then save with the common Save Changes button.</p><div className="st-hours">{["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map((day, i) => <div key={day}><strong>{day}</strong><input type="checkbox" checked={hoursDraft[i]} onChange={e => { setHoursDraft(previous => previous.map((v, index) => index === i ? e.target.checked : v)); setSavedNotice(false); }}/><small>{hoursDraft[i] ? "08:00 AM – 09:00 PM" : "Closed"}</small></div>)}</div></div></> : <><div className="st-panel"><h3>{section}</h3><p className="st-hint">This settings section is ready for its dedicated configuration controls and backend integration.</p></div></>}
+
       </div>
     </div>
+    <footer className="st-global-actions">
+      <span className="st-save-status" role="status">{dirty ? "Unsaved changes" : savedNotice ? "All changes saved" : "No unsaved changes"}</span>
+      <button type="button" className="st-reset" onClick={discardAll} disabled={!dirty}>Discard Changes</button>
+      <button type="button" className="st-save" onClick={saveAll} disabled={!dirty || !validTheme || !validBrand}>Save Changes</button>
+    </footer>
   </div>;
 }
