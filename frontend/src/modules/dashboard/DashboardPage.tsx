@@ -183,7 +183,6 @@ function StatCard({
           </div>
         </div>
       </div>
-      <span className="pd-stat-link">View details <ArrowForwardOutlined sx={{ fontSize: 14 }} /></span>
     </button>
   );
 }
