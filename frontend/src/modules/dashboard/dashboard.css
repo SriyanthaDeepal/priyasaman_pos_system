@@ -2704,3 +2704,22 @@
  .pd-action-row .pd-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
  .pd-action-row .pd-quick-action{min-height:86px}
 }
+
+/* Compact greeting and interactive KPI cards */
+.pd-dashboard-content{padding-top:clamp(12px,1.25vw,18px)}
+.pd-welcome-row{gap:clamp(10px,1.3vw,18px);margin-bottom:clamp(12px,1.2vw,18px)}
+.pd-welcome-left{gap:clamp(9px,1vw,13px)}
+.pd-sun-icon{font-size:clamp(33px,2.8vw,42px)!important}
+.pd-welcome-left h1{font-size:clamp(22px,1.9vw,31px);line-height:1.15;letter-spacing:-.5px}
+.pd-welcome-left p{margin-top:3px;font-size:clamp(12px,.9vw,14px);line-height:1.35}
+.pd-date-control{min-height:42px}
+.pd-kpis{margin-bottom:clamp(12px,1.25vw,18px)}
+.pd-stat-card{display:block;width:100%;font:inherit;text-align:left;cursor:pointer;min-height:clamp(125px,11.5dvh,148px);padding:clamp(13px,1.1vw,18px);transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+.pd-stat-card:hover{transform:translateY(-4px);box-shadow:0 12px 25px #10182820}
+.pd-stat-card:focus-visible{outline:3px solid #ff9200;outline-offset:3px}
+.pd-stat-card:active{transform:translateY(-1px)}
+.pd-stat-link{position:absolute;right:13px;top:12px;display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:700;color:#344054;opacity:0;transform:translateX(-4px);transition:opacity .18s ease,transform .18s ease}
+.pd-stat-card:hover .pd-stat-link,.pd-stat-card:focus-visible .pd-stat-link{opacity:1;transform:translateX(0)}
+@media(hover:none){.pd-stat-link{opacity:.75;transform:none}}
+@media(prefers-reduced-motion:reduce){.pd-stat-card,.pd-stat-link{transition:none}}
+@container(max-width:760px){.pd-welcome-row{gap:10px}.pd-welcome-left h1{font-size:clamp(20px,3.2vw,26px)}.pd-sun-icon{font-size:34px!important}}
