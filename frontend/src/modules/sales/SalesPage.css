@@ -173,7 +173,7 @@
 .sales-page .sales-time-fields label{display:grid;gap:5px;font-size:11px;font-weight:700;color:#44556a}
 .sales-page .sales-time-fields input{min-width:0;width:100%;border:1px solid #d3deeb;border-radius:8px;padding:8px 6px;background:white;color:#1d2b3e;font:inherit;font-size:12px}
 .sales-page .sales-date-hint{font-size:10px;line-height:1.45;color:#637487;margin:11px 0}
-.sales-page .sales-date-menu-actions{display:flex;justify-content:flex-end;gap:8px}
+.sales-page .sales-date-menu-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
 .sales-page .sales-date-menu-actions button{border:1px solid #cbd7e6;border-radius:9px;background:#f5f8fc;padding:8px 13px;font-size:12px;font-weight:750;cursor:pointer}
 .sales-page .sales-date-menu-actions button:last-child{background:#e1f8e9;border-color:#8bd3a5;color:#08732b}
 
