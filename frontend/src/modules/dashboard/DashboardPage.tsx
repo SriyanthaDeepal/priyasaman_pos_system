@@ -149,24 +149,6 @@ function Panel({
   );
 }
 
-function Sparkline() {
-  return (
-    <svg
-      className="pd-sparkline"
-      viewBox="0 0 64 40"
-      aria-hidden="true"
-    >
-      <path
-        d="M2 34 C11 14 18 13 27 22 S42 28 51 10 S59 6 62 3"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="3"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
 function StatCard({
   label,
   value,
@@ -197,7 +179,6 @@ function StatCard({
           </div>
         </div>
       </div>
-      <Sparkline />
       <span className="pd-stat-link">View details <ArrowForwardOutlined sx={{ fontSize: 14 }} /></span>
     </button>
   );
