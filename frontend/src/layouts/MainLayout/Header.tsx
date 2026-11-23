@@ -12,6 +12,7 @@ import {
   Popover,
   Toolbar,
   Typography,
+  Tooltip,
 } from "@mui/material";
 
 import MenuIcon from "@mui/icons-material/Menu";
@@ -22,13 +23,26 @@ import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import StorageOutlinedIcon from "@mui/icons-material/StorageOutlined";
+import PrintOutlinedIcon from "@mui/icons-material/PrintOutlined";
+import QrCodeScannerOutlinedIcon from "@mui/icons-material/QrCodeScannerOutlined";
+import PointOfSaleOutlinedIcon from "@mui/icons-material/PointOfSaleOutlined";
 
 /* ==========================================
    TYPES
    ========================================== */
 
+export type ConnectionState = "connected" | "disconnected" | "checking" | "unknown";
+export type PeripheralConnections = {
+  localDatabase?: ConnectionState;
+  receiptPrinter?: ConnectionState;
+  barcodeScanner?: ConnectionState;
+  cashDrawer?: ConnectionState;
+};
+
 interface HeaderProps {
   onMenuClick?: () => void;
+  connections?: PeripheralConnections;
 }
 
 type Language = "EN" | "SI";
@@ -77,7 +91,26 @@ const initialNotifications: NotificationItem[] = [
    HEADER COMPONENT
    ========================================== */
 
-function Header({ onMenuClick }: HeaderProps) {
+const connectionLabels: Record<ConnectionState, string> = {
+  connected: "Connected",
+  disconnected: "Disconnected",
+  checking: "Checking",
+  unknown: "Not checked",
+};
+const connectionColors: Record<ConnectionState, string> = {
+  connected: "#25844b",
+  disconnected: "#cf4545",
+  checking: "#c28514",
+  unknown: "#6b7280",
+};
+
+function Header({ onMenuClick, connections }: HeaderProps) {
+  const connectionItems = [
+    { key: "localDatabase", label: "Local Database", icon: <StorageOutlinedIcon sx={{ fontSize: 19 }} />, state: connections?.localDatabase ?? "unknown" },
+    { key: "receiptPrinter", label: "Receipt Printer", icon: <PrintOutlinedIcon sx={{ fontSize: 19 }} />, state: connections?.receiptPrinter ?? "unknown" },
+    { key: "barcodeScanner", label: "Barcode Scanner", icon: <QrCodeScannerOutlinedIcon sx={{ fontSize: 19 }} />, state: connections?.barcodeScanner ?? "unknown" },
+    { key: "cashDrawer", label: "Cash Drawer", icon: <PointOfSaleOutlinedIcon sx={{ fontSize: 19 }} />, state: connections?.cashDrawer ?? "unknown" },
+  ] as const;
   const [currentTime, setCurrentTime] = useState(
     () => new Date()
   );
@@ -360,6 +393,52 @@ function Header({ onMenuClick }: HeaderProps) {
             flexShrink: 0,
           }}
         >
+          {/* Peripheral connections: neutral until actual health checks are supplied. */}
+          <Box
+            role="group"
+            aria-label="Hardware and local database connections"
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: { xs: 0.25, md: 0.5 },
+              flexShrink: 0,
+              borderRight: "1px solid rgba(20,32,51,.12)",
+              pr: { xs: 0.5, md: 1.5 },
+            }}
+          >
+            {connectionItems.map((item) => (
+              <Tooltip key={item.key} arrow title={`${item.label}: ${connectionLabels[item.state]}`}>
+                <Box
+                  role="img"
+                  aria-label={`${item.label}: ${connectionLabels[item.state]}`}
+                  sx={{
+                    position: "relative",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: { xs: 27, md: 32 },
+                    height: 32,
+                    color: "#364a52",
+                    borderRadius: 1,
+                    "&:hover": { backgroundColor: "rgba(0,0,0,.05)" },
+                  }}
+                >
+                  {item.icon}
+                  <Box sx={{
+                    position: "absolute",
+                    right: 1,
+                    bottom: 3,
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    backgroundColor: connectionColors[item.state],
+                    border: "1.5px solid #fff",
+                  }} />
+                </Box>
+              </Tooltip>
+            ))}
+          </Box>
+
           {/* Sync Status */}
 
           <Box
