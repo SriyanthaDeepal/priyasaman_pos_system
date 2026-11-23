@@ -511,8 +511,10 @@ export default function DashboardPage({
   const [period, setPeriod] = useState<Period>("today");
   const [notice, setNotice] = useState<string | null>(null);
   const [customOpen, setCustomOpen] = useState(false);
+  const [draftPeriod, setDraftPeriod] = useState<Period>("today");
   const datePickerRef = useRef<HTMLDivElement>(null);
   const openCustomPicker = () => {
+    setDraftPeriod(period);
     setCustomStart(appliedRange?.start ?? "");
     setCustomEnd(appliedRange?.end ?? "");
     setCustomOpen(true);
@@ -540,20 +542,13 @@ export default function DashboardPage({
   // Placeholder scaling only: replace with real date-filtered API data later.
   const selectedFactor = period === "custom" ? customDays : periodFactors[period];
 
-  const handlePeriodChange = (value: Period) => {
-    if (value === "custom") {
-      openCustomPicker();
-      return;
+  const applyDateFilter = () => {
+    if (draftPeriod === "custom") {
+      if (!customStart || !customEnd || customStart > customEnd) return;
+      setAppliedRange({ start: customStart, end: customEnd });
     }
-    setCustomOpen(false);
-    setPeriod(value);
-  };
-
-  const applyCustomRange = () => {
-    if (!customStart || !customEnd || customStart > customEnd) return;
-    setAppliedRange({ start: customStart, end: customEnd });
-    setPeriod("custom");
-    setCustomOpen(false);
+    setPeriod(draftPeriod);
+    closeCustomPicker();
   };
 
   const data = useMemo(() => {
@@ -596,68 +591,35 @@ export default function DashboardPage({
           </div>
 
           <div className="pd-date-picker-wrap" ref={datePickerRef}>
-            <div className="pd-date-control">
-              <button
-                type="button"
-                className="pd-date-icon-button"
-                aria-label="Choose custom date range"
-                onClick={() => customOpen ? closeCustomPicker() : openCustomPicker()}
-              >
-                <CalendarMonthOutlined />
-              </button>
-              <select
-                value={period}
-                aria-label="Dashboard reporting period"
-                onChange={(event) => handlePeriodChange(event.target.value as Period)}
-              >
-                {(Object.entries(periodOptions) as [Period, string][]).map(([value, label]) => (
-                  <option key={value} value={value}>{label}</option>
-                ))}
-              </select>
-            </div>
+            <button type="button" className="pd-date-trigger" aria-expanded={customOpen} aria-haspopup="dialog" onClick={() => customOpen ? closeCustomPicker() : openCustomPicker()}>
+              <CalendarMonthOutlined />
+              <span>{periodOptions[period]}</span>
+              <span className="pd-date-chevron" aria-hidden="true">⌄</span>
+            </button>
             {customOpen && (
-              <div className="pd-date-popover" role="group" aria-label="Custom date range">
-                <div className="pd-date-popover-heading">Select date range</div>
-                <div className="pd-date-inputs">
-                  <label>
-                    <span>Start Date</span>
-                    <input
-                      type="date"
-                      value={customStart}
-                      max={customEnd || undefined}
-                      onChange={(event) => setCustomStart(event.target.value)}
-                    />
-                  </label>
-                  <label>
-                    <span>End Date</span>
-                    <input
-                      type="date"
-                      value={customEnd}
-                      min={customStart || undefined}
-                      onChange={(event) => setCustomEnd(event.target.value)}
-                    />
-                  </label>
+              <div className="pd-date-popover" role="dialog" aria-label="Dashboard date filter">
+                <div className="pd-date-popover-heading">Date Filter</div>
+                <div className="pd-date-presets">
+                  {(Object.entries(periodOptions) as [Period, string][]).map(([value, label]) => (
+                    <button type="button" key={value} className={draftPeriod === value ? "selected" : ""} onClick={() => setDraftPeriod(value)}>{label}</button>
+                  ))}
                 </div>
+                {draftPeriod === "custom" && (
+                  <>
+                    <div className="pd-date-section-title"><CalendarMonthOutlined /> Specific date or date range</div>
+                    <div className="pd-date-inputs">
+                      <label><span>From date</span><input type="date" value={customStart} max={customEnd || undefined} onChange={(event) => setCustomStart(event.target.value)} /></label>
+                      <label><span>To date</span><input type="date" value={customEnd} min={customStart || undefined} onChange={(event) => setCustomEnd(event.target.value)} /></label>
+                    </div>
+                  </>
+                )}
                 <div className="pd-date-popover-actions">
-                  <button type="button" className="pd-date-cancel" onClick={closeCustomPicker}>
-                    Cancel
-                  </button>
-                  <button
-                    type="button"
-                    className="pd-date-apply"
-                    disabled={!customStart || !customEnd || customStart > customEnd}
-                    onClick={applyCustomRange}
-                  >
-                    Apply
-                  </button>
+                  <button type="button" className="pd-date-cancel" onClick={() => { setDraftPeriod(period); setCustomStart(appliedRange?.start ?? ""); setCustomEnd(appliedRange?.end ?? ""); }}>Reset</button>
+                  <button type="button" className="pd-date-apply" disabled={draftPeriod === "custom" && (!customStart || !customEnd || customStart > customEnd)} onClick={applyDateFilter}>Apply</button>
                 </div>
               </div>
             )}
-            {period === "custom" && appliedRange && (
-              <span className="pd-date-range-caption">
-                {appliedRange.start} – {appliedRange.end}
-              </span>
-            )}
+            {period === "custom" && appliedRange && <span className="pd-date-range-caption">{appliedRange.start} – {appliedRange.end}</span>}
           </div>
         </div>
 
