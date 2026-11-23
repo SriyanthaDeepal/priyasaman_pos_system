@@ -12,6 +12,7 @@ import {
   TrendingUpOutlined,
   AssessmentOutlined,
   CalendarMonthOutlined,
+  KeyboardArrowDownOutlined,
   GroupsOutlined,
   Inventory2Outlined,
   LocalOfferOutlined,
@@ -594,7 +595,7 @@ export default function DashboardPage({
             <button type="button" className="pd-date-trigger" aria-expanded={customOpen} aria-haspopup="dialog" onClick={() => customOpen ? closeCustomPicker() : openCustomPicker()}>
               <CalendarMonthOutlined />
               <span>{periodOptions[period]}</span>
-              <span className="pd-date-chevron" aria-hidden="true">⌄</span>
+              <KeyboardArrowDownOutlined className="pd-date-chevron" aria-hidden="true" />
             </button>
             {customOpen && (
               <div className="pd-date-popover" role="dialog" aria-label="Dashboard date filter">
