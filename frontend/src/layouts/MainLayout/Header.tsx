@@ -141,6 +141,8 @@ function Header({ onMenuClick, connections }: HeaderProps) {
     return () => window.clearInterval(timer);
   }, []);
 
+  const formattedDate = currentTime.toLocaleDateString("en-GB", { weekday: "short", day: "2-digit", month: "short", year: "numeric" });
+
   const formattedTime = currentTime.toLocaleTimeString(
     "en-GB",
     {
@@ -373,6 +375,7 @@ function Header({ onMenuClick, connections }: HeaderProps) {
             >
               {formattedTime}
             </Typography>
+            <Typography variant="body2" sx={{display: {xs:"none", lg:"none", xl:"block"}, color:"#344054", whiteSpace:"nowrap"}}>{formattedDate}</Typography>
           </Box>
         </Box>
 
@@ -403,6 +406,7 @@ function Header({ onMenuClick, connections }: HeaderProps) {
               gap: { xs: 0.25, md: 0.5 },
               flexShrink: 0,
               pr: { xs: 0.5, md: 1 },
+              gap: { xs: 0.25, md: 1.25 },
             }}
           >
             {connectionItems.map((item) => (
@@ -415,7 +419,7 @@ function Header({ onMenuClick, connections }: HeaderProps) {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    width: { xs: 27, md: 32 },
+                    minWidth: { xs: 27, md: 32 },
                     height: 32,
                     color: "#364a52",
                     borderRadius: 1,
@@ -423,9 +427,11 @@ function Header({ onMenuClick, connections }: HeaderProps) {
                   }}
                 >
                   {item.icon}
+                  <Typography component="span" sx={{display: {xs:"none", xl:"inline"}, fontSize:12, fontWeight:600, ml:.5, whiteSpace:"nowrap"}}>{item.label === "Local Database" ? "DB" : item.label === "Receipt Printer" ? "Printer" : item.label === "Barcode Scanner" ? "Scanner" : "Drawer"}</Typography>
                   <Box sx={{
                     position: "absolute",
-                    right: 1,
+                    right: {xs:1,xl:"auto"},
+                    left: {xs:"auto",xl:20},
                     bottom: 3,
                     width: 8,
                     height: 8,
@@ -450,7 +456,7 @@ function Header({ onMenuClick, connections }: HeaderProps) {
               px: { xs: 0.25, md: 0.5 },
               py: 0.5,
               borderRadius: 3,
-              backgroundColor: "#e8f5e9",
+              backgroundColor: "#dcf8e5",
               whiteSpace: "nowrap",
             }}
           >
@@ -466,7 +472,7 @@ function Header({ onMenuClick, connections }: HeaderProps) {
               sx={{
                 display: { xs: "none", md: "block" },
                 color: "#2e7d32",
-                fontWeight: 500,
+                fontWeight: 700,
               }}
             >
               Synced
