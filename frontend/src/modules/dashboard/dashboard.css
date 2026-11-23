@@ -2680,3 +2680,27 @@
   .pd-date-picker-wrap { width: 100%; align-items: stretch; }
   .pd-date-popover { left: 0; right: auto; }
 }
+
+/* Dashboard layout: KPIs, quick actions, analytics, then daily insights. */
+.pd-action-row{margin-bottom:clamp(12px,1.4vw,20px);min-width:0}
+.pd-action-row .pd-quick-panel{width:100%;height:auto}
+.pd-action-row .pd-quick-grid{grid-template-columns:repeat(6,minmax(0,1fr));gap:clamp(8px,.9vw,14px)}
+.pd-action-row .pd-quick-action{min-height:clamp(80px,8.5dvh,112px);padding:clamp(9px,.9vw,14px) 6px}
+.pd-analytics-row,.pd-insights-row{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);gap:clamp(12px,1.3vw,20px);align-items:stretch;min-width:0}
+.pd-analytics-row{margin-bottom:clamp(12px,1.3vw,20px)}
+.pd-analytics-row>.pd-panel,.pd-insights-row>.pd-panel{grid-column:auto;grid-row:auto;min-width:0;height:100%}
+.pd-insights-row .pd-summary-panel{display:flex;flex-direction:column}
+.pd-insights-row .pd-summary-list{flex:1;justify-content:space-evenly}
+@container (max-width:1100px){
+ .pd-action-row .pd-quick-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .pd-action-row .pd-quick-action{min-height:85px}
+ .pd-analytics-row,.pd-insights-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@container (max-width:760px){
+ .pd-analytics-row,.pd-insights-row{grid-template-columns:minmax(0,1fr)}
+ .pd-analytics-row>.pd-panel,.pd-insights-row>.pd-panel{grid-column:1;grid-row:auto;height:auto}
+}
+@container (max-width:520px){
+ .pd-action-row .pd-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .pd-action-row .pd-quick-action{min-height:86px}
+}
