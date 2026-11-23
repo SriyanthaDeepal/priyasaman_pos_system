@@ -7,21 +7,15 @@ import {
   ArrowForwardOutlined,
   AssessmentOutlined,
   CalendarMonthOutlined,
-  CheckCircleOutlined,
-  CloudDoneOutlined,
   GroupsOutlined,
   Inventory2Outlined,
   LocalOfferOutlined,
   PointOfSaleOutlined,
-  PrintOutlined,
-  QrCodeScannerOutlined,
   ReceiptLongOutlined,
   ShoppingCartOutlined,
-  StorageOutlined,
   SwapHorizOutlined,
   WarningAmberOutlined,
   WbSunnyOutlined,
-  WifiOutlined,
 } from "@mui/icons-material";
 
 import "./dashboard.css";
@@ -42,27 +36,6 @@ const categories = [
   { name: "Personal Care", share: 11.6, color: "#963df0" },
   { name: "Snacks", share: 10.4, color: "#f75b89" },
   { name: "Others", share: 8.6, color: "#a3acba" },
-] as const;
-
-const transactions = [
-  {
-    invoice: "INV-009842",
-    customer: "Walk-in Customer",
-    time: "08:17 AM",
-    total: 3450,
-  },
-  {
-    invoice: "INV-009841",
-    customer: "Nishan Perera",
-    time: "08:10 AM",
-    total: 6280,
-  },
-  {
-    invoice: "INV-009840",
-    customer: "Walk-in Customer",
-    time: "08:03 AM",
-    total: 1920,
-  },
 ] as const;
 
 const lowStock = [
@@ -541,27 +514,6 @@ function ViewAll({ onClick }: { onClick: () => void }) {
   );
 }
 
-function StatusItem({
-  icon,
-  label,
-  status,
-}: {
-  icon: ReactNode;
-  label: string;
-  status: string;
-}) {
-  return (
-    <div className="pd-status-item">
-      <span className="pd-status-item-icon">{icon}</span>
-      <span className="pd-status-item-label">{label}</span>
-      <span className="pd-status-badge">
-        <CheckCircleOutlined fontSize="inherit" />
-        {status}
-      </span>
-    </div>
-  );
-}
-
 export default function DashboardPage({
   userName = "Admin",
   onNavigate,
@@ -750,56 +702,8 @@ export default function DashboardPage({
           />
         </div>
 
-        {/* MAIN UPPER GRID */}
-        <div className="pd-main-columns">
-          {/* LEFT COLUMN */}
-          <div className="pd-left-column">
-            <Panel
-              title="Sales Overview"
-              icon={<AssessmentOutlined />}
-              className="pd-sales-panel"
-              action={
-                <div
-                  className="pd-chart-tabs"
-                  role="group"
-                  aria-label="Sales chart metric"
-                >
-                  {(
-                    ["sales", "transactions", "profit"] as Metric[]
-                  ).map((item) => (
-                    <button
-                      type="button"
-                      key={item}
-                      className={
-                        metric === item ? "active" : ""
-                      }
-                      aria-pressed={metric === item}
-                      onClick={() => setMetric(item)}
-                    >
-                      {item.charAt(0).toUpperCase() +
-                        item.slice(1)}
-                    </button>
-                  ))}
-                </div>
-              }
-            >
-              <SalesChart
-                metric={metric}
-                factor={selectedFactor}
-              />
-            </Panel>
-
-            <Panel
-              title="Sales by Category"
-              icon={<LocalOfferOutlined />}
-              className="pd-category-panel"
-            >
-              <CategoryChart total={data.sales} />
-            </Panel>
-          </div>
-
-          {/* RIGHT COLUMN */}
-          <div className="pd-right-column">
+        {/* ROW TWO: QUICK ACTIONS */}
+        <div className="pd-action-row">
             <Panel
               title="Quick Actions"
               icon={<PointOfSaleOutlined />}
@@ -847,6 +751,56 @@ export default function DashboardPage({
               </div>
             </Panel>
 
+        </div>
+
+        {/* ROW THREE: ANALYTICS */}
+        <div className="pd-analytics-row">
+            <Panel
+              title="Sales Overview"
+              icon={<AssessmentOutlined />}
+              className="pd-sales-panel"
+              action={
+                <div
+                  className="pd-chart-tabs"
+                  role="group"
+                  aria-label="Sales chart metric"
+                >
+                  {(
+                    ["sales", "transactions", "profit"] as Metric[]
+                  ).map((item) => (
+                    <button
+                      type="button"
+                      key={item}
+                      className={
+                        metric === item ? "active" : ""
+                      }
+                      aria-pressed={metric === item}
+                      onClick={() => setMetric(item)}
+                    >
+                      {item.charAt(0).toUpperCase() +
+                        item.slice(1)}
+                    </button>
+                  ))}
+                </div>
+              }
+            >
+              <SalesChart
+                metric={metric}
+                factor={selectedFactor}
+              />
+            </Panel>
+
+            <Panel
+              title="Sales by Category"
+              icon={<LocalOfferOutlined />}
+              className="pd-category-panel"
+            >
+              <CategoryChart total={data.sales} />
+            </Panel>
+        </div>
+
+        {/* ROW FOUR: SUMMARY AND STOCK ALERTS */}
+        <div className="pd-insights-row">
             <Panel
               title="Today's Summary"
               icon={<ReceiptLongOutlined />}
@@ -880,48 +834,6 @@ export default function DashboardPage({
                 </div>
               </div>
             </Panel>
-          </div>
-        </div>
-
-        {/* BOTTOM TWO-COLUMN ROW */}
-        <div className="pd-bottom-row">
-          {/* LEFT: RECENT TRANSACTIONS */}
-          <Panel
-            title="Recent Transactions"
-            icon={<ReceiptLongOutlined />}
-            className="pd-transactions-panel"
-            action={
-              <ViewAll
-                onClick={() => navigate("/sales/history")}
-              />
-            }
-          >
-            <div className="pd-transaction-list">
-              {transactions.map((transaction) => (
-                <button
-                  type="button"
-                  key={transaction.invoice}
-                  className="pd-transaction-row"
-                  onClick={() =>
-                    navigate(`/sales/${transaction.invoice}`)
-                  }
-                >
-                  <span className="pd-transaction-details">
-                    <strong>{transaction.invoice}</strong>
-                    <small>
-                      {transaction.customer} ·{" "}
-                      {transaction.time}
-                    </small>
-                  </span>
-                  <span className="pd-transaction-amount">
-                    {money(transaction.total)}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </Panel>
-
-          {/* RIGHT: LOW STOCK ALERTS */}
           <Panel
             title="Low Stock Alerts"
             icon={<WarningAmberOutlined />}
@@ -962,36 +874,6 @@ export default function DashboardPage({
             </div>
           </Panel>
         </div>
-
-        {/* SYSTEM STATUS */}
-        <Panel
-          title="System Status"
-          icon={<WifiOutlined />}
-          className="pd-system-panel"
-        >
-          <div className="pd-system-grid">
-            <StatusItem
-              icon={<CloudDoneOutlined />}
-              label="Synchronization"
-              status="Synced"
-            />
-            <StatusItem
-              icon={<StorageOutlined />}
-              label="Local Database"
-              status="Online"
-            />
-            <StatusItem
-              icon={<PrintOutlined />}
-              label="Receipt Printer"
-              status="Ready"
-            />
-            <StatusItem
-              icon={<QrCodeScannerOutlined />}
-              label="Barcode Scanner"
-              status="Connected"
-            />
-          </div>
-        </Panel>
       </div>
     </div>
   );
