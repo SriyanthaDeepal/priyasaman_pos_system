@@ -173,15 +173,19 @@ function StatCard({
   change,
   icon,
   tone,
+  onClick,
+  destination,
 }: {
   label: string;
   value: string;
   change: string;
   icon: ReactNode;
   tone: Tone;
+  onClick: () => void;
+  destination: string;
 }) {
   return (
-    <div className={`pd-stat-card pd-stat-${tone}`}>
+    <button type="button" className={`pd-stat-card pd-stat-${tone}`} onClick={onClick} aria-label={`${label}: ${value}. Open ${destination}`} title={`Open ${destination}`}>
       <div className="pd-stat-main">
         <div className="pd-stat-icon">{icon}</div>
         <div className="pd-stat-body">
@@ -194,7 +198,8 @@ function StatCard({
         </div>
       </div>
       <Sparkline />
-    </div>
+      <span className="pd-stat-link">View details <ArrowForwardOutlined sx={{ fontSize: 14 }} /></span>
+    </button>
   );
 }
 
@@ -674,6 +679,8 @@ export default function DashboardPage({
         <div className="pd-kpis">
           <StatCard
             label="Today's Sales"
+            onClick={() => navigate("/sales")}
+            destination="Sales"
             value={money(data.sales)}
             change="+12.8%"
             icon={<ShoppingCartOutlined />}
@@ -681,6 +688,8 @@ export default function DashboardPage({
           />
           <StatCard
             label="Transactions"
+            onClick={() => navigate("/sales")}
+            destination="Sales"
             value={data.transactions.toLocaleString()}
             change="+8.3%"
             icon={<ReceiptLongOutlined />}
@@ -688,6 +697,8 @@ export default function DashboardPage({
           />
           <StatCard
             label="Items Sold"
+            onClick={() => navigate("/products")}
+            destination="Products"
             value={data.items.toLocaleString()}
             change="+15.6%"
             icon={<Inventory2Outlined />}
@@ -695,6 +706,8 @@ export default function DashboardPage({
           />
           <StatCard
             label="New Customers"
+            onClick={() => navigate("/customers")}
+            destination="Customers"
             value={data.customers.toLocaleString()}
             change="+33.3%"
             icon={<GroupsOutlined />}
