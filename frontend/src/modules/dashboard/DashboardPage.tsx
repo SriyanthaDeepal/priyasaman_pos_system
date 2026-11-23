@@ -5,6 +5,12 @@ import type { ReactNode } from "react";
 import {
   AddBoxOutlined,
   ArrowForwardOutlined,
+  ArrowCircleRightOutlined,
+  BoltOutlined,
+  CalendarTodayOutlined,
+  PaidOutlined,
+  PercentOutlined,
+  TrendingUpOutlined,
   AssessmentOutlined,
   CalendarMonthOutlined,
   GroupsOutlined,
@@ -483,6 +489,7 @@ function QuickAction({
     >
       <span className="pd-quick-icon">{icon}</span>
       <span className="pd-quick-label">{label}</span>
+      {tone === "green" && <ArrowCircleRightOutlined className="pd-primary-action-arrow" aria-hidden="true" />}
     </button>
   );
 }
@@ -494,7 +501,7 @@ function ViewAll({ onClick }: { onClick: () => void }) {
       className="pd-view-all"
       onClick={onClick}
     >
-      View All
+      View Inventory
       <ArrowForwardOutlined fontSize="small" />
     </button>
   );
@@ -700,7 +707,7 @@ export default function DashboardPage({
         <div className="pd-action-row">
             <Panel
               title="Quick Actions"
-              icon={<PointOfSaleOutlined />}
+              icon={<BoltOutlined />}
               className="pd-quick-panel"
             >
               <div className="pd-quick-grid">
@@ -797,34 +804,25 @@ export default function DashboardPage({
         <div className="pd-insights-row">
             <Panel
               title="Today's Summary"
-              icon={<ReceiptLongOutlined />}
+              icon={<CalendarTodayOutlined />}
               className="pd-summary-panel"
             >
               <div className="pd-summary-list">
                 <div className="pd-summary-row">
-                  <span>Total Sales</span>
-                  <strong>{money(data.sales)}</strong>
+                  <span className="pd-summary-icon pd-summary-icon-sales"><PaidOutlined /></span>
+                  <span className="pd-summary-details"><small>Gross Sales</small><strong>{money(data.sales)}</strong></span>
                 </div>
                 <div className="pd-summary-row">
-                  <span>Cost of Goods</span>
-                  <strong>{money(data.cost)}</strong>
+                  <span className="pd-summary-icon pd-summary-icon-profit"><TrendingUpOutlined /></span>
+                  <span className="pd-summary-details"><small>Gross Profit</small><strong>{money(data.profit)}</strong></span>
                 </div>
                 <div className="pd-summary-row">
-                  <span>Gross Profit</span>
-                  <strong className="pd-green-text">
-                    {money(data.profit)}
-                  </strong>
+                  <span className="pd-summary-icon pd-summary-icon-margin"><PercentOutlined /></span>
+                  <span className="pd-summary-details"><small>Profit Margin</small><strong>{data.sales > 0 ? ((data.profit / data.sales) * 100).toFixed(1) : "0.0"}%</strong></span>
                 </div>
-                <div className="pd-summary-row pd-margin-row">
-                  <span>Profit Margin</span>
-                  <strong>
-                    {data.sales > 0
-                      ? (
-                          (data.profit / data.sales) *
-                          100
-                        ).toFixed(1)
-                      : "0.0"}%
-                  </strong>
+                <div className="pd-summary-row">
+                  <span className="pd-summary-icon pd-summary-icon-average"><ReceiptLongOutlined /></span>
+                  <span className="pd-summary-details"><small>Avg. Sale Value</small><strong>{money(data.transactions > 0 ? data.sales / data.transactions : 0)}</strong></span>
                 </div>
               </div>
             </Panel>
