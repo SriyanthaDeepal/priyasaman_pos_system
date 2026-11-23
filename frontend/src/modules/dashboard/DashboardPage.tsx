@@ -1,5 +1,5 @@
 
-import { useId, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
 
 import {
@@ -511,6 +511,21 @@ export default function DashboardPage({
   const [period, setPeriod] = useState<Period>("today");
   const [notice, setNotice] = useState<string | null>(null);
   const [customOpen, setCustomOpen] = useState(false);
+  const datePickerRef = useRef<HTMLDivElement>(null);
+  const openCustomPicker = () => {
+    setCustomStart(appliedRange?.start ?? "");
+    setCustomEnd(appliedRange?.end ?? "");
+    setCustomOpen(true);
+  };
+  const closeCustomPicker = () => setCustomOpen(false);
+  useEffect(() => {
+    if (!customOpen) return;
+    const outside = (event: PointerEvent) => { if (!datePickerRef.current?.contains(event.target as Node)) closeCustomPicker(); };
+    const escape = (event: KeyboardEvent) => { if (event.key === "Escape") closeCustomPicker(); };
+    document.addEventListener("pointerdown", outside);
+    document.addEventListener("keydown", escape);
+    return () => { document.removeEventListener("pointerdown", outside); document.removeEventListener("keydown", escape); };
+  }, [customOpen]);
   const [customStart, setCustomStart] = useState("");
   const [customEnd, setCustomEnd] = useState("");
   const [appliedRange, setAppliedRange] = useState<{ start: string; end: string } | null>(null);
@@ -527,7 +542,7 @@ export default function DashboardPage({
 
   const handlePeriodChange = (value: Period) => {
     if (value === "custom") {
-      setCustomOpen(true);
+      openCustomPicker();
       return;
     }
     setCustomOpen(false);
@@ -580,13 +595,13 @@ export default function DashboardPage({
             </div>
           </div>
 
-          <div className="pd-date-picker-wrap">
+          <div className="pd-date-picker-wrap" ref={datePickerRef}>
             <div className="pd-date-control">
               <button
                 type="button"
                 className="pd-date-icon-button"
                 aria-label="Choose custom date range"
-                onClick={() => setCustomOpen((open) => !open)}
+                onClick={() => customOpen ? closeCustomPicker() : openCustomPicker()}
               >
                 <CalendarMonthOutlined />
               </button>
@@ -624,7 +639,7 @@ export default function DashboardPage({
                   </label>
                 </div>
                 <div className="pd-date-popover-actions">
-                  <button type="button" className="pd-date-cancel" onClick={() => setCustomOpen(false)}>
+                  <button type="button" className="pd-date-cancel" onClick={closeCustomPicker}>
                     Cancel
                   </button>
                   <button
