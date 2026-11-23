@@ -28,7 +28,7 @@ import ReturnExchangePage from "../../modules/sales/ReturnExchangePage";
 import type { ExchangeSale } from "../../modules/sales/ReturnExchangePage";
 
 interface MainLayoutProps {
-  children: ReactNode;
+  children: ReactNode | ((navigate: (path: string) => void) => ReactNode);
 }
 
 export default function MainLayout({
@@ -87,6 +87,7 @@ export default function MainLayout({
     setPreviewBranding(null);
     try { window.localStorage.setItem("priyasaman-pos-branding", JSON.stringify(value)); } catch { /* In-memory branding remains active. */ }
   };
+  const [quickAction, setQuickAction] = useState<"add-product" | "new-purchase" | "add-customer" | null>(null);
   const [inventoryProducts, setInventoryProducts] = useState<InventoryProduct[]>(initialInventory);
   const [activePage, setActivePage] =
     useState<SidebarPage>("dashboard");
@@ -107,6 +108,7 @@ export default function MainLayout({
      ========================================== */
 
   const handleNavigate = (page: SidebarPage) => {
+    setQuickAction(null);
     // Inventory opens Stock Overview by default, including its selected submenu state.
     setPreviewTheme(null);
     setPreviewBranding(null);
@@ -116,6 +118,37 @@ export default function MainLayout({
     setMobileSidebarOpen(false);
   };
 
+  const navigateQuickAction = (path: string) => {
+    switch (path) {
+      case "/pos":
+        handleNavigate("pos");
+        break;
+      case "/products/new":
+        handleNavigate("products");
+        setQuickAction("add-product");
+        break;
+      case "/purchases/new":
+        handleNavigate("purchases");
+        setQuickAction("new-purchase");
+        break;
+      case "/inventory/adjustments":
+        handleNavigate("stock-adjustments");
+        break;
+      case "/customers/new":
+        handleNavigate("customers");
+        setQuickAction("add-customer");
+        break;
+      case "/reports":
+        handleNavigate("reports");
+        break;
+      case "/inventory/low-stock":
+        handleNavigate("stock-overview");
+        break;
+      default:
+        setFeedback("This shortcut is not available yet.");
+    }
+  };
+
   /* ==========================================
      PAGE CONTENT
      ========================================== */
@@ -123,7 +156,7 @@ export default function MainLayout({
   const renderPage = () => {
     switch (activePage) {
       case "dashboard":
-        return children;
+        return typeof children === "function" ? children(navigateQuickAction) : children;
 
       case "pos":
         return <POSPage />;
@@ -135,13 +168,13 @@ export default function MainLayout({
         return <InventoryPage key={activePage} view={(activePage==="stock-adjustments"?"adjustment":activePage==="stock-transfer"?"transfer":"overview") as InventoryView} onNavigate={view=>handleNavigate(view==="overview"?"stock-overview":view==="adjustment"?"stock-adjustments":"stock-transfer")} products={inventoryProducts} setProducts={setInventoryProducts} onNotice={setFeedback} />;
 
       case "products":
-        return <ProductsPage products={inventoryProducts} setProducts={setInventoryProducts} onNotice={setFeedback} />;
+        return <ProductsPage key={quickAction === "add-product" ? "quick-add-product" : "products"} openNewOnMount={quickAction === "add-product"} products={inventoryProducts} setProducts={setInventoryProducts} onNotice={setFeedback} />;
 
       case "suppliers":
         return <SuppliersPage onNotice={setFeedback} />;
 
       case "customers":
-        return <CustomersPage onNotice={setFeedback} />;
+        return <CustomersPage key={quickAction === "add-customer" ? "quick-add-customer" : "customers"} openNewOnMount={quickAction === "add-customer"} onNotice={setFeedback} />;
 
       case "settings":
         return <SettingsPage theme={theme} onSave={saveTheme} onPreview={setPreviewTheme} branding={branding} onBrandingPreview={setPreviewBranding} onBrandingSave={saveBranding} />;
@@ -150,7 +183,7 @@ export default function MainLayout({
         return <ReportsPage onNotice={setFeedback} />;
 
       case "purchases":
-        return <PurchasesPage products={inventoryProducts} onNotice={setFeedback} />;
+        return <PurchasesPage key={quickAction === "new-purchase" ? "quick-new-purchase" : "purchases"} openNewOnMount={quickAction === "new-purchase"} products={inventoryProducts} onNotice={setFeedback} />;
 
       case "sales":
         return returnInvoice ? <ReturnExchangePage sale={returnInvoice} onBack={() => setReturnInvoice(null)} onComplete={() => { setReturnedInvoices(previous => previous.includes(returnInvoice.invoice) ? previous : [...previous, returnInvoice.invoice]); setReturnInvoice(null); setFeedback("Return / exchange completed successfully."); }} /> : <SalesPage key={invoiceScanRequested ? "invoice-scan" : "sales"} initialScanOpen={invoiceScanRequested} returnedInvoices={returnedInvoices} onNewSale={() => handleNavigate("pos")} onReturnRefund={sale => { setInvoiceScanRequested(false); setReturnInvoice(sale); }} />;
