@@ -16,7 +16,6 @@ import {
   GroupsOutlined,
   Inventory2Outlined,
   LocalOfferOutlined,
-  PointOfSaleOutlined,
   ReceiptLongOutlined,
   ShoppingCartOutlined,
   SwapHorizOutlined,
