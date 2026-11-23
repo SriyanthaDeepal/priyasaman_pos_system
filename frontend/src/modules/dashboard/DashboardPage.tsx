@@ -5,7 +5,6 @@ import type { ReactNode } from "react";
 import {
   AddBoxOutlined,
   ArrowForwardOutlined,
-  ArrowCircleRightOutlined,
   BoltOutlined,
   CalendarTodayOutlined,
   PaidOutlined,
@@ -487,8 +486,7 @@ function QuickAction({
       onClick={onClick}
     >
       <span className="pd-quick-icon">{icon}</span>
-      <span className="pd-quick-label">{label}</span>
-      {tone === "green" && <ArrowCircleRightOutlined className="pd-primary-action-arrow" aria-hidden="true" />}
+      <span className="pd-quick-label">{tone === "green" ? <>New Sale <span className="pd-quick-shortcut">F2</span></> : label}</span>
     </button>
   );
 }
