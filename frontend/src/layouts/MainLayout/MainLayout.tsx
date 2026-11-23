@@ -236,6 +236,8 @@ export default function MainLayout({
             bgcolor: "#fbfcfe",
             overflowX: "hidden",
             overflowY: activePage === "products" ? "hidden" : "auto",
+            scrollbarWidth: activePage === "settings" ? "none" : undefined,
+            "&::-webkit-scrollbar": activePage === "settings" ? { display: "none" } : undefined,
           }}
         >
           {renderPage()}
