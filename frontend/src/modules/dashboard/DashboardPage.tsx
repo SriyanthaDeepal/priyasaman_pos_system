@@ -753,53 +753,7 @@ export default function DashboardPage({
 
         </div>
 
-        {/* ROW THREE: ANALYTICS */}
-        <div className="pd-analytics-row">
-            <Panel
-              title="Sales Overview"
-              icon={<AssessmentOutlined />}
-              className="pd-sales-panel"
-              action={
-                <div
-                  className="pd-chart-tabs"
-                  role="group"
-                  aria-label="Sales chart metric"
-                >
-                  {(
-                    ["sales", "transactions", "profit"] as Metric[]
-                  ).map((item) => (
-                    <button
-                      type="button"
-                      key={item}
-                      className={
-                        metric === item ? "active" : ""
-                      }
-                      aria-pressed={metric === item}
-                      onClick={() => setMetric(item)}
-                    >
-                      {item.charAt(0).toUpperCase() +
-                        item.slice(1)}
-                    </button>
-                  ))}
-                </div>
-              }
-            >
-              <SalesChart
-                metric={metric}
-                factor={selectedFactor}
-              />
-            </Panel>
-
-            <Panel
-              title="Sales by Category"
-              icon={<LocalOfferOutlined />}
-              className="pd-category-panel"
-            >
-              <CategoryChart total={data.sales} />
-            </Panel>
-        </div>
-
-        {/* ROW FOUR: SUMMARY AND STOCK ALERTS */}
+        {/* ROW THREE: SUMMARY AND STOCK ALERTS */}
         <div className="pd-insights-row">
             <Panel
               title="Today's Summary"
@@ -864,6 +818,52 @@ export default function DashboardPage({
               ))}
             </div>
           </Panel>
+        </div>
+
+        {/* ROW FOUR: ANALYTICS */}
+        <div className="pd-analytics-row">
+            <Panel
+              title="Sales Overview"
+              icon={<AssessmentOutlined />}
+              className="pd-sales-panel"
+              action={
+                <div
+                  className="pd-chart-tabs"
+                  role="group"
+                  aria-label="Sales chart metric"
+                >
+                  {(
+                    ["sales", "transactions", "profit"] as Metric[]
+                  ).map((item) => (
+                    <button
+                      type="button"
+                      key={item}
+                      className={
+                        metric === item ? "active" : ""
+                      }
+                      aria-pressed={metric === item}
+                      onClick={() => setMetric(item)}
+                    >
+                      {item.charAt(0).toUpperCase() +
+                        item.slice(1)}
+                    </button>
+                  ))}
+                </div>
+              }
+            >
+              <SalesChart
+                metric={metric}
+                factor={selectedFactor}
+              />
+            </Panel>
+
+            <Panel
+              title="Sales by Category"
+              icon={<LocalOfferOutlined />}
+              className="pd-category-panel"
+            >
+              <CategoryChart total={data.sales} />
+            </Panel>
         </div>
       </div>
     </div>
