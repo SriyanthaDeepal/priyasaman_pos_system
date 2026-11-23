@@ -2946,3 +2946,35 @@
     grid-template-rows:auto;
   }
 }
+
+/* Primary POS action: match the secondary action alignment without an arrow. */
+.pd-dashboard .pd-quick-action.pd-action-green{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:10px 8px;
+  gap:7px;
+  background:#008f38;
+  border-color:#008f38;
+  color:#fff;
+}
+.pd-dashboard .pd-quick-action.pd-action-green:hover{background:#007b31;border-color:#007b31}
+.pd-dashboard .pd-quick-action.pd-action-green .pd-quick-label{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  font-weight:750;
+}
+.pd-dashboard .pd-quick-shortcut{
+  display:inline-flex;
+  align-items:center;
+  padding:3px 6px;
+  border-radius:5px;
+  background:rgba(255,255,255,.16);
+  font-size:.75em;
+  line-height:1.2;
+  font-weight:700;
+}
