@@ -2895,3 +2895,54 @@
   .pd-dashboard .pd-analytics-row .pd-category-panel .pd-category-content{flex-direction:column}
   .pd-dashboard .pd-analytics-row .pd-category-panel .pd-category-legend{display:grid;width:100%}
 }
+
+
+/* Daily summary: four balanced tiles in the requested 2 x 2 arrangement.
+   Keep breathing room before the analytics layer. */
+.pd-dashboard .pd-insights-row{
+  margin-bottom:clamp(18px,1.7vw,28px);
+}
+.pd-dashboard .pd-insights-row .pd-summary-panel .pd-summary-list{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  grid-template-rows:repeat(2,minmax(0,1fr));
+  gap:clamp(8px,.9vw,14px);
+  align-content:stretch;
+  flex:1 1 auto;
+  min-height:180px;
+}
+.pd-dashboard .pd-insights-row .pd-summary-panel .pd-summary-row,
+.pd-dashboard .pd-insights-row .pd-summary-panel .pd-summary-row:nth-child(2){
+  display:flex;
+  justify-content:flex-start;
+  align-items:center;
+  min-height:75px;
+  padding:clamp(9px,1vw,15px);
+  border:1px solid #e1e9f0;
+  border-radius:12px;
+  background:#fbfdff;
+  gap:clamp(9px,1vw,16px);
+}
+.pd-dashboard .pd-insights-row .pd-summary-panel .pd-summary-row:last-child{
+  border:1px solid #e1e9f0;
+}
+.pd-dashboard .pd-insights-row .pd-summary-panel .pd-summary-details small{
+  white-space:normal;
+}
+.pd-dashboard .pd-insights-row .pd-summary-panel .pd-summary-details strong{
+  font-size:clamp(14px,1.15vw,19px);
+}
+@container (max-width:850px){
+  .pd-dashboard .pd-insights-row .pd-summary-panel .pd-summary-list{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  .pd-dashboard .pd-insights-row .pd-summary-panel .pd-summary-row:nth-child(2){
+    border:1px solid #e1e9f0;
+  }
+}
+@container (max-width:420px){
+  .pd-dashboard .pd-insights-row .pd-summary-panel .pd-summary-list{
+    grid-template-columns:1fr;
+    grid-template-rows:auto;
+  }
+}
