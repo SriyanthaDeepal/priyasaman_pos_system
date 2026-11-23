@@ -1,11 +1,11 @@
 import { useState } from "react";
 import "./SettingsPage.css";
-import { businessTypes, defaultPOSBranding, iconForBusinessType } from "./posBranding";
+import { businessTypes, iconForBusinessType } from "./posBranding";
 import type { POSBranding } from "./posBranding";
 
 export type POSTheme = { primary: string; accent: string; button: string | null; header: string | null };
 export const defaultPOSTheme: POSTheme = { primary: "#003f2d", accent: "#ff9200", button: null, header: null };
-const defaultBusinessProfile = { name: "Priyasaman Super Mart", type: "Retail Store", phone: "077 123 4567", email: "info@priyasamanmart.lk", address: "No. 120, Main Street,\\nJa-Ela, Sri Lanka", currency: "LKR", vat: "15", fiscal: "January" };
+const defaultBusinessProfile = { name: "Priyasaman Super Mart", type: "Retail Store", phone: "077 123 4567", email: "info@priyasamanmart.lk", address: "No. 120, Main Street,\nJa-Ela, Sri Lanka", currency: "LKR", vat: "15", fiscal: "January" };
 export const themePresets = [
   { name: "Emerald", primary: "#003f2d", accent: "#ff9200" },
   { name: "Ocean", primary: "#164b8b", accent: "#f59e0b" },
