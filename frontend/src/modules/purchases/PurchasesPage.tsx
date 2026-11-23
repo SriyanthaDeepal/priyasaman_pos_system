@@ -38,7 +38,7 @@ export default function PurchasesPage({ products, onNotice, openNewOnMount = fal
   const [pageSize, setPageSize] = useState(7);
   const [selectedId, setSelectedId] = useState("PO-000128");
   const selected = orders.find(p => p.id === selectedId) ?? orders[0];
-  const [editorOpen, setEditorOpen] = useState(false);
+  const [editorOpen, setEditorOpen] = useState(openNewOnMount);
   const [draft, setDraft] = useState(newDraft);
   const [addProduct, setAddProduct] = useState("");
   const [paymentView, setPaymentView] = useState(false);
