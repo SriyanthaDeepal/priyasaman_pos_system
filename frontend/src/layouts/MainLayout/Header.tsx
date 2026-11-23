@@ -18,7 +18,7 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import LanguageIcon from "@mui/icons-material/Language";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import CloudDoneIcon from "@mui/icons-material/CloudDone";
+import SyncOutlinedIcon from "@mui/icons-material/SyncOutlined";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
@@ -438,8 +438,6 @@ function Header({ onMenuClick, connections }: HeaderProps) {
             ))}
           </Box>
 
-          <Box aria-hidden="true" sx={{ height: 23, width: "1px", flexShrink: 0, backgroundColor: "rgba(20,32,51,.25)", mx: { xs: 0.25, md: 0.75 } }} />
-          
           {/* Sync Status */}
 
           <Box
@@ -449,14 +447,14 @@ function Header({ onMenuClick, connections }: HeaderProps) {
               },
               alignItems: "center",
               gap: 0.7,
-              px: { xs: 0.25, md: 1 },
+              px: { xs: 0.25, md: 0.5 },
               py: 0.5,
               borderRadius: 3,
               backgroundColor: "#e8f5e9",
               whiteSpace: "nowrap",
             }}
           >
-            <CloudDoneIcon
+            <SyncOutlinedIcon
               sx={{
                 fontSize: 16,
                 color: "#2e7d32",
