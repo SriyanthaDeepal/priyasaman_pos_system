@@ -402,8 +402,7 @@ function Header({ onMenuClick, connections }: HeaderProps) {
               alignItems: "center",
               gap: { xs: 0.25, md: 0.5 },
               flexShrink: 0,
-              borderRight: "1px solid rgba(20,32,51,.12)",
-              pr: { xs: 0.5, md: 1.5 },
+              pr: { xs: 0.5, md: 1 },
             }}
           >
             {connectionItems.map((item) => (
@@ -439,17 +438,18 @@ function Header({ onMenuClick, connections }: HeaderProps) {
             ))}
           </Box>
 
+          <Box aria-hidden="true" sx={{ height: 23, width: "1px", flexShrink: 0, backgroundColor: "rgba(20,32,51,.25)", mx: { xs: 0.25, md: 0.75 } }} />
+          
           {/* Sync Status */}
 
           <Box
             sx={{
               display: {
-                xs: "none",
-                sm: "flex",
+                xs: "flex",
               },
               alignItems: "center",
               gap: 0.7,
-              px: 1.5,
+              px: { xs: 0.25, md: 1 },
               py: 0.5,
               borderRadius: 3,
               backgroundColor: "#e8f5e9",
@@ -466,6 +466,7 @@ function Header({ onMenuClick, connections }: HeaderProps) {
             <Typography
               variant="body2"
               sx={{
+                display: { xs: "none", md: "block" },
                 color: "#2e7d32",
                 fontWeight: 500,
               }}
