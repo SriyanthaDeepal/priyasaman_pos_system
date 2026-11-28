@@ -40,7 +40,11 @@ export type PeripheralConnections = {
   cashDrawer?: ConnectionState;
 };
 
+type SyncStatus = "synced" | "syncing" | "failed";
+const syncStates = { synced: { label: "Synced", color: "#2e7d32", background: "#dcf8e5" }, syncing: { label: "Syncing", color: "#a65d00", background: "#fff3dc" }, failed: { label: "Sync Failed", color: "#c62828", background: "#fde8e8" } } as const;
+
 interface HeaderProps {
+  syncStatus?: SyncStatus;
   language: "EN" | "SI";
   onLanguageChange: (value: "EN" | "SI") => void;
   onMenuClick?: () => void;
@@ -106,8 +110,9 @@ const connectionColors: Record<ConnectionState, string> = {
   unknown: "#6b7280",
 };
 
-function Header({ onMenuClick, connections, language, onLanguageChange }: HeaderProps) {
+function Header({ onMenuClick, connections, language, onLanguageChange, syncStatus = "synced" }: HeaderProps) {
   const t = (value: string) => language === "SI" ? (translations[value] ?? value) : value;
+  const sync = syncStates[syncStatus];
   const connectionItems = [
     { key: "localDatabase", label: "Local Database", icon: <StorageOutlinedIcon sx={{ fontSize: 19 }} />, state: connections?.localDatabase ?? "unknown" },
     { key: "receiptPrinter", label: "Receipt Printer", icon: <PrintOutlinedIcon sx={{ fontSize: 19 }} />, state: connections?.receiptPrinter ?? "unknown" },
@@ -451,14 +456,14 @@ function Header({ onMenuClick, connections, language, onLanguageChange }: Header
               px: { xs: 0.25, md: 0.5 },
               py: 0.5,
               borderRadius: 3,
-              backgroundColor: "#dcf8e5",
+              backgroundColor: sync.background,
               whiteSpace: "nowrap",
             }}
           >
             <SyncOutlinedIcon
               sx={{
                 fontSize: 16,
-                color: "#2e7d32",
+                color: sync.color,
               }}
             />
 
@@ -466,11 +471,11 @@ function Header({ onMenuClick, connections, language, onLanguageChange }: Header
               variant="body2"
               sx={{
                 display: { xs: "none", md: "block" },
-                color: "#2e7d32",
+                color: sync.color,
                 fontWeight: 700,
               }}
             >
-              {t("Synced")}
+              {t(sync.label)}
             </Typography>
           </Box>
 
@@ -874,7 +879,9 @@ function Header({ onMenuClick, connections, language, onLanguageChange }: Header
 }
 
 const translations: Record<string, string> = {
-  "Synced": "සමමුහුර්තයි",
+  "Synced": "දත්ත යාවත්කාලීනයි",
+  "Syncing": "දත්ත යාවත්කාලීන වෙමින්",
+  "Sync Failed": "දත්ත යාවත්කාලීන වී නැත",
   "Notifications": "දැනුම්දීම්",
   "Mark all as read": "සියල්ල කියවූ ලෙස සලකුණු කරන්න",
   "No notifications": "දැනුම්දීම් නැත",
