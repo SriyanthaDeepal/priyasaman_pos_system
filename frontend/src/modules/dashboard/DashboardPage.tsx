@@ -1,5 +1,5 @@
 
-import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useId, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
 
 import {
@@ -25,11 +25,76 @@ import {
 
 import "./dashboard.css";
 
+const LanguageContext = createContext<"EN" | "SI">("EN");
+const translations: Record<string,string> = {
+  "Good Morning": "සුබ උදෑසනක්",
+  "Good Afternoon": "සුබ දහවලක්",
+  "Good Evening": "සුබ සැන්දෑවක්",
+  "Admin": "පරිපාලක",
+  "Here's what's happening at Priyasaman POS today.": "ඔබේ වෙළඳසැලේ අද දවසේ තොරතුරු මෙන්න.",
+  "Today": "අද",
+  "Yesterday": "ඊයේ",
+  "Last 7 Days": "පසුගිය දින 7",
+  "This Month": "මේ මාසය",
+  "Custom Range": "වෙනත් දින පරාසයක්",
+  "Date Filter": "දිනය තෝරන්න",
+  "Specific date or date range": "දිනයක් හෝ දින පරාසයක් තෝරන්න",
+  "From date": "ආරම්භක දිනය",
+  "To date": "අවසාන දිනය",
+  "Reset": "මුල් තත්වයට",
+  "Apply": "තහවුරු කරන්න",
+  "Today's Sales": "අද දින විකුණුම්",
+  "Transactions": "ගනුදෙනු ගණන",
+  "Items Sold": "විකුණූ භාණ්ඩ ගණන",
+  "New Customers": "නව පාරිභෝගිකයින්",
+  "vs yesterday": "ඊයේට සාපේක්ෂව",
+  "Quick Actions": "කෙටි මාර්ග",
+  "New Sale": "නව බිල්පතක්",
+  "Add Product": "භාණ්ඩයක් එක් කරන්න",
+  "Purchase Order": "භාණ්ඩ ඇණවුම් කිරීම",
+  "Stock Adjustment": "තොග සංශෝධනය",
+  "Add Customer": "පාරිභෝගිකයෙකු එක් කරන්න",
+  "View Reports": "වාර්තා බලන්න",
+  "Today's Summary": "අද දවසේ සාරාංශය",
+  "Gross Sales": "දළ විකුණුම්",
+  "Gross Profit": "දළ ලාභය",
+  "Profit Margin": "ලාභ ප්‍රතිශතය",
+  "Avg. Sale Value": "බිලක සාමාන්‍ය වටිනාකම",
+  "Low Stock Alerts": "තොග අඩු භාණ්ඩ",
+  "View Inventory": "තොග විස්තර බලන්න",
+  "Sales Overview": "විකුණුම් සාරාංශය",
+  "Sales": "විකුණුම්",
+  "Profit": "ලාභය",
+  "Products": "භාණ්ඩ",
+  "Customers": "පාරිභෝගිකයින්",
+  "Sales by Category": "භාණ්ඩ වර්ග අනුව විකුණුම්",
+  "Total Sales": "මුළු විකුණුම්",
+  "Groceries": "සිල්ලර භාණ්ඩ",
+  "Beverages": "බීම වර්ග",
+  "Household": "ගෘහ භාණ්ඩ",
+  "Personal Care": "පුද්ගලික සනීපාරක්ෂක භාණ්ඩ",
+  "Snacks": "කෙටි ආහාර",
+  "Others": "වෙනත්",
+  "Sunflower Oil (1 L)": "සූරියකාන්ත තෙල් (ලීටර් 1)",
+  "Basmati Rice (5 kg)": "බාස්මතී සහල් (කිලෝ 5)",
+  "Toothpaste (120 g)": "දත් බෙහෙත් (ග්‍රෑම් 120)",
+  "Dashboard date filter": "දිනය තෝරන්න",
+  "Sales chart metric": "ප්‍රස්තාරයේ පෙන්වන තොරතුරු",
+  "Sales by category distribution": "භාණ්ඩ වර්ග අනුව විකුණුම් ප්‍රස්තාරය",
+  "Dismiss message": "පණිවිඩය වසන්න",
+  "Open Sales": "විකුණුම් බලන්න",
+  "Open Products": "භාණ්ඩ බලන්න",
+  "Open Customers": "පාරිභෝගිකයින් බලන්න"
+};
+function useTranslation() { const language = useContext(LanguageContext); return (value: string) => language === "SI" ? translations[value] ?? value : value; }
+function useFormatting() { const si = useContext(LanguageContext) === "SI"; return { money: (v:number) => si ? money(v).replace("Rs.", "රු.") : money(v), compactMoney: (v:number) => si ? compactMoney(v).replace("Rs.", "රු.").replace(/K$/, " දහස").replace(/M$/, " මිලියන") : compactMoney(v), hour: (v:string) => si ? v.replace(/(\d+) AM/, "පෙ.ව. $1").replace(/(\d+) PM/, "ප.ව. $1") : v, si }; }
+
 type Metric = "sales" | "transactions" | "profit";
 type Period = "today" | "yesterday" | "week" | "month" | "custom";
 type Tone = "green" | "orange" | "blue" | "purple";
 
 interface DashboardPageProps {
+  language?: "EN" | "SI";
   userName?: string;
   onNavigate?: (path: string) => void;
 }
@@ -171,8 +236,9 @@ function StatCard({
   onClick: () => void;
   destination: string;
 }) {
+  const t = useTranslation();
   return (
-    <button type="button" className={`pd-stat-card pd-stat-${tone}`} onClick={onClick} aria-label={`${label}: ${value}. Open ${destination}`} title={`Open ${destination}`}>
+    <button type="button" className={`pd-stat-card pd-stat-${tone}`} onClick={onClick} aria-label={`${label}: ${value}. ${t(`Open ${destination}`)}`} title={t(`Open ${destination}`)}>
       <div className="pd-stat-main">
         <div className="pd-stat-icon">{icon}</div>
         <div className="pd-stat-body">
@@ -180,7 +246,7 @@ function StatCard({
           <strong className="pd-stat-value">{value}</strong>
           <div className="pd-stat-change">
             <strong>▲ {change}</strong>
-            <span>vs yesterday</span>
+            <span>{t("vs yesterday")}</span>
           </div>
         </div>
       </div>
@@ -195,6 +261,8 @@ function SalesChart({
   metric: Metric;
   factor: number;
 }) {
+  const t = useTranslation();
+  const { money, compactMoney, hour, si } = useFormatting();
   const gradientId = useId().replace(/:/g, "");
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
@@ -245,11 +313,11 @@ function SalesChart({
     if (metric === "transactions") {
       return Math.round(value).toLocaleString();
     }
-    if (value === 0) return "Rs. 0";
+    if (value === 0) return si ? "රු. 0" : "Rs. 0";
     if (value >= 1_000_000) {
-      return `Rs. ${(value / 1_000_000).toFixed(1)}M`;
+      return si ? `රු. ${(value / 1_000_000).toFixed(1)} මි.` : `Rs. ${(value / 1_000_000).toFixed(1)}M`;
     }
-    return `Rs. ${Math.round(value / 1000)}K`;
+    return si ? `රු. ${Math.round(value / 1000)} ද.` : `Rs. ${Math.round(value / 1000)}K`;
   };
 
   const activePoint =
@@ -269,7 +337,7 @@ function SalesChart({
         className="pd-chart-svg"
         viewBox={`0 0 ${width} ${height}`}
         role="img"
-        aria-label={`Overview chart for ${metric}`}
+        aria-label={si ? `${t(metric.charAt(0).toUpperCase()+metric.slice(1))} ප්‍රස්තාරය` : `Overview chart for ${metric}`}
         onMouseLeave={() => setHoverIndex(null)}
       >
         <defs>
@@ -352,7 +420,7 @@ function SalesChart({
               style={{ cursor: "pointer" }}
             >
               <title>
-                {`${hours[index]}: ${
+                {`${hour(hours[index])}: ${
                   metric === "transactions"
                     ? Math.round(point.value)
                     : money(point.value)
@@ -367,7 +435,7 @@ function SalesChart({
               fontWeight="500"
               fill="#344054"
             >
-              {hours[index]}
+              {hour(hours[index])}
             </text>
           </g>
         ))}
@@ -397,7 +465,7 @@ function SalesChart({
               fontSize="15"
               fill="#ffffff"
             >
-              {hours[hoverIndex]}
+              {hour(hours[hoverIndex])}
             </text>
             <text
               x={tooltipX}
@@ -419,6 +487,8 @@ function SalesChart({
 }
 
 function CategoryChart({ total }: { total: number }) {
+  const t = useTranslation();
+  const { compactMoney } = useFormatting();
   const gradient = categories
     .map((category, index) => {
       const start = categories
@@ -439,11 +509,11 @@ function CategoryChart({ total }: { total: number }) {
           background: `conic-gradient(${gradient})`,
         }}
         role="img"
-        aria-label="Sales by category distribution"
+        aria-label={t("Sales by category distribution")}
       >
         <div className="pd-donut-center">
           <strong>{compactMoney(total)}</strong>
-          <span>Total Sales</span>
+          <span>{t("Total Sales")}</span>
         </div>
       </div>
 
@@ -451,7 +521,7 @@ function CategoryChart({ total }: { total: number }) {
         {categories.map((category) => (
           <div
             className="pd-legend-row"
-            key={category.name}
+            key={t(category.name)}
           >
             <span
               className="pd-legend-dot"
@@ -479,6 +549,7 @@ function QuickAction({
   tone: string;
   onClick: () => void;
 }) {
+  const t = useTranslation();
   return (
     <button
       type="button"
@@ -486,28 +557,33 @@ function QuickAction({
       onClick={onClick}
     >
       <span className="pd-quick-icon">{icon}</span>
-      <span className="pd-quick-label">{tone === "green" ? <>New Sale <span className="pd-quick-shortcut">F2</span></> : label}</span>
+      <span className="pd-quick-label">{tone === "green" ? <>{t("New Sale")} <span className="pd-quick-shortcut">F2</span></> : label}</span>
     </button>
   );
 }
 
 function ViewAll({ onClick }: { onClick: () => void }) {
+  const t = useTranslation();
   return (
     <button
       type="button"
       className="pd-view-all"
       onClick={onClick}
     >
-      View Inventory
+      {t("View Inventory")}
       <ArrowForwardOutlined fontSize="small" />
     </button>
   );
 }
 
-export default function DashboardPage({
+export default function DashboardPage(props: DashboardPageProps) { return <LanguageContext.Provider value={props.language ?? "EN"}><DashboardContent {...props} /></LanguageContext.Provider>; }
+
+function DashboardContent({
   userName = "Admin",
   onNavigate,
 }: DashboardPageProps) {
+  const t = useTranslation();
+  const { money, si } = useFormatting();
   const [metric, setMetric] = useState<Metric>("sales");
   const [period, setPeriod] = useState<Period>("today");
   const [notice, setNotice] = useState<string | null>(null);
@@ -569,7 +645,7 @@ export default function DashboardPage({
       onNavigate(path);
     } else {
       setNotice(
-        `Connect your application router to open ${path}.`,
+        si ? "මෙම පිටුව දැනට විවෘත කළ නොහැක." : `Connect your application router to open ${path}.`,
       );
     }
   };
@@ -583,10 +659,10 @@ export default function DashboardPage({
             <WbSunnyOutlined className="pd-sun-icon" />
             <div>
               <h1>
-                {greeting()}, {userName}!
+                {t(greeting())}, {userName === "Admin" ? t(userName) : userName}!
               </h1>
               <p>
-                Here's what's happening at Priyasaman POS today.
+                {t("Here's what's happening at Priyasaman POS today.")}
               </p>
             </div>
           </div>
@@ -594,29 +670,29 @@ export default function DashboardPage({
           <div className="pd-date-picker-wrap" ref={datePickerRef}>
             <button type="button" className="pd-date-trigger" aria-expanded={customOpen} aria-haspopup="dialog" onClick={() => customOpen ? closeCustomPicker() : openCustomPicker()}>
               <CalendarMonthOutlined />
-              <span>{periodOptions[period]}</span>
+              <span>{t(periodOptions[period])}</span>
               <KeyboardArrowDownOutlined className="pd-date-chevron" aria-hidden="true" />
             </button>
             {customOpen && (
-              <div className="pd-date-popover" role="dialog" aria-label="Dashboard date filter">
-                <div className="pd-date-popover-heading">Date Filter</div>
+              <div className="pd-date-popover" role="dialog" aria-label={t("Dashboard date filter")}>
+                <div className="pd-date-popover-heading">{t("Date Filter")}</div>
                 <div className="pd-date-presets">
                   {(Object.entries(periodOptions) as [Period, string][]).map(([value, label]) => (
-                    <button type="button" key={value} className={draftPeriod === value ? "selected" : ""} onClick={() => setDraftPeriod(value)}>{label}</button>
+                    <button type="button" key={value} className={draftPeriod === value ? "selected" : ""} onClick={() => setDraftPeriod(value)}>{t(label)}</button>
                   ))}
                 </div>
                 {draftPeriod === "custom" && (
                   <>
-                    <div className="pd-date-section-title"><CalendarMonthOutlined /> Specific date or date range</div>
+                    <div className="pd-date-section-title"><CalendarMonthOutlined /> {t("Specific date or date range")}</div>
                     <div className="pd-date-inputs">
-                      <label><span>From date</span><input type="date" value={customStart} max={customEnd || undefined} onChange={(event) => setCustomStart(event.target.value)} /></label>
-                      <label><span>To date</span><input type="date" value={customEnd} min={customStart || undefined} onChange={(event) => setCustomEnd(event.target.value)} /></label>
+                      <label><span>{t("From date")}</span><input type="date" value={customStart} max={customEnd || undefined} onChange={(event) => setCustomStart(event.target.value)} /></label>
+                      <label><span>{t("To date")}</span><input type="date" value={customEnd} min={customStart || undefined} onChange={(event) => setCustomEnd(event.target.value)} /></label>
                     </div>
                   </>
                 )}
                 <div className="pd-date-popover-actions">
-                  <button type="button" className="pd-date-cancel" onClick={() => { setDraftPeriod(period); setCustomStart(appliedRange?.start ?? ""); setCustomEnd(appliedRange?.end ?? ""); }}>Reset</button>
-                  <button type="button" className="pd-date-apply" disabled={draftPeriod === "custom" && (!customStart || !customEnd || customStart > customEnd)} onClick={applyDateFilter}>Apply</button>
+                  <button type="button" className="pd-date-cancel" onClick={() => { setDraftPeriod(period); setCustomStart(appliedRange?.start ?? ""); setCustomEnd(appliedRange?.end ?? ""); }}>{t("Reset")}</button>
+                  <button type="button" className="pd-date-apply" disabled={draftPeriod === "custom" && (!customStart || !customEnd || customStart > customEnd)} onClick={applyDateFilter}>{t("Apply")}</button>
                 </div>
               </div>
             )}
@@ -629,7 +705,7 @@ export default function DashboardPage({
             <span>{notice}</span>
             <button
               type="button"
-              aria-label="Dismiss message"
+              aria-label={t("Dismiss message")}
               onClick={() => setNotice(null)}
             >
               ×
@@ -640,7 +716,7 @@ export default function DashboardPage({
         {/* KPI CARDS */}
         <div className="pd-kpis">
           <StatCard
-            label="Today's Sales"
+            label={t("Today's Sales")}
             onClick={() => navigate("/sales")}
             destination="Sales"
             value={money(data.sales)}
@@ -649,7 +725,7 @@ export default function DashboardPage({
             tone="green"
           />
           <StatCard
-            label="Transactions"
+            label={t("Transactions")}
             onClick={() => navigate("/sales")}
             destination="Sales"
             value={data.transactions.toLocaleString()}
@@ -658,7 +734,7 @@ export default function DashboardPage({
             tone="orange"
           />
           <StatCard
-            label="Items Sold"
+            label={t("Items Sold")}
             onClick={() => navigate("/products")}
             destination="Products"
             value={data.items.toLocaleString()}
@@ -667,7 +743,7 @@ export default function DashboardPage({
             tone="blue"
           />
           <StatCard
-            label="New Customers"
+            label={t("New Customers")}
             onClick={() => navigate("/customers")}
             destination="Customers"
             value={data.customers.toLocaleString()}
@@ -680,7 +756,7 @@ export default function DashboardPage({
         {/* ROW TWO: QUICK ACTIONS */}
         <div className="pd-action-row">
             <Panel
-              title="Quick Actions"
+              title={t("Quick Actions")}
               icon={<BoltOutlined />}
               className="pd-quick-panel"
             >
@@ -693,19 +769,19 @@ export default function DashboardPage({
                 />
                 <QuickAction
                   icon={<AddBoxOutlined />}
-                  label="Add Product"
+                  label={t("Add Product")}
                   tone="orange"
                   onClick={() => navigate("/products/new")}
                 />
                 <QuickAction
                   icon={<Inventory2Outlined />}
-                  label="Purchase Order"
+                  label={t("Purchase Order")}
                   tone="purple"
                   onClick={() => navigate("/purchases/new")}
                 />
                 <QuickAction
                   icon={<SwapHorizOutlined />}
-                  label="Stock Adjustment"
+                  label={t("Stock Adjustment")}
                   tone="blue"
                   onClick={() =>
                     navigate("/inventory/adjustments")
@@ -713,13 +789,13 @@ export default function DashboardPage({
                 />
                 <QuickAction
                   icon={<GroupsOutlined />}
-                  label="Add Customer"
+                  label={t("Add Customer")}
                   tone="teal"
                   onClick={() => navigate("/customers/new")}
                 />
                 <QuickAction
                   icon={<AssessmentOutlined />}
-                  label="View Reports"
+                  label={t("View Reports")}
                   tone="pink"
                   onClick={() => navigate("/reports")}
                 />
@@ -731,31 +807,31 @@ export default function DashboardPage({
         {/* ROW THREE: SUMMARY AND STOCK ALERTS */}
         <div className="pd-insights-row">
             <Panel
-              title="Today's Summary"
+              title={t("Today's Summary")}
               icon={<CalendarTodayOutlined />}
               className="pd-summary-panel"
             >
               <div className="pd-summary-list">
                 <div className="pd-summary-row">
                   <span className="pd-summary-icon pd-summary-icon-sales"><PaidOutlined /></span>
-                  <span className="pd-summary-details"><small>Gross Sales</small><strong>{money(data.sales)}</strong></span>
+                  <span className="pd-summary-details"><small>{t("Gross Sales")}</small><strong>{money(data.sales)}</strong></span>
                 </div>
                 <div className="pd-summary-row">
                   <span className="pd-summary-icon pd-summary-icon-profit"><TrendingUpOutlined /></span>
-                  <span className="pd-summary-details"><small>Gross Profit</small><strong>{money(data.profit)}</strong></span>
+                  <span className="pd-summary-details"><small>{t("Gross Profit")}</small><strong>{money(data.profit)}</strong></span>
                 </div>
                 <div className="pd-summary-row">
                   <span className="pd-summary-icon pd-summary-icon-margin"><PercentOutlined /></span>
-                  <span className="pd-summary-details"><small>Profit Margin</small><strong>{data.sales > 0 ? ((data.profit / data.sales) * 100).toFixed(1) : "0.0"}%</strong></span>
+                  <span className="pd-summary-details"><small>{t("Profit Margin")}</small><strong>{data.sales > 0 ? ((data.profit / data.sales) * 100).toFixed(1) : "0.0"}%</strong></span>
                 </div>
                 <div className="pd-summary-row">
                   <span className="pd-summary-icon pd-summary-icon-average"><ReceiptLongOutlined /></span>
-                  <span className="pd-summary-details"><small>Avg. Sale Value</small><strong>{money(data.transactions > 0 ? data.sales / data.transactions : 0)}</strong></span>
+                  <span className="pd-summary-details"><small>{t("Avg. Sale Value")}</small><strong>{money(data.transactions > 0 ? data.sales / data.transactions : 0)}</strong></span>
                 </div>
               </div>
             </Panel>
           <Panel
-            title="Low Stock Alerts"
+            title={t("Low Stock Alerts")}
             icon={<WarningAmberOutlined />}
             className="pd-stock-panel"
             action={
@@ -783,11 +859,11 @@ export default function DashboardPage({
                     {item.image}
                   </span>
                   <span className="pd-stock-info">
-                    <strong>{item.name}</strong>
+                    <strong>{t(item.name)}</strong>
                     <small>{item.id}</small>
                   </span>
                   <span className="pd-stock-quantity">
-                    {item.quantity} left
+                    {si ? `තව ${item.quantity} ක් තියෙනවා` : `${item.quantity} left`}
                   </span>
                 </button>
               ))}
@@ -798,14 +874,14 @@ export default function DashboardPage({
         {/* ROW FOUR: ANALYTICS */}
         <div className="pd-analytics-row">
             <Panel
-              title="Sales Overview"
+              title={t("Sales Overview")}
               icon={<AssessmentOutlined />}
               className="pd-sales-panel"
               action={
                 <div
                   className="pd-chart-tabs"
                   role="group"
-                  aria-label="Sales chart metric"
+                  aria-label={t("Sales chart metric")}
                 >
                   {(
                     ["sales", "transactions", "profit"] as Metric[]
@@ -819,8 +895,7 @@ export default function DashboardPage({
                       aria-pressed={metric === item}
                       onClick={() => setMetric(item)}
                     >
-                      {item.charAt(0).toUpperCase() +
-                        item.slice(1)}
+                      {t(item.charAt(0).toUpperCase() + item.slice(1))}
                     </button>
                   ))}
                 </div>
@@ -833,7 +908,7 @@ export default function DashboardPage({
             </Panel>
 
             <Panel
-              title="Sales by Category"
+              title={t("Sales by Category")}
               icon={<LocalOfferOutlined />}
               className="pd-category-panel"
             >
