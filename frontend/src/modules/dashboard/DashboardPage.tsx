@@ -521,7 +521,7 @@ function CategoryChart({ total }: { total: number }) {
         {categories.map((category) => (
           <div
             className="pd-legend-row"
-            key={t(category.name)}
+            key={category.name}
           >
             <span
               className="pd-legend-dot"
