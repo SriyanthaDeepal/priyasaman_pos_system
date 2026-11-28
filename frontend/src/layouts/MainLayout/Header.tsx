@@ -41,6 +41,8 @@ export type PeripheralConnections = {
 };
 
 interface HeaderProps {
+  language: "EN" | "SI";
+  onLanguageChange: (value: "EN" | "SI") => void;
   onMenuClick?: () => void;
   connections?: PeripheralConnections;
 }
@@ -104,7 +106,8 @@ const connectionColors: Record<ConnectionState, string> = {
   unknown: "#6b7280",
 };
 
-function Header({ onMenuClick, connections }: HeaderProps) {
+function Header({ onMenuClick, connections, language, onLanguageChange }: HeaderProps) {
+  const t = (value: string) => language === "SI" ? (translations[value] ?? value) : value;
   const connectionItems = [
     { key: "localDatabase", label: "Local Database", icon: <StorageOutlinedIcon sx={{ fontSize: 19 }} />, state: connections?.localDatabase ?? "unknown" },
     { key: "receiptPrinter", label: "Receipt Printer", icon: <PrintOutlinedIcon sx={{ fontSize: 19 }} />, state: connections?.receiptPrinter ?? "unknown" },
@@ -115,7 +118,7 @@ function Header({ onMenuClick, connections }: HeaderProps) {
     () => new Date()
   );
 
-  const [language, setLanguage] = useState<Language>("EN");
+
 
   const [userMenuAnchor, setUserMenuAnchor] =
     useState<HTMLElement | null>(null);
@@ -141,10 +144,10 @@ function Header({ onMenuClick, connections }: HeaderProps) {
     return () => window.clearInterval(timer);
   }, []);
 
-  const formattedDate = currentTime.toLocaleDateString("en-GB", { weekday: "short", day: "2-digit", month: "short", year: "numeric" });
+  const formattedDate = currentTime.toLocaleDateString(language === "SI" ? "si-LK" : "en-GB", { weekday: "short", day: "2-digit", month: "short", year: "numeric" });
 
   const formattedTime = currentTime.toLocaleTimeString(
-    "en-GB",
+    language === "SI" ? "si-LK" : "en-GB",
     {
       hour: "2-digit",
       minute: "2-digit",
@@ -193,7 +196,7 @@ function Header({ onMenuClick, connections }: HeaderProps) {
   const handleLanguageChange = (
     selectedLanguage: Language
   ) => {
-    setLanguage(selectedLanguage);
+    onLanguageChange(selectedLanguage);
     handleLanguageMenuClose();
   };
 
@@ -409,10 +412,10 @@ function Header({ onMenuClick, connections }: HeaderProps) {
             }}
           >
             {connectionItems.map((item) => (
-              <Tooltip key={item.key} arrow title={`${item.label}: ${connectionLabels[item.state]}`}>
+              <Tooltip key={item.key} arrow title={`${t(item.label)}: ${t(connectionLabels[item.state])}`}>
                 <Box
                   role="img"
-                  aria-label={`${item.label}: ${connectionLabels[item.state]}`}
+                  aria-label={`${t(item.label)}: ${t(connectionLabels[item.state])}`}
                   sx={{
                     position: "relative",
                     display: "flex",
@@ -426,7 +429,7 @@ function Header({ onMenuClick, connections }: HeaderProps) {
                   }}
                 >
                   {item.icon}
-                  <Typography component="span" sx={{display: {xs:"none", xl:"inline"}, fontSize:12, fontWeight:600, ml:.5, whiteSpace:"nowrap"}}>{item.label === "Local Database" ? "DB" : item.label === "Receipt Printer" ? "Printer" : item.label === "Barcode Scanner" ? "Scanner" : "Drawer"}</Typography>
+                  <Typography component="span" sx={{display: {xs:"none", xl:"inline"}, fontSize:12, fontWeight:600, ml:.5, whiteSpace:"nowrap"}}>{t(item.label === "Local Database" ? "DB" : item.label === "Receipt Printer" ? "Printer" : item.label === "Barcode Scanner" ? "Scanner" : "Drawer")}</Typography>
                   <Box sx={{
                     position: "absolute",
                     right: {xs:1,xl:"auto"},
@@ -474,7 +477,7 @@ function Header({ onMenuClick, connections }: HeaderProps) {
                 fontWeight: 700,
               }}
             >
-              Synced
+              {t("Synced")}
             </Typography>
           </Box>
 
@@ -563,7 +566,7 @@ function Header({ onMenuClick, connections }: HeaderProps) {
                     fontWeight: 600,
                   }}
                 >
-                  Notifications
+                  {t("Notifications")}
                 </Typography>
 
                 <Typography
@@ -583,7 +586,7 @@ function Header({ onMenuClick, connections }: HeaderProps) {
                     },
                   }}
                 >
-                  Mark all as read
+                  {t("Mark all as read")}
                 </Typography>
               </Box>
 
@@ -600,7 +603,7 @@ function Header({ onMenuClick, connections }: HeaderProps) {
                     variant="body2"
                     color="text.secondary"
                   >
-                    No notifications
+                    {t("No notifications")}
                   </Typography>
                 </Box>
               ) : (
@@ -682,7 +685,7 @@ function Header({ onMenuClick, connections }: HeaderProps) {
                             : 600,
                         }}
                       >
-                        {notification.title}
+                        {t(notification.title)}
                       </Typography>
 
                       <Typography
@@ -692,14 +695,14 @@ function Header({ onMenuClick, connections }: HeaderProps) {
                           mt: 0.3,
                         }}
                       >
-                        {notification.message}
+                        {t(notification.message)}
                       </Typography>
 
                       <Typography
                         variant="caption"
                         color="text.secondary"
                       >
-                        {notification.time}
+                        {t(notification.time)}
                       </Typography>
                     </Box>
 
@@ -781,14 +784,14 @@ function Header({ onMenuClick, connections }: HeaderProps) {
                   whiteSpace: "nowrap",
                 }}
               >
-                Admin User
+                {t("Admin User")}
               </Typography>
 
               <Typography
                 variant="caption"
                 color="text.secondary"
               >
-                Administrator
+                {t("Administrator")}
               </Typography>
             </Box>
 
@@ -852,7 +855,7 @@ function Header({ onMenuClick, connections }: HeaderProps) {
                 },
               }}
             >
-              Profile
+              {t("Profile")}
             </MenuItem>
 
             <MenuItem
@@ -868,7 +871,7 @@ function Header({ onMenuClick, connections }: HeaderProps) {
                 },
               }}
             >
-              Logout
+              {t("Logout")}
             </MenuItem>
           </Menu>
         </Box>
@@ -876,5 +879,37 @@ function Header({ onMenuClick, connections }: HeaderProps) {
     </AppBar>
   );
 }
+
+const translations: Record<string, string> = {
+  "Synced": "සමමුහුර්තයි",
+  "Notifications": "දැනුම්දීම්",
+  "Mark all as read": "සියල්ල කියවූ ලෙස සලකුණු කරන්න",
+  "No notifications": "දැනුම්දීම් නැත",
+  "Admin User": "පරිපාලක",
+  "Administrator": "පරිපාලක",
+  "Profile": "පැතිකඩ",
+  "Logout": "ඉවත් වන්න",
+  "Local Database": "දේශීය දත්ත ගබඩාව",
+  "Receipt Printer": "බිල්පත් මුද්‍රකය",
+  "Barcode Scanner": "බාර්කෝඩ් කියවනය",
+  "Cash Drawer": "මුදල් ලාච්චුව",
+  "Connected": "සම්බන්ධයි",
+  "Disconnected": "සම්බන්ධ නැත",
+  "Checking": "පරීක්ෂා කරමින්",
+  "Not checked": "පරීක්ෂා කර නැත",
+  "DB": "දත්ත",
+  "Printer": "මුද්‍රකය",
+  "Scanner": "කියවනය",
+  "Drawer": "ලාච්චුව",
+  "Low Stock": "අඩු තොග",
+  "Backup Completed": "උපස්ථය සම්පූර්ණයි",
+  "Pending Sync": "සමමුහුර්ත කිරීමට ඇත",
+  "Premium Ceylon Tea has only 5 units remaining.": "Premium Ceylon Tea ඒකක 5ක් පමණක් ඉතිරිව ඇත.",
+  "POS data was successfully synchronized.": "විකුණුම් දත්ත සාර්ථකව සමමුහුර්ත කරන ලදී.",
+  "2 transactions are waiting to be synchronized.": "ගනුදෙනු 2ක් සමමුහුර්ත කිරීමට ඇත.",
+  "5 min ago": "මිනිත්තු 5කට පෙර",
+  "15 min ago": "මිනිත්තු 15කට පෙර",
+  "20 min ago": "මිනිත්තු 20කට පෙර"
+};
 
 export default Header;
