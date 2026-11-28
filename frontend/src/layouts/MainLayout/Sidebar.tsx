@@ -68,6 +68,7 @@ export type SidebarPage =
   | "settings";
 
 interface SidebarProps {
+  language: "EN" | "SI";
   branding: POSBranding;
   activePage: SidebarPage;
   onNavigate: (page: SidebarPage) => void;
@@ -131,12 +132,14 @@ const inventoryPages: readonly SidebarPage[] = [
    ====================================================== */
 
 function Sidebar({
+  language,
   branding,
   activePage,
   onNavigate,
   mobileOpen = false,
   onMobileClose,
 }: SidebarProps) {
+  const t = (value: string) => language === "SI" ? (translations[value] ?? value) : value;
   /*
    * Only Inventory expansion is stored locally.
    * The selected page comes from MainLayout.
@@ -229,7 +232,7 @@ function Sidebar({
               </Typography>
 
               <Typography className="ps-sidebar-brand-subtitle">
-                Point of Sale System
+                {t("Point of Sale System")}
               </Typography>
             </Box>
           </Box>
@@ -306,7 +309,7 @@ function Sidebar({
                       </ListItemIcon>
 
                       <ListItemText
-                        primary={item.label}
+                        primary={t(item.label)}
                         slotProps={{
                           primary: {
                             className: "ps-sidebar-item-label",
@@ -366,7 +369,7 @@ function Sidebar({
                               />
 
                               <ListItemText
-                                primary={subItem.label}
+                                primary={t(subItem.label)}
                                 slotProps={{
                                   primary: {
                                     className:
@@ -409,7 +412,7 @@ function Sidebar({
             </ListItemIcon>
 
             <ListItemText
-              primary="Settings"
+              primary={t("Settings")}
               slotProps={{
                 primary: {
                   className: "ps-sidebar-item-label",
@@ -422,5 +425,23 @@ function Sidebar({
     </>
   );
 }
+
+const translations: Record<string, string> = {
+  "Dashboard": "මුල් පිටුව",
+  "POS / Billing": "බිල්පත්",
+  "Sales": "විකුණුම්",
+  "Inventory": "තොග කළමනාකරණය",
+  "Products": "නිෂ්පාදන",
+  "Purchases": "මිලදී ගැනීම්",
+  "Suppliers": "සැපයුම්කරුවන්",
+  "Customers": "පාරිභෝගිකයින්",
+  "Reports": "වාර්තා",
+  "Settings": "සැකසුම්",
+  "Stock Overview": "තොග සාරාංශය",
+  "Stock Adjustments": "තොග ගැලපීම්",
+  "Stock Transfer": "තොග මාරු කිරීම",
+  "Stock History": "තොග ඉතිහාසය",
+  "Point of Sale System": "විකුණුම් පද්ධතිය"
+};
 
 export default Sidebar;
