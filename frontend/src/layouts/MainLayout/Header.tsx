@@ -12,23 +12,37 @@ import {
   Popover,
   Toolbar,
   Typography,
+  Tooltip,
 } from "@mui/material";
 
 import MenuIcon from "@mui/icons-material/Menu";
 import LanguageIcon from "@mui/icons-material/Language";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import CloudDoneIcon from "@mui/icons-material/CloudDone";
+import SyncOutlinedIcon from "@mui/icons-material/SyncOutlined";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import StorageOutlinedIcon from "@mui/icons-material/StorageOutlined";
+import PrintOutlinedIcon from "@mui/icons-material/PrintOutlined";
+import QrCodeScannerOutlinedIcon from "@mui/icons-material/QrCodeScannerOutlined";
+import PointOfSaleOutlinedIcon from "@mui/icons-material/PointOfSaleOutlined";
 
 /* ==========================================
    TYPES
    ========================================== */
 
+export type ConnectionState = "connected" | "disconnected" | "checking" | "unknown";
+export type PeripheralConnections = {
+  localDatabase?: ConnectionState;
+  receiptPrinter?: ConnectionState;
+  barcodeScanner?: ConnectionState;
+  cashDrawer?: ConnectionState;
+};
+
 interface HeaderProps {
   onMenuClick?: () => void;
+  connections?: PeripheralConnections;
 }
 
 type Language = "EN" | "SI";
@@ -77,7 +91,26 @@ const initialNotifications: NotificationItem[] = [
    HEADER COMPONENT
    ========================================== */
 
-function Header({ onMenuClick }: HeaderProps) {
+const connectionLabels: Record<ConnectionState, string> = {
+  connected: "Connected",
+  disconnected: "Disconnected",
+  checking: "Checking",
+  unknown: "Not checked",
+};
+const connectionColors: Record<ConnectionState, string> = {
+  connected: "#25844b",
+  disconnected: "#cf4545",
+  checking: "#c28514",
+  unknown: "#6b7280",
+};
+
+function Header({ onMenuClick, connections }: HeaderProps) {
+  const connectionItems = [
+    { key: "localDatabase", label: "Local Database", icon: <StorageOutlinedIcon sx={{ fontSize: 19 }} />, state: connections?.localDatabase ?? "unknown" },
+    { key: "receiptPrinter", label: "Receipt Printer", icon: <PrintOutlinedIcon sx={{ fontSize: 19 }} />, state: connections?.receiptPrinter ?? "unknown" },
+    { key: "barcodeScanner", label: "Barcode Scanner", icon: <QrCodeScannerOutlinedIcon sx={{ fontSize: 19 }} />, state: connections?.barcodeScanner ?? "unknown" },
+    { key: "cashDrawer", label: "Cash Drawer", icon: <PointOfSaleOutlinedIcon sx={{ fontSize: 19 }} />, state: connections?.cashDrawer ?? "unknown" },
+  ] as const;
   const [currentTime, setCurrentTime] = useState(
     () => new Date()
   );
@@ -107,6 +140,8 @@ function Header({ onMenuClick }: HeaderProps) {
 
     return () => window.clearInterval(timer);
   }, []);
+
+  const formattedDate = currentTime.toLocaleDateString("en-GB", { weekday: "short", day: "2-digit", month: "short", year: "numeric" });
 
   const formattedTime = currentTime.toLocaleTimeString(
     "en-GB",
@@ -201,6 +236,7 @@ function Header({ onMenuClick }: HeaderProps) {
 
   return (
     <AppBar
+      className="pos-themed-header"
       position="static"
       elevation={0}
       color="inherit"
@@ -339,6 +375,7 @@ function Header({ onMenuClick }: HeaderProps) {
             >
               {formattedTime}
             </Typography>
+            <Typography variant="body2" sx={{display: {xs:"none", lg:"none", xl:"block"}, color:"#344054", whiteSpace:"nowrap"}}>{formattedDate}</Typography>
           </Box>
         </Box>
 
@@ -359,24 +396,70 @@ function Header({ onMenuClick }: HeaderProps) {
             flexShrink: 0,
           }}
         >
+          {/* Peripheral connections: neutral until actual health checks are supplied. */}
+          <Box
+            role="group"
+            aria-label="Hardware and local database connections"
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              flexShrink: 0,
+              pr: { xs: 0.5, md: 1 },
+              gap: { xs: 0.25, md: 1.25 },
+            }}
+          >
+            {connectionItems.map((item) => (
+              <Tooltip key={item.key} arrow title={`${item.label}: ${connectionLabels[item.state]}`}>
+                <Box
+                  role="img"
+                  aria-label={`${item.label}: ${connectionLabels[item.state]}`}
+                  sx={{
+                    position: "relative",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    minWidth: { xs: 27, md: 32 },
+                    height: 32,
+                    color: "#364a52",
+                    borderRadius: 1,
+                    "&:hover": { backgroundColor: "rgba(0,0,0,.05)" },
+                  }}
+                >
+                  {item.icon}
+                  <Typography component="span" sx={{display: {xs:"none", xl:"inline"}, fontSize:12, fontWeight:600, ml:.5, whiteSpace:"nowrap"}}>{item.label === "Local Database" ? "DB" : item.label === "Receipt Printer" ? "Printer" : item.label === "Barcode Scanner" ? "Scanner" : "Drawer"}</Typography>
+                  <Box sx={{
+                    position: "absolute",
+                    right: {xs:1,xl:"auto"},
+                    left: {xs:"auto",xl:20},
+                    bottom: 3,
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    backgroundColor: connectionColors[item.state],
+                    border: "1.5px solid #fff",
+                  }} />
+                </Box>
+              </Tooltip>
+            ))}
+          </Box>
+
           {/* Sync Status */}
 
           <Box
             sx={{
               display: {
-                xs: "none",
-                sm: "flex",
+                xs: "flex",
               },
               alignItems: "center",
               gap: 0.7,
-              px: 1.5,
+              px: { xs: 0.25, md: 0.5 },
               py: 0.5,
               borderRadius: 3,
-              backgroundColor: "#e8f5e9",
+              backgroundColor: "#dcf8e5",
               whiteSpace: "nowrap",
             }}
           >
-            <CloudDoneIcon
+            <SyncOutlinedIcon
               sx={{
                 fontSize: 16,
                 color: "#2e7d32",
@@ -386,8 +469,9 @@ function Header({ onMenuClick }: HeaderProps) {
             <Typography
               variant="body2"
               sx={{
+                display: { xs: "none", md: "block" },
                 color: "#2e7d32",
-                fontWeight: 500,
+                fontWeight: 700,
               }}
             >
               Synced

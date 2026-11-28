@@ -6,7 +6,7 @@ import MainLayout from "./layouts/MainLayout/MainLayout";
 function App() {
   return (
     <MainLayout>
-      <DashboardPage />
+      {(navigate: (path: string) => void) => <DashboardPage onNavigate={navigate} />}
     </MainLayout>
   );
 }

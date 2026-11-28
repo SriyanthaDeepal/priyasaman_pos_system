@@ -26,6 +26,19 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import CloseIcon from "@mui/icons-material/Close";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import CheckroomIcon from "@mui/icons-material/Checkroom";
+import CakeIcon from "@mui/icons-material/Cake";
+import RestaurantIcon from "@mui/icons-material/Restaurant";
+import MedicationIcon from "@mui/icons-material/Medication";
+import DevicesIcon from "@mui/icons-material/Devices";
+import StorefrontIcon from "@mui/icons-material/Storefront";
+import type { POSBranding, BrandIcon } from "../../modules/settings/posBranding";
+
+export const brandingIconComponents: Record<BrandIcon, typeof ShoppingCartIcon> = {
+  cart: ShoppingCartIcon, shirt: CheckroomIcon, bakery: CakeIcon,
+  restaurant: RestaurantIcon, pharmacy: MedicationIcon,
+  electronics: DevicesIcon, store: StorefrontIcon,
+};
 
 import FactCheckOutlinedIcon from "@mui/icons-material/FactCheckOutlined";
 import TuneOutlinedIcon from "@mui/icons-material/TuneOutlined";
@@ -55,6 +68,7 @@ export type SidebarPage =
   | "settings";
 
 interface SidebarProps {
+  branding: POSBranding;
   activePage: SidebarPage;
   onNavigate: (page: SidebarPage) => void;
   mobileOpen?: boolean;
@@ -117,6 +131,7 @@ const inventoryPages: readonly SidebarPage[] = [
    ====================================================== */
 
 function Sidebar({
+  branding,
   activePage,
   onNavigate,
   mobileOpen = false,
@@ -178,6 +193,8 @@ function Sidebar({
     }
   };
 
+  const BrandIconComponent = brandingIconComponents[branding.icon] ?? ShoppingCartIcon;
+
   return (
     <>
       {/* Mobile backdrop */}
@@ -202,13 +219,13 @@ function Sidebar({
 
         <Box className="ps-sidebar-brand">
           <Box className="ps-sidebar-brand-top">
-            <ShoppingCartIcon
+            <BrandIconComponent
               className="ps-sidebar-brand-icon"
             />
 
             <Box className="ps-sidebar-brand-text">
-              <Typography className="ps-sidebar-brand-name">
-                Priyasaman POS
+              <Typography className="ps-sidebar-brand-name" sx={{ fontSize: branding.displayName.length > 26 ? "12px !important" : branding.displayName.length > 19 ? "15px !important" : branding.displayName.length > 14 ? "17px !important" : "20px !important" }}>
+                {branding.displayName}
               </Typography>
 
               <Typography className="ps-sidebar-brand-subtitle">

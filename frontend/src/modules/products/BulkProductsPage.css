@@ -1,0 +1,361 @@
+.bulk-page{position:absolute;inset:0;display:flex;flex-direction:column;gap:12px;min-width:0;min-height:0;overflow:hidden;padding:clamp(10px,1.2vw,20px);box-sizing:border-box;color:#152238;background:#f8fafc}.bulk-header,.bulk-actions,.bulk-toolbar,.bulk-footer,.bulk-footer>div,.bulk-wizard header,.bulk-wizard footer,.bulk-wizard footer>div{display:flex;align-items:center;gap:10px}.bulk-header,.bulk-footer,.bulk-wizard header,.bulk-wizard footer{justify-content:space-between}.bulk-header{flex-wrap:wrap;flex:0 0 auto}.bulk-header h1{margin:3px 0;font-size:clamp(20px,2vw,28px)}.bulk-header p,.bulk-header small{margin:0;color:#64748b;font-size:12px}.bulk-page button{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:35px;padding:7px 12px;border-radius:8px;border:1px solid #cbd5e1;background:#fff;color:#17542c;cursor:pointer;font-weight:650;white-space:nowrap}.bulk-page button svg{font-size:18px}.bulk-page button:disabled{opacity:.45;cursor:not-allowed}.bulk-page .bulk-primary{background:#007a19;color:white;border-color:#007a19}.bulk-progress{display:flex;flex:0 0 auto;gap:8px}.bulk-progress span{flex:1;text-align:center;border-radius:9px;background:#edf2f7;color:#64748b;padding:10px 6px;font-weight:700;font-size:12px}.bulk-progress span.active{background:#fff0de;color:#e66b00}.bulk-card{background:#fff;border:1px solid #dbe5ee;border-radius:12px;box-shadow:0 2px 7px #00000008}.bulk-workspace{display:flex;flex-direction:column;flex:1 1 0;min-height:0;padding:12px}.bulk-toolbar{flex:0 0 auto;flex-wrap:wrap;margin-bottom:10px}.bulk-toolbar>input{flex:1 1 230px;min-width:0;height:38px;padding:0 12px;border:1px solid #cbd5e1;border-radius:8px}.bulk-table-scroll{flex:1 1 0;min-height:0;overflow:auto;scrollbar-width:none;overscroll-behavior:contain}.bulk-table-scroll::-webkit-scrollbar,.bulk-keyboard::-webkit-scrollbar{display:none}.bulk-table-scroll table{min-width:1280px;width:100%;border-collapse:collapse;text-align:left;font-size:12px}.bulk-table-scroll thead{position:sticky;top:0;z-index:1;background:#eef2f6}.bulk-table-scroll th,.bulk-table-scroll td{padding:11px 9px;border-bottom:1px solid #e5eaf0;white-space:nowrap}.bulk-table-scroll tr.bulk-invalid{background:#fff1f1}.bulk-ok{color:#007a19}.bulk-error{color:#bd1f2d;font-size:12px}.bulk-empty{padding:50px 15px;text-align:center;color:#64748b;font-size:13px}.bulk-footer{flex:0 0 auto;border-top:1px solid #e2e8f0;padding-top:12px;flex-wrap:wrap}.bulk-footer>div{flex-wrap:wrap;font-size:12px}.bulk-footer>div span{color:#007a19}.bulk-overlay{position:fixed;inset:0;z-index:1300;background:#071b14a8;display:flex;justify-content:flex-end}.bulk-wizard{width:min(560px,100%);height:100%;background:white;display:flex;flex-direction:column;min-height:0;box-shadow:-10px 0 40px #0002}.bulk-wizard header,.bulk-wizard footer{padding:17px 22px;border-bottom:1px solid #e2e8f0;flex:0 0 auto}.bulk-wizard footer{border-bottom:0;border-top:1px solid #e2e8f0}.bulk-wizard header h2{font-size:22px;margin:4px 0}.bulk-wizard header small{color:#64748b}.bulk-wizard-body{padding:22px;overflow:auto;flex:1 1 0;min-height:0;scrollbar-width:none}.bulk-wizard-body::-webkit-scrollbar{display:none}.bulk-step-count{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:#475569}.bulk-step-track{height:7px;background:#e2e8f0;border-radius:8px;overflow:hidden;margin:12px 0 32px}.bulk-step-track>div{height:100%;background:#07842c}.bulk-question{display:flex;flex-direction:column;gap:13px}.bulk-question>label{font-weight:750;font-size:17px}.bulk-question input:not([type=checkbox]),.bulk-question select,.bulk-question textarea{width:100%;box-sizing:border-box;padding:12px;border:1px solid #cbd5e1;border-radius:9px;font:inherit;min-height:46px}.bulk-input-row{display:flex;align-items:center;gap:8px}.bulk-input-row input{flex:1;min-width:0}.bulk-hint{font-size:12px;color:#64748b}.bulk-question .bulk-checkbox{display:flex;align-items:center;gap:10px}.bulk-keyboard{max-height:260px;overflow:auto;scrollbar-width:none}.bulk-keyboard .stk-panel{position:relative;inset:auto;width:100%;height:auto;min-height:0;max-width:100%;box-sizing:border-box;padding:6px;gap:5px}.bulk-keyboard .stk-sinhala-layout{gap:5px}.bulk-keyboard .stk-footer{margin-top:0}.bulk-review{display:flex;flex-direction:column;gap:5px}.bulk-review>div{display:flex;justify-content:space-between;gap:15px;padding:9px 0;border-bottom:1px solid #e2e8f0;font-size:13px}.bulk-review>div strong{max-width:65%;overflow-wrap:anywhere;text-align:right}.bulk-review>div span{color:#64748b}.bulk-images{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}.bulk-images>div{width:90px}.bulk-images img{width:90px;height:75px;object-fit:contain}.bulk-images button{font-size:11px}@media(max-width:760px){.bulk-progress span{font-size:10px}.bulk-header{align-items:flex-start}.bulk-header .bulk-actions{flex-wrap:wrap}.bulk-footer{align-items:stretch}.bulk-footer>.bulk-actions{width:100%;justify-content:flex-end;flex-wrap:wrap}.bulk-wizard-body{padding:16px}.bulk-wizard header,.bulk-wizard footer{padding:12px}}
+
+/* Bulk-entry wizard ONLY: show the complete Sinhala keyboard, not a 260px crop.
+   Other POS keyboard placements retain their existing appearance. */
+.bulk-wizard .bulk-keyboard{
+  max-height:none;
+  height:auto;
+  overflow:visible;
+  scrollbar-width:auto;
+  min-width:0;
+}
+.bulk-wizard .bulk-keyboard .stk-panel{
+  position:relative;
+  inset:auto;
+  display:flex;
+  flex-direction:column;
+  width:100%;
+  height:auto;
+  max-height:none;
+  min-height:0;
+  overflow:visible;
+  box-sizing:border-box;
+  padding:8px;
+  gap:8px;
+}
+.bulk-wizard .bulk-keyboard .stk-sinhala-layout{
+  display:grid;
+  grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);
+  gap:6px;
+  align-items:start;
+  min-width:0;
+}
+.bulk-wizard .bulk-keyboard .stk-letter-grid{
+  grid-template-columns:repeat(7,minmax(0,1fr));
+  gap:3px;
+}
+.bulk-wizard .bulk-keyboard .stk-form-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:3px;
+}
+.bulk-wizard .bulk-keyboard .stk-letter-grid .stk-key,
+.bulk-wizard .bulk-keyboard .stk-form-grid .stk-key{
+  min-height:32px;
+  height:34px;
+  min-width:0;
+  padding:2px 0;
+  font-size:17px;
+}
+.bulk-wizard .bulk-keyboard .stk-right-pane{padding:4px}
+.bulk-wizard .bulk-keyboard .stk-footer{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:6px;
+  margin-top:2px;
+}
+.bulk-wizard .bulk-keyboard .stk-controls,
+.bulk-wizard .bulk-keyboard .stk-modes{
+  display:flex;
+  justify-content:flex-start;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:5px;
+  margin-left:0;
+  width:100%;
+}
+.bulk-wizard .bulk-keyboard .stk-controls button,
+.bulk-wizard .bulk-keyboard .stk-modes button{
+  min-height:31px;
+  padding:3px 7px;
+  font-size:11px;
+}
+.bulk-wizard .bulk-keyboard .stk-close{
+  flex:0 0 auto;
+  align-self:flex-end;
+}
+@media(max-width:520px){
+  .bulk-wizard .bulk-keyboard .stk-sinhala-layout{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}
+  .bulk-wizard .bulk-keyboard .stk-letter-grid{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .bulk-wizard .bulk-keyboard .stk-form-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .bulk-wizard .bulk-keyboard .stk-letter-grid .stk-key,
+  .bulk-wizard .bulk-keyboard .stk-form-grid .stk-key{font-size:16px;min-height:32px}
+}
+
+/* Legacy POS imports: visibly identify required fields needing attention. */
+.bulk-table-scroll td.bulk-missing-cell{
+ background:#fff0f0;
+ color:#b42318;
+ border-bottom:2px solid #e25555;
+ font-weight:700;
+}
+.bulk-table-scroll tr.bulk-invalid td.bulk-missing-cell{background:#ffe2e2}
+
+
+/* Adaptive bulk products workspace: desktop monitors, laptops and tablets.
+   Keep the full product dataset accessible by horizontal table scrolling. */
+.bulk-page{
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  min-height:0;
+  box-sizing:border-box;
+  container-type:inline-size;
+  gap:clamp(6px,1vh,12px);
+  padding:clamp(8px,1vw,18px);
+}
+.bulk-header{min-width:0;column-gap:12px;row-gap:8px}
+.bulk-header>div:first-child{flex:1 1 250px;min-width:0}
+.bulk-header .bulk-actions{display:flex;flex:0 1 auto;flex-wrap:wrap;justify-content:flex-end}
+.bulk-header h1{font-size:clamp(19px,1.6vw,27px);line-height:1.2}
+.bulk-progress{min-width:0;gap:clamp(3px,.6vw,8px)}
+.bulk-progress span{min-width:0;padding:clamp(6px,.7vw,10px) 4px;overflow-wrap:anywhere}
+.bulk-workspace{min-width:0;min-height:0;padding:clamp(7px,.8vw,12px)}
+.bulk-toolbar{display:flex;align-items:center;gap:7px}
+.bulk-toolbar>input:not([type=file]){flex:1 1 220px;min-width:140px}
+.bulk-toolbar button{flex:0 0 auto}
+.bulk-table-scroll{width:100%;max-width:100%;overflow-x:auto;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#b9c9d3 transparent}
+.bulk-table-scroll::-webkit-scrollbar{display:block;width:7px;height:8px}
+.bulk-table-scroll::-webkit-scrollbar-thumb{background:#b9c9d3;border-radius:6px}
+.bulk-table-scroll table{width:max-content;min-width:100%;font-size:clamp(11px,.72vw,12px)}
+.bulk-table-scroll th,.bulk-table-scroll td{padding:clamp(7px,.65vw,11px) clamp(6px,.5vw,9px)}
+.bulk-table-scroll th:nth-last-child(2),.bulk-table-scroll td:nth-last-child(2){min-width:170px;max-width:300px;white-space:normal;overflow-wrap:anywhere}
+.bulk-table-scroll th:last-child,.bulk-table-scroll td:last-child{position:sticky;right:0;background:#fff;box-shadow:-1px 0 #e2e8f0;z-index:1}
+.bulk-table-scroll thead th:last-child{background:#eef2f6;z-index:3}
+.bulk-table-scroll tr.bulk-invalid td:last-child{background:#fff1f1}
+.bulk-footer{min-width:0;gap:8px}
+.bulk-footer>.bulk-actions{display:flex;justify-content:flex-end;flex-wrap:wrap;min-width:0}
+.bulk-overlay{padding:0;box-sizing:border-box}
+.bulk-wizard{width:clamp(390px,37vw,610px);max-width:100%;min-width:0;box-sizing:border-box}
+.bulk-wizard header,.bulk-wizard footer{gap:8px;padding:clamp(10px,1.1vw,18px)}
+.bulk-wizard header>div{min-width:0}
+.bulk-wizard header h2{font-size:clamp(18px,1.35vw,22px);overflow-wrap:anywhere}
+.bulk-wizard-body{padding:clamp(12px,1.3vw,22px);overscroll-behavior:contain;scrollbar-width:thin}
+.bulk-step-track{margin:10px 0 clamp(14px,2vh,32px)}
+.bulk-question{min-width:0}
+.bulk-input-row{min-width:0;flex-wrap:wrap}
+.bulk-input-row input{flex:1 1 170px}
+.bulk-input-row button{flex:0 0 auto}
+.bulk-wizard footer>div{display:flex;flex-wrap:wrap;justify-content:flex-end}
+.bulk-wizard .bulk-keyboard .stk-sinhala-layout{min-width:0}
+.bulk-wizard .bulk-keyboard .stk-letter-grid,
+.bulk-wizard .bulk-keyboard .stk-form-grid{min-width:0}
+.bulk-wizard .bulk-keyboard .stk-key{min-width:0}
+.bulk-barcode-preview{max-width:100%;overflow-x:auto}
+
+@container (max-width:1000px){
+ .bulk-header .bulk-actions{justify-content:flex-start}
+ .bulk-header{align-items:flex-start}
+ .bulk-toolbar>input:not([type=file]){flex-basis:100%}
+ .bulk-toolbar{justify-content:flex-start}
+ .bulk-footer{align-items:flex-start}
+}
+@container (max-width:650px){
+ .bulk-header>div:first-child{flex-basis:100%}
+ .bulk-header .bulk-actions{width:100%;justify-content:flex-start}
+ .bulk-header .bulk-actions button{flex:1 1 auto}
+ .bulk-progress span{font-size:10px;line-height:1.2}
+ .bulk-toolbar button{flex:1 1 auto}
+ .bulk-footer>.bulk-actions{width:100%;justify-content:stretch}
+ .bulk-footer>.bulk-actions button{flex:1 1 auto}
+ .bulk-table-scroll table{font-size:11px}
+}
+@media (max-width:900px){
+ .bulk-wizard{width:min(540px,75vw)}
+}
+@media (max-width:650px){
+ .bulk-wizard{width:min(100%,520px)}
+}
+@media (max-height:720px){
+ .bulk-page{gap:6px;padding:8px}
+ .bulk-header h1{margin:1px 0}
+ .bulk-progress span{padding:6px 4px}
+ .bulk-workspace{padding:8px}
+ .bulk-toolbar{margin-bottom:6px}
+ .bulk-footer{padding-top:7px}
+ .bulk-wizard header,.bulk-wizard footer{padding:9px 14px}
+ .bulk-wizard-body{padding:12px 14px}
+ .bulk-step-track{margin:8px 0 14px}
+}
+
+
+/* Guided product entry: responsive within the actual drawer, not just the viewport.
+   Keep scrolling functional but remove visible scrollbar tracks. */
+.bulk-wizard{
+  container-type:inline-size;
+  width:clamp(380px,42vw,680px);
+  max-width:100vw;
+  max-height:100dvh;
+  overflow:hidden;
+}
+.bulk-wizard-body{
+  overflow-x:hidden;
+  overflow-y:auto;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+  overscroll-behavior-y:contain;
+}
+.bulk-wizard-body::-webkit-scrollbar,
+.bulk-table-scroll::-webkit-scrollbar,
+.bulk-keyboard::-webkit-scrollbar,
+.bulk-barcode-preview::-webkit-scrollbar{
+  display:none !important;
+  width:0 !important;
+  height:0 !important;
+}
+.bulk-table-scroll,
+.bulk-barcode-preview{
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+}
+.bulk-wizard .bulk-keyboard{
+  width:100%;
+  min-width:0;
+  max-width:100%;
+  box-sizing:border-box;
+  overflow:visible;
+}
+.bulk-wizard .bulk-keyboard .stk-panel{
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  padding:clamp(4px,1.2cqw,8px);
+  box-sizing:border-box;
+}
+.bulk-wizard .bulk-keyboard .stk-sinhala-layout{
+  width:100%;
+  min-width:0;
+  max-width:100%;
+  grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);
+  gap:clamp(3px,1cqw,6px);
+}
+.bulk-wizard .bulk-keyboard .stk-letter-grid,
+.bulk-wizard .bulk-keyboard .stk-form-grid{
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  gap:clamp(2px,.6cqw,4px);
+}
+.bulk-wizard .bulk-keyboard .stk-letter-grid{
+  grid-template-columns:repeat(7,minmax(0,1fr));
+}
+.bulk-wizard .bulk-keyboard .stk-form-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+}
+.bulk-wizard .bulk-keyboard .stk-letter-grid .stk-key,
+.bulk-wizard .bulk-keyboard .stk-form-grid .stk-key{
+  width:100%;
+  min-width:0;
+  max-width:100%;
+  min-height:clamp(27px,6.5cqw,35px);
+  height:auto;
+  padding:3px 1px;
+  font-size:clamp(12px,3cqw,17px);
+  line-height:1.2;
+}
+.bulk-wizard .bulk-keyboard .stk-right-pane{
+  min-width:0;
+  padding:clamp(2px,.7cqw,5px);
+}
+.bulk-wizard .bulk-keyboard .stk-footer{
+  min-width:0;
+  width:100%;
+  align-items:stretch;
+  gap:5px;
+}
+.bulk-wizard .bulk-keyboard .stk-controls,
+.bulk-wizard .bulk-keyboard .stk-modes{
+  min-width:0;
+  max-width:100%;
+  width:100%;
+  flex-wrap:wrap;
+  justify-content:flex-start;
+  gap:4px;
+}
+.bulk-wizard .bulk-keyboard .stk-controls button,
+.bulk-wizard .bulk-keyboard .stk-modes button{
+  max-width:100%;
+  white-space:normal;
+  overflow-wrap:anywhere;
+}
+.bulk-wizard .bulk-question input:not([type=checkbox]),
+.bulk-wizard .bulk-question select,
+.bulk-wizard .bulk-question textarea{
+  min-width:0;
+  max-width:100%;
+}
+.bulk-wizard .bulk-review>div{min-width:0}
+.bulk-wizard .bulk-review>div strong{min-width:0}
+
+@container (max-width:480px){
+  .bulk-wizard .bulk-keyboard .stk-sinhala-layout{
+    grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);
+    gap:3px;
+  }
+  .bulk-wizard .bulk-keyboard .stk-letter-grid .stk-key,
+  .bulk-wizard .bulk-keyboard .stk-form-grid .stk-key{
+    font-size:clamp(11px,2.9cqw,15px);
+    min-height:28px;
+  }
+  .bulk-wizard .bulk-keyboard .stk-controls button,
+  .bulk-wizard .bulk-keyboard .stk-modes button{
+    padding:4px 6px;
+    font-size:11px;
+  }
+  .bulk-wizard header,.bulk-wizard footer{padding:10px 12px}
+  .bulk-wizard-body{padding:12px}
+}
+@container (max-width:370px){
+  .bulk-wizard .bulk-keyboard .stk-sinhala-layout{
+    grid-template-columns:minmax(0,1fr);
+  }
+  .bulk-wizard .bulk-keyboard .stk-letter-grid .stk-key,
+  .bulk-wizard .bulk-keyboard .stk-form-grid .stk-key{
+    font-size:14px;
+    min-height:32px;
+  }
+}
+@media(max-width:900px){
+  .bulk-wizard{width:min(600px,80vw)}
+}
+@media(max-width:650px){
+  .bulk-wizard{width:100vw}
+}
+@media(max-height:750px){
+  .bulk-wizard .bulk-keyboard .stk-letter-grid .stk-key,
+  .bulk-wizard .bulk-keyboard .stk-form-grid .stk-key{
+    min-height:27px;
+    padding:2px 1px;
+  }
+  .bulk-wizard .bulk-question{gap:9px}
+}
+
+
+/* Readable draft grid without increasing its existing row height. */
+.bulk-table-scroll table{
+  font-size:clamp(13px,.84vw,14px);
+}
+.bulk-table-scroll th,
+.bulk-table-scroll td{
+  padding-top:7px;
+  padding-bottom:7px;
+  line-height:1.3;
+  vertical-align:middle;
+}
+.bulk-table-scroll .bulk-error,
+.bulk-table-scroll .bulk-ok{
+  font-size:inherit;
+  line-height:1.3;
+}
+.bulk-table-scroll td button{
+  min-height:32px;
+  padding:5px 10px;
+  font-size:inherit;
+}
+@container (max-width:650px){
+  .bulk-table-scroll table{font-size:13px}
+  .bulk-table-scroll th,.bulk-table-scroll td{
+    padding-top:7px;
+    padding-bottom:7px;
+  }
+}

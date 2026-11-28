@@ -1,27 +1,26 @@
 
-import { useId, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
 
 import {
   AddBoxOutlined,
   ArrowForwardOutlined,
+  BoltOutlined,
+  CalendarTodayOutlined,
+  PaidOutlined,
+  PercentOutlined,
+  TrendingUpOutlined,
   AssessmentOutlined,
   CalendarMonthOutlined,
-  CheckCircleOutlined,
-  CloudDoneOutlined,
+  KeyboardArrowDownOutlined,
   GroupsOutlined,
   Inventory2Outlined,
   LocalOfferOutlined,
-  PointOfSaleOutlined,
-  PrintOutlined,
-  QrCodeScannerOutlined,
   ReceiptLongOutlined,
   ShoppingCartOutlined,
-  StorageOutlined,
   SwapHorizOutlined,
   WarningAmberOutlined,
   WbSunnyOutlined,
-  WifiOutlined,
 } from "@mui/icons-material";
 
 import "./dashboard.css";
@@ -42,27 +41,6 @@ const categories = [
   { name: "Personal Care", share: 11.6, color: "#963df0" },
   { name: "Snacks", share: 10.4, color: "#f75b89" },
   { name: "Others", share: 8.6, color: "#a3acba" },
-] as const;
-
-const transactions = [
-  {
-    invoice: "INV-009842",
-    customer: "Walk-in Customer",
-    time: "08:17 AM",
-    total: 3450,
-  },
-  {
-    invoice: "INV-009841",
-    customer: "Nishan Perera",
-    time: "08:10 AM",
-    total: 6280,
-  },
-  {
-    invoice: "INV-009840",
-    customer: "Walk-in Customer",
-    time: "08:03 AM",
-    total: 1920,
-  },
 ] as const;
 
 const lowStock = [
@@ -176,39 +154,25 @@ function Panel({
   );
 }
 
-function Sparkline() {
-  return (
-    <svg
-      className="pd-sparkline"
-      viewBox="0 0 64 40"
-      aria-hidden="true"
-    >
-      <path
-        d="M2 34 C11 14 18 13 27 22 S42 28 51 10 S59 6 62 3"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="3"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
 function StatCard({
   label,
   value,
   change,
   icon,
   tone,
+  onClick,
+  destination,
 }: {
   label: string;
   value: string;
   change: string;
   icon: ReactNode;
   tone: Tone;
+  onClick: () => void;
+  destination: string;
 }) {
   return (
-    <div className={`pd-stat-card pd-stat-${tone}`}>
+    <button type="button" className={`pd-stat-card pd-stat-${tone}`} onClick={onClick} aria-label={`${label}: ${value}. Open ${destination}`} title={`Open ${destination}`}>
       <div className="pd-stat-main">
         <div className="pd-stat-icon">{icon}</div>
         <div className="pd-stat-body">
@@ -220,8 +184,7 @@ function StatCard({
           </div>
         </div>
       </div>
-      <Sparkline />
-    </div>
+    </button>
   );
 }
 
@@ -523,7 +486,7 @@ function QuickAction({
       onClick={onClick}
     >
       <span className="pd-quick-icon">{icon}</span>
-      <span className="pd-quick-label">{label}</span>
+      <span className="pd-quick-label">{tone === "green" ? <>New Sale <span className="pd-quick-shortcut">F2</span></> : label}</span>
     </button>
   );
 }
@@ -535,30 +498,9 @@ function ViewAll({ onClick }: { onClick: () => void }) {
       className="pd-view-all"
       onClick={onClick}
     >
-      View All
+      View Inventory
       <ArrowForwardOutlined fontSize="small" />
     </button>
-  );
-}
-
-function StatusItem({
-  icon,
-  label,
-  status,
-}: {
-  icon: ReactNode;
-  label: string;
-  status: string;
-}) {
-  return (
-    <div className="pd-status-item">
-      <span className="pd-status-item-icon">{icon}</span>
-      <span className="pd-status-item-label">{label}</span>
-      <span className="pd-status-badge">
-        <CheckCircleOutlined fontSize="inherit" />
-        {status}
-      </span>
-    </div>
   );
 }
 
@@ -570,6 +512,23 @@ export default function DashboardPage({
   const [period, setPeriod] = useState<Period>("today");
   const [notice, setNotice] = useState<string | null>(null);
   const [customOpen, setCustomOpen] = useState(false);
+  const [draftPeriod, setDraftPeriod] = useState<Period>("today");
+  const datePickerRef = useRef<HTMLDivElement>(null);
+  const openCustomPicker = () => {
+    setDraftPeriod(period);
+    setCustomStart(appliedRange?.start ?? "");
+    setCustomEnd(appliedRange?.end ?? "");
+    setCustomOpen(true);
+  };
+  const closeCustomPicker = () => setCustomOpen(false);
+  useEffect(() => {
+    if (!customOpen) return;
+    const outside = (event: PointerEvent) => { if (!datePickerRef.current?.contains(event.target as Node)) closeCustomPicker(); };
+    const escape = (event: KeyboardEvent) => { if (event.key === "Escape") closeCustomPicker(); };
+    document.addEventListener("pointerdown", outside);
+    document.addEventListener("keydown", escape);
+    return () => { document.removeEventListener("pointerdown", outside); document.removeEventListener("keydown", escape); };
+  }, [customOpen]);
   const [customStart, setCustomStart] = useState("");
   const [customEnd, setCustomEnd] = useState("");
   const [appliedRange, setAppliedRange] = useState<{ start: string; end: string } | null>(null);
@@ -584,20 +543,13 @@ export default function DashboardPage({
   // Placeholder scaling only: replace with real date-filtered API data later.
   const selectedFactor = period === "custom" ? customDays : periodFactors[period];
 
-  const handlePeriodChange = (value: Period) => {
-    if (value === "custom") {
-      setCustomOpen(true);
-      return;
+  const applyDateFilter = () => {
+    if (draftPeriod === "custom") {
+      if (!customStart || !customEnd || customStart > customEnd) return;
+      setAppliedRange({ start: customStart, end: customEnd });
     }
-    setCustomOpen(false);
-    setPeriod(value);
-  };
-
-  const applyCustomRange = () => {
-    if (!customStart || !customEnd || customStart > customEnd) return;
-    setAppliedRange({ start: customStart, end: customEnd });
-    setPeriod("custom");
-    setCustomOpen(false);
+    setPeriod(draftPeriod);
+    closeCustomPicker();
   };
 
   const data = useMemo(() => {
@@ -639,69 +591,36 @@ export default function DashboardPage({
             </div>
           </div>
 
-          <div className="pd-date-picker-wrap">
-            <div className="pd-date-control">
-              <button
-                type="button"
-                className="pd-date-icon-button"
-                aria-label="Choose custom date range"
-                onClick={() => setCustomOpen((open) => !open)}
-              >
-                <CalendarMonthOutlined />
-              </button>
-              <select
-                value={period}
-                aria-label="Dashboard reporting period"
-                onChange={(event) => handlePeriodChange(event.target.value as Period)}
-              >
-                {(Object.entries(periodOptions) as [Period, string][]).map(([value, label]) => (
-                  <option key={value} value={value}>{label}</option>
-                ))}
-              </select>
-            </div>
+          <div className="pd-date-picker-wrap" ref={datePickerRef}>
+            <button type="button" className="pd-date-trigger" aria-expanded={customOpen} aria-haspopup="dialog" onClick={() => customOpen ? closeCustomPicker() : openCustomPicker()}>
+              <CalendarMonthOutlined />
+              <span>{periodOptions[period]}</span>
+              <KeyboardArrowDownOutlined className="pd-date-chevron" aria-hidden="true" />
+            </button>
             {customOpen && (
-              <div className="pd-date-popover" role="group" aria-label="Custom date range">
-                <div className="pd-date-popover-heading">Select date range</div>
-                <div className="pd-date-inputs">
-                  <label>
-                    <span>Start Date</span>
-                    <input
-                      type="date"
-                      value={customStart}
-                      max={customEnd || undefined}
-                      onChange={(event) => setCustomStart(event.target.value)}
-                    />
-                  </label>
-                  <label>
-                    <span>End Date</span>
-                    <input
-                      type="date"
-                      value={customEnd}
-                      min={customStart || undefined}
-                      onChange={(event) => setCustomEnd(event.target.value)}
-                    />
-                  </label>
+              <div className="pd-date-popover" role="dialog" aria-label="Dashboard date filter">
+                <div className="pd-date-popover-heading">Date Filter</div>
+                <div className="pd-date-presets">
+                  {(Object.entries(periodOptions) as [Period, string][]).map(([value, label]) => (
+                    <button type="button" key={value} className={draftPeriod === value ? "selected" : ""} onClick={() => setDraftPeriod(value)}>{label}</button>
+                  ))}
                 </div>
+                {draftPeriod === "custom" && (
+                  <>
+                    <div className="pd-date-section-title"><CalendarMonthOutlined /> Specific date or date range</div>
+                    <div className="pd-date-inputs">
+                      <label><span>From date</span><input type="date" value={customStart} max={customEnd || undefined} onChange={(event) => setCustomStart(event.target.value)} /></label>
+                      <label><span>To date</span><input type="date" value={customEnd} min={customStart || undefined} onChange={(event) => setCustomEnd(event.target.value)} /></label>
+                    </div>
+                  </>
+                )}
                 <div className="pd-date-popover-actions">
-                  <button type="button" className="pd-date-cancel" onClick={() => setCustomOpen(false)}>
-                    Cancel
-                  </button>
-                  <button
-                    type="button"
-                    className="pd-date-apply"
-                    disabled={!customStart || !customEnd || customStart > customEnd}
-                    onClick={applyCustomRange}
-                  >
-                    Apply
-                  </button>
+                  <button type="button" className="pd-date-cancel" onClick={() => { setDraftPeriod(period); setCustomStart(appliedRange?.start ?? ""); setCustomEnd(appliedRange?.end ?? ""); }}>Reset</button>
+                  <button type="button" className="pd-date-apply" disabled={draftPeriod === "custom" && (!customStart || !customEnd || customStart > customEnd)} onClick={applyDateFilter}>Apply</button>
                 </div>
               </div>
             )}
-            {period === "custom" && appliedRange && (
-              <span className="pd-date-range-caption">
-                {appliedRange.start} – {appliedRange.end}
-              </span>
-            )}
+            {period === "custom" && appliedRange && <span className="pd-date-range-caption">{appliedRange.start} – {appliedRange.end}</span>}
           </div>
         </div>
 
@@ -722,6 +641,8 @@ export default function DashboardPage({
         <div className="pd-kpis">
           <StatCard
             label="Today's Sales"
+            onClick={() => navigate("/sales")}
+            destination="Sales"
             value={money(data.sales)}
             change="+12.8%"
             icon={<ShoppingCartOutlined />}
@@ -729,6 +650,8 @@ export default function DashboardPage({
           />
           <StatCard
             label="Transactions"
+            onClick={() => navigate("/sales")}
+            destination="Sales"
             value={data.transactions.toLocaleString()}
             change="+8.3%"
             icon={<ReceiptLongOutlined />}
@@ -736,6 +659,8 @@ export default function DashboardPage({
           />
           <StatCard
             label="Items Sold"
+            onClick={() => navigate("/products")}
+            destination="Products"
             value={data.items.toLocaleString()}
             change="+15.6%"
             icon={<Inventory2Outlined />}
@@ -743,6 +668,8 @@ export default function DashboardPage({
           />
           <StatCard
             label="New Customers"
+            onClick={() => navigate("/customers")}
+            destination="Customers"
             value={data.customers.toLocaleString()}
             change="+33.3%"
             icon={<GroupsOutlined />}
@@ -750,59 +677,11 @@ export default function DashboardPage({
           />
         </div>
 
-        {/* MAIN UPPER GRID */}
-        <div className="pd-main-columns">
-          {/* LEFT COLUMN */}
-          <div className="pd-left-column">
-            <Panel
-              title="Sales Overview"
-              icon={<AssessmentOutlined />}
-              className="pd-sales-panel"
-              action={
-                <div
-                  className="pd-chart-tabs"
-                  role="group"
-                  aria-label="Sales chart metric"
-                >
-                  {(
-                    ["sales", "transactions", "profit"] as Metric[]
-                  ).map((item) => (
-                    <button
-                      type="button"
-                      key={item}
-                      className={
-                        metric === item ? "active" : ""
-                      }
-                      aria-pressed={metric === item}
-                      onClick={() => setMetric(item)}
-                    >
-                      {item.charAt(0).toUpperCase() +
-                        item.slice(1)}
-                    </button>
-                  ))}
-                </div>
-              }
-            >
-              <SalesChart
-                metric={metric}
-                factor={selectedFactor}
-              />
-            </Panel>
-
-            <Panel
-              title="Sales by Category"
-              icon={<LocalOfferOutlined />}
-              className="pd-category-panel"
-            >
-              <CategoryChart total={data.sales} />
-            </Panel>
-          </div>
-
-          {/* RIGHT COLUMN */}
-          <div className="pd-right-column">
+        {/* ROW TWO: QUICK ACTIONS */}
+        <div className="pd-action-row">
             <Panel
               title="Quick Actions"
-              icon={<PointOfSaleOutlined />}
+              icon={<BoltOutlined />}
               className="pd-quick-panel"
             >
               <div className="pd-quick-grid">
@@ -847,81 +726,34 @@ export default function DashboardPage({
               </div>
             </Panel>
 
+        </div>
+
+        {/* ROW THREE: SUMMARY AND STOCK ALERTS */}
+        <div className="pd-insights-row">
             <Panel
               title="Today's Summary"
-              icon={<ReceiptLongOutlined />}
+              icon={<CalendarTodayOutlined />}
               className="pd-summary-panel"
             >
               <div className="pd-summary-list">
                 <div className="pd-summary-row">
-                  <span>Total Sales</span>
-                  <strong>{money(data.sales)}</strong>
+                  <span className="pd-summary-icon pd-summary-icon-sales"><PaidOutlined /></span>
+                  <span className="pd-summary-details"><small>Gross Sales</small><strong>{money(data.sales)}</strong></span>
                 </div>
                 <div className="pd-summary-row">
-                  <span>Cost of Goods</span>
-                  <strong>{money(data.cost)}</strong>
+                  <span className="pd-summary-icon pd-summary-icon-profit"><TrendingUpOutlined /></span>
+                  <span className="pd-summary-details"><small>Gross Profit</small><strong>{money(data.profit)}</strong></span>
                 </div>
                 <div className="pd-summary-row">
-                  <span>Gross Profit</span>
-                  <strong className="pd-green-text">
-                    {money(data.profit)}
-                  </strong>
+                  <span className="pd-summary-icon pd-summary-icon-margin"><PercentOutlined /></span>
+                  <span className="pd-summary-details"><small>Profit Margin</small><strong>{data.sales > 0 ? ((data.profit / data.sales) * 100).toFixed(1) : "0.0"}%</strong></span>
                 </div>
-                <div className="pd-summary-row pd-margin-row">
-                  <span>Profit Margin</span>
-                  <strong>
-                    {data.sales > 0
-                      ? (
-                          (data.profit / data.sales) *
-                          100
-                        ).toFixed(1)
-                      : "0.0"}%
-                  </strong>
+                <div className="pd-summary-row">
+                  <span className="pd-summary-icon pd-summary-icon-average"><ReceiptLongOutlined /></span>
+                  <span className="pd-summary-details"><small>Avg. Sale Value</small><strong>{money(data.transactions > 0 ? data.sales / data.transactions : 0)}</strong></span>
                 </div>
               </div>
             </Panel>
-          </div>
-        </div>
-
-        {/* BOTTOM TWO-COLUMN ROW */}
-        <div className="pd-bottom-row">
-          {/* LEFT: RECENT TRANSACTIONS */}
-          <Panel
-            title="Recent Transactions"
-            icon={<ReceiptLongOutlined />}
-            className="pd-transactions-panel"
-            action={
-              <ViewAll
-                onClick={() => navigate("/sales/history")}
-              />
-            }
-          >
-            <div className="pd-transaction-list">
-              {transactions.map((transaction) => (
-                <button
-                  type="button"
-                  key={transaction.invoice}
-                  className="pd-transaction-row"
-                  onClick={() =>
-                    navigate(`/sales/${transaction.invoice}`)
-                  }
-                >
-                  <span className="pd-transaction-details">
-                    <strong>{transaction.invoice}</strong>
-                    <small>
-                      {transaction.customer} ·{" "}
-                      {transaction.time}
-                    </small>
-                  </span>
-                  <span className="pd-transaction-amount">
-                    {money(transaction.total)}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </Panel>
-
-          {/* RIGHT: LOW STOCK ALERTS */}
           <Panel
             title="Low Stock Alerts"
             icon={<WarningAmberOutlined />}
@@ -963,35 +795,51 @@ export default function DashboardPage({
           </Panel>
         </div>
 
-        {/* SYSTEM STATUS */}
-        <Panel
-          title="System Status"
-          icon={<WifiOutlined />}
-          className="pd-system-panel"
-        >
-          <div className="pd-system-grid">
-            <StatusItem
-              icon={<CloudDoneOutlined />}
-              label="Synchronization"
-              status="Synced"
-            />
-            <StatusItem
-              icon={<StorageOutlined />}
-              label="Local Database"
-              status="Online"
-            />
-            <StatusItem
-              icon={<PrintOutlined />}
-              label="Receipt Printer"
-              status="Ready"
-            />
-            <StatusItem
-              icon={<QrCodeScannerOutlined />}
-              label="Barcode Scanner"
-              status="Connected"
-            />
-          </div>
-        </Panel>
+        {/* ROW FOUR: ANALYTICS */}
+        <div className="pd-analytics-row">
+            <Panel
+              title="Sales Overview"
+              icon={<AssessmentOutlined />}
+              className="pd-sales-panel"
+              action={
+                <div
+                  className="pd-chart-tabs"
+                  role="group"
+                  aria-label="Sales chart metric"
+                >
+                  {(
+                    ["sales", "transactions", "profit"] as Metric[]
+                  ).map((item) => (
+                    <button
+                      type="button"
+                      key={item}
+                      className={
+                        metric === item ? "active" : ""
+                      }
+                      aria-pressed={metric === item}
+                      onClick={() => setMetric(item)}
+                    >
+                      {item.charAt(0).toUpperCase() +
+                        item.slice(1)}
+                    </button>
+                  ))}
+                </div>
+              }
+            >
+              <SalesChart
+                metric={metric}
+                factor={selectedFactor}
+              />
+            </Panel>
+
+            <Panel
+              title="Sales by Category"
+              icon={<LocalOfferOutlined />}
+              className="pd-category-panel"
+            >
+              <CategoryChart total={data.sales} />
+            </Panel>
+        </div>
       </div>
     </div>
   );
