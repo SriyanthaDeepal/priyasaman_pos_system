@@ -28,7 +28,7 @@ import ReturnExchangePage from "../../modules/sales/ReturnExchangePage";
 import type { ExchangeSale } from "../../modules/sales/ReturnExchangePage";
 
 interface MainLayoutProps {
-  children: ReactNode | ((navigate: (path: string) => void) => ReactNode);
+  children: ReactNode | ((navigate: (path: string) => void, language: "EN" | "SI") => ReactNode);
 }
 
 export default function MainLayout({
@@ -167,7 +167,7 @@ export default function MainLayout({
   const renderPage = () => {
     switch (activePage) {
       case "dashboard":
-        return typeof children === "function" ? children(navigateQuickAction) : children;
+        return typeof children === "function" ? children(navigateQuickAction, language) : children;
 
       case "pos":
         return <POSPage />;
@@ -200,7 +200,7 @@ export default function MainLayout({
         return returnInvoice ? <ReturnExchangePage sale={returnInvoice} onBack={() => setReturnInvoice(null)} onComplete={() => { setReturnedInvoices(previous => previous.includes(returnInvoice.invoice) ? previous : [...previous, returnInvoice.invoice]); setReturnInvoice(null); setFeedback("Return / exchange completed successfully."); }} /> : <SalesPage key={invoiceScanRequested ? "invoice-scan" : "sales"} initialScanOpen={invoiceScanRequested} returnedInvoices={returnedInvoices} onNewSale={() => handleNavigate("pos")} onReturnRefund={sale => { setInvoiceScanRequested(false); setReturnInvoice(sale); }} />;
 
       default:
-        return typeof children === "function" ? children(navigateQuickAction) : children;
+        return typeof children === "function" ? children(navigateQuickAction, language) : children;
     }
   };
 
