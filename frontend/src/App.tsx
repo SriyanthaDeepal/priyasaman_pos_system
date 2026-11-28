@@ -6,7 +6,7 @@ import MainLayout from "./layouts/MainLayout/MainLayout";
 function App() {
   return (
     <MainLayout>
-      {(navigate: (path: string) => void) => <DashboardPage onNavigate={navigate} />}
+      {(navigate: (path: string) => void, language: "EN" | "SI") => <DashboardPage onNavigate={navigate} language={language} />}
     </MainLayout>
   );
 }
