@@ -144,16 +144,9 @@ function Header({ onMenuClick, connections, language, onLanguageChange }: Header
     return () => window.clearInterval(timer);
   }, []);
 
-  const formattedDate = currentTime.toLocaleDateString(language === "SI" ? "si-LK" : "en-GB", { weekday: "short", day: "2-digit", month: "short", year: "numeric" });
+  const formattedDate = language === "SI" ? `${currentTime.getFullYear()} ${["ජනවාරි","පෙබරවාරි","මාර්තු","අප්‍රේල්","මැයි","ජූනි","ජූලි","අගෝස්තු","සැප්තැම්බර්","ඔක්තෝබර්","නොවැම්බර්","දෙසැම්බර්"][currentTime.getMonth()]} ${currentTime.getDate()}, ${["ඉරිදා","සඳුදා","අඟහරුවාදා","බදාදා","බ්‍රහස්පතින්දා","සිකුරාදා","සෙනසුරාදා"][currentTime.getDay()]}` : currentTime.toLocaleDateString("en-GB", { weekday: "short", day: "2-digit", month: "short", year: "numeric" });
 
-  const formattedTime = currentTime.toLocaleTimeString(
-    language === "SI" ? "si-LK" : "en-GB",
-    {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    }
-  );
+  const formattedTime = language === "SI" ? `${String(currentTime.getHours() % 12 || 12).padStart(2,"0")}:${String(currentTime.getMinutes()).padStart(2,"0")}:${String(currentTime.getSeconds()).padStart(2,"0")} ${currentTime.getHours() < 12 ? "පෙ.ව." : "ප.ව."}` : currentTime.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
 
   /* ==========================================
      NOTIFICATION STATUS
@@ -325,7 +318,7 @@ function Header({ onMenuClick, connections, language, onLanguageChange }: Header
               <LanguageIcon fontSize="small" />
 
               <Typography variant="body2">
-                {language}
+                {language === "SI" ? "සිංහල" : "English"}
               </Typography>
 
               <KeyboardArrowDownIcon fontSize="small" />
