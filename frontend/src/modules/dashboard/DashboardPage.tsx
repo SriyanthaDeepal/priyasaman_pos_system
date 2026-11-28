@@ -486,9 +486,8 @@ function SalesChart({
   );
 }
 
-function CategoryChart({ total }: { total: number }) {
+function CategoryChart() {
   const t = useTranslation();
-  const { compactMoney, si } = useFormatting();
   const gradient = categories
     .map((category, index) => {
       const start = categories
@@ -511,10 +510,7 @@ function CategoryChart({ total }: { total: number }) {
         role="img"
         aria-label={t("Sales by category distribution")}
       >
-        <div className="pd-donut-center">
-          <strong style={si ? { fontSize: "clamp(11px, 1.1vw, 16px)", whiteSpace: "nowrap" } : undefined}>{si ? compactMoney(total).replace(" දහස", " ද.").replace(" මිලියන", " මි.") : compactMoney(total)}</strong>
-          <span>{t("Total Sales")}</span>
-        </div>
+        <div className="pd-donut-center" aria-hidden="true" />
       </div>
 
       <div className="pd-category-legend">
@@ -912,7 +908,7 @@ function DashboardContent({
               icon={<LocalOfferOutlined />}
               className="pd-category-panel"
             >
-              <CategoryChart total={data.sales} />
+              <CategoryChart />
             </Panel>
         </div>
       </div>
