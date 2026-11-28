@@ -525,7 +525,7 @@ export default function POSPage() {
 
           <div>
             <h1>
-              POS / Billing <span>(Create Sale)</span>
+              Billing 
             </h1>
 
             <p>
