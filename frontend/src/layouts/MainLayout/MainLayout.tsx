@@ -38,6 +38,8 @@ export default function MainLayout({
      ACTIVE PAGE
      ========================================== */
 
+  const [language, setLanguage] = useState<"EN" | "SI">(() => { try { return localStorage.getItem("pos-language") === "SI" ? "SI" : "EN"; } catch { return "EN"; } });
+  const changeLanguage = (value: "EN" | "SI") => { setLanguage(value); try { localStorage.setItem("pos-language", value); } catch { /* storage unavailable */ } };
   const [theme, setTheme] = useState<POSTheme>(() => {
     try {
       // Restore the original POS palette once after the theme migration.
@@ -204,6 +206,7 @@ export default function MainLayout({
 
   return (
     <Box
+      lang={language === "SI" ? "si" : "en"}
       className={`pos-themed-root${appliedTheme.primary === defaultPOSTheme.primary && appliedTheme.accent === defaultPOSTheme.accent && appliedTheme.button === null && appliedTheme.header === null ? " pos-theme-original" : ""}`}
       style={{
         ["--pos-primary" as string]: appliedTheme.primary,
@@ -226,6 +229,7 @@ export default function MainLayout({
       <FeedbackSnackbar open={Boolean(feedback)} message={feedback} onClose={() => setFeedback("")} />
       {/* SIDEBAR */}
       <Sidebar
+        language={language}
         branding={appliedBranding}
         activePage={activePage}
         onNavigate={handleNavigate}
@@ -255,6 +259,8 @@ export default function MainLayout({
           }}
         >
           <Header
+            language={language}
+            onLanguageChange={changeLanguage}
             onMenuClick={() =>
               setMobileSidebarOpen(true)
             }
